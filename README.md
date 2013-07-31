@@ -1,7 +1,7 @@
 Tailor
 ======
 
-Tailor program is a Burrows–Wheeler transform based fast short read aligner like bowtie/BWA/SOAP2 but is specialized in discovering trimming and tailing events for small silencing RNAs from Next Generation Sequencing data. 
+Tailor program is a Burrows–Wheeler transform based fast short read aligner which likes bowtie/BWA/SOAP2 but is specialized in discovering trimming and tailing events for small silencing RNAs from Next Generation Sequencing data. 
 
 ##INSTALL
 =======
