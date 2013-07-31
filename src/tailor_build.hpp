@@ -12,15 +12,20 @@ int main (int argc, char** argv) {
 	std::string usage = R"(
 
 *********************************************************************************
-tailor
++------+
+|Tailor|
++------+
 
-  A software using BWT to perform genomic mapping with ability to detect tailing. 
-
-  All hits will be reported as SAM format, equivalent to -v 0 -a mode of bowtie,
-except for the ability to detect unmatched sequence in the 3' end.
-
-  tailor build
-    build index from a fasta file. 
+  A software using BWT to perform genomic mapping with ability to detect 
+untemplated addition of nucleotide to the 3' end of small RNA (tailing). 
+  All hits will be aligned to a reference sequence with exact match. Any unmapped
+sequences at the 3' end are considered "tail". The exact matching process is 
+equivalent to -v 0 -a mode of bowtie.
+  Reports will be in SAM format. Tails will be described as "soft-clip" in CIGAR
+and the sequences are reported under "TL:Z:" in the optional fields.
+  
+>> tailor build
+    To generate index files from a fasta file. 
 
 *********************************************************************************
 
