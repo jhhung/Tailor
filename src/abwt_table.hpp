@@ -19,38 +19,28 @@
 #include <string>
 #include <tuple>
 #include <utility>
-//#include <unordered_map>
-
 #include <boost/ref.hpp>
 #include <ctime>
 #include <cmath>
 #include <memory>
 #include "compression/abit.hpp"
 #include "compression/jbit.hpp"
-//#include "thread_pool.hpp"
-//#include "difference_cover.hpp"
 #include "mkq_sort.hpp"
 #include "split_sort.hpp"
-
 #include "boost/serialization/utility.hpp"
 #include "boost/archive/binary_oarchive.hpp"
 #include "boost/archive/binary_iarchive.hpp"
 #include "boost/unordered_map.hpp"
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
-
-//#define INTTYPE uint64_t
-
 #include "boost/iostreams/filtering_stream.hpp"
 #include "boost/iostreams/device/file.hpp"
 #include "boost/iostreams/filter/zlib.hpp"
 #include "boost/serialization/map.hpp"
 
-
 class ABWT_table
 {
 public:
-
 	typedef ABSequence<std::string> SEQTYPE;
 	INTTYPE interval, char_size, powerV, first_location;
 	std::string bwt;
@@ -72,13 +62,13 @@ public:
 	std::shared_ptr<JBit> jbwt;
 	
 	// FIXME: this is just temperarily storing the real size of the genome
-	uint64_t _realSize = 0;
+	INTTYPE _realSize = 0;
 	// starting site -> chromosome
-	std::map <uint64_t, std::string> chr_start_pos {};
+	std::map <INTTYPE, std::string> chr_start_pos {};
 	// chr -> chr size
-	std::map <std::string, uint64_t> chr_length {};
+	std::map <std::string, INTTYPE> chr_length {};
 	// unambiguous segment sequence starting position of each chr
-	std::map <uint64_t, uint64_t > chr_umbiguous_starting_length {};
+	std::map <INTTYPE, INTTYPE > chr_umbiguous_starting_length {};
 
 	double get_c_time;
 	double get_occ_time;

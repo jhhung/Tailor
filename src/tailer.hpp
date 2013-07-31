@@ -10,9 +10,9 @@ void buildBWT2 (const std::string& fileName, const std::string& prefixName) {
 	/* string to store the sense + reverse complementary of the genome seq */
 	std::string seq, seqRC {};
 	/* running accumulator recording the length of each chr */
-	uint64_t tempLen {0}, accumulatedLength {0};
+	INTTYPE tempLen {0}, accumulatedLength {0};
 	/* for concatenated seq */
-	std::map <uint64_t, uint64_t> NPosLen { };
+	std::map <INTTYPE, INTTYPE> NPosLen { };
 
 	/* file to store which regions has which chr*/
 	std::ofstream chrStartPos {prefixName + "chrStart"};

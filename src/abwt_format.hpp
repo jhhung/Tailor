@@ -12,8 +12,8 @@ class Fasta;
 // one Fasta can contain many Segments
 struct Segment {
 public:
-	uint64_t _offset {0};
-	uint64_t _len {0};
+	INTTYPE _offset {0};
+	INTTYPE _len {0};
 	std::string _seq {};
 	Segment& operator = (const Segment&);
 public:
@@ -83,8 +83,8 @@ class Fasta {
 private:
 	std::string _name {};
 	CONTAINER<Segment> _sequences {}; /// each segment is N...NACGT...ACGT until next N
-	uint64_t _length {0};
-	uint64_t _lengthNoN {0};
+	INTTYPE _length {0};
+	INTTYPE _lengthNoN {0};
 	Fasta& operator = (const Fasta&);
 public:
 	class badFasta {};
@@ -116,10 +116,10 @@ public:
 		return *this;
 	}
 
-	void updateNpos (std::map <uint64_t, uint64_t>& NposLen) const {
+	void updateNpos (std::map <INTTYPE, INTTYPE>& NposLen) const {
 		auto seg = _sequences.begin ();
 		auto stopIter = _sequences.end(); advance (stopIter, -1);
-		std::pair <std::map <uint64_t, uint64_t>::iterator, bool> lastPos2  {};
+		std::pair <std::map <INTTYPE, INTTYPE>::iterator, bool> lastPos2  {};
 	// adding first segment
 		/* first chromosome */
 		if (NposLen.empty ()) {
@@ -205,10 +205,10 @@ public:
 		}
 		return _sequence;
 	}
-	uint64_t getLength () const {
+	INTTYPE getLength () const {
 		return _length;
 	}
-	uint64_t getLengthNoN () const {
+	INTTYPE getLengthNoN () const {
 		return _lengthNoN;
 	}
 }; /* end of class Fasta definition */
@@ -289,15 +289,15 @@ private:
 	std::string QNAME = "";
 	std::bitset<SAM_FLAG::FLAG_SIZE> FLAG;
 	std::string RNAME = "";
-	uint64_t POS = 0;
+	INTTYPE POS = 0;
 	int MAPQ = 255;
 	std::string CIGAR = "";
 	std::string RNEXT = "";
-	uint64_t PNEXT = 0;
+	INTTYPE PNEXT = 0;
 	int64_t TLEN = 0;
 	std::string SEQ = "";
 	std::string QUAL = "";
-	uint64_t _NH = 0;
+	INTTYPE _NH = 0;
 	std::string _tailSeq = "";
 //	std::unordered_map<std::string, std::string> OPTIONAL_FIELDS {};
 
@@ -305,7 +305,7 @@ public:
 	/**! default constructor **/
 	Sam () = default ;
 	/** ctor from individuals*/
-	Sam (std::string&& _QNAME, SAM_FLAG _FLAG, std::string&& _RNAME, uint64_t _POS, int _MAPQ, std::string&& _CIGAR, std::string&& _RNEXT, uint64_t _PNEXT, int64_t _TLEN, const std::string& _SEQ, std::string&& _QUAL, uint64_t NH, std::string&& tailSeq = ""):
+	Sam (std::string&& _QNAME, SAM_FLAG _FLAG, std::string&& _RNAME, INTTYPE _POS, int _MAPQ, std::string&& _CIGAR, std::string&& _RNEXT, INTTYPE _PNEXT, int64_t _TLEN, const std::string& _SEQ, std::string&& _QUAL, INTTYPE NH, std::string&& tailSeq = ""):
 		QNAME {_QNAME},
 		FLAG {_FLAG},
 		RNAME {_RNAME},
