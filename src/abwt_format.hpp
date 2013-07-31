@@ -297,13 +297,15 @@ private:
 	int64_t TLEN = 0;
 	std::string SEQ = "";
 	std::string QUAL = "";
-	std::unordered_map<std::string, std::string> OPTIONAL_FIELDS {};
+	uint64_t _NH = 0;
+	std::string _tailSeq = "";
+//	std::unordered_map<std::string, std::string> OPTIONAL_FIELDS {};
 
 public:
 	/**! default constructor **/
 	Sam () = default ;
 	/** ctor from individuals*/
-	Sam (std::string&& _QNAME, SAM_FLAG _FLAG, std::string& _RNAME, uint64_t _POS, int _MAPQ, std::string&& _CIGAR, std::string&& _RNEXT, uint64_t _PNEXT, int64_t _TLEN, const std::string& _SEQ, std::string&& _QUAL, std::unordered_map<std::string, std::string>&& _OPTIONAL_FIELDS = {} ):
+	Sam (std::string&& _QNAME, SAM_FLAG _FLAG, std::string&& _RNAME, uint64_t _POS, int _MAPQ, std::string&& _CIGAR, std::string&& _RNEXT, uint64_t _PNEXT, int64_t _TLEN, const std::string& _SEQ, std::string&& _QUAL, uint64_t NH, std::string&& tailSeq = ""):
 		QNAME {_QNAME},
 		FLAG {_FLAG},
 		RNAME {_RNAME},
@@ -315,7 +317,8 @@ public:
 		TLEN {_TLEN},
 		SEQ {_SEQ},
 		QUAL {_QUAL},
-		OPTIONAL_FIELDS {_OPTIONAL_FIELDS}
+		_NH {NH},
+		_tailSeq {tailSeq}
 		{ }
 		/**! copy ctor **/
 		Sam (const Sam&) = default;
@@ -352,7 +355,8 @@ public:
 				TLEN  = other.TLEN;
 				SEQ.swap (other.SEQ);
 				QUAL.swap (other.QUAL);
-				OPTIONAL_FIELDS.swap (other.OPTIONAL_FIELDS);
+				_NH = other._NH;
+				_tailSeq.swap (other._tailSeq);
 				other.~Sam ();
 			}
 			return *this;
@@ -371,14 +375,6 @@ public:
 				return FLAG.test(f) && checkFlag (rest...);
 			return FLAG.test (f);
 		}
-		// TODO: is this useful?
-		std::string getTag (const std::string& key) const {
-			return OPTIONAL_FIELDS.at (key);
-		}
-		// TODO: make this tailing specific
-		std::string mutation () const {
-			return OPTIONAL_FIELDS.at ("MD");
-		}
 		// print out the sequence of SEQ
 		int get_size () const {
 			return SEQ.size ();
@@ -395,15 +391,10 @@ public:
 					<< sam.PNEXT << '\t'
 					<< sam.TLEN << '\t'
 					<< sam.SEQ << '\t'
-					<< sam.QUAL;
-			// TODO: outputing Z/i depending on the property of p.second
-			for (const auto& p : sam.OPTIONAL_FIELDS)
-				os << '\t'
-				<< p.first
-				<< ':'
-				<< 'Z'
-				<< ':'
-				<< p.second;
+					<< sam.QUAL << '\t'
+					<< "NH:i:" << sam._NH;
+			if (!sam._tailSeq.empty ())
+				os << "\tTL:Z:" << sam._tailSeq;
 			os << '\n';
 			return os;
 		}
