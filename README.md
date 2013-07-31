@@ -6,9 +6,9 @@ Tailor program is a Burrows–Wheeler transform based fast short read aligner li
 ##INSTALL
 =======
 1. Install the dependencies
-	1.1 Boost http://www.boost.org/users/download/
-	1.2 CMake http://www.cmake.org/ 
-	1.3 A recent C++ compiler that support most features of C++11 
+	1.1 Boost http://www.boost.org/users/download/ .
+	1.2 CMake http://www.cmake.org/ .
+	1.3 A recent C++ compiler that support most features of C++11 .
 
 2. Get the latest version of the software
 
