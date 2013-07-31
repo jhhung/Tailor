@@ -38,5 +38,9 @@ Usage:
 	else
 	if (strcmp (argv[1], "map") == 0) {
 		tailor_map::main (argc-1, argv+1);
+	} else {
+		cerr << "Error: unrecognized option " << argv[1] << endl;
+		cerr << usage << endl;
+		exit (1);
 	}
 }
