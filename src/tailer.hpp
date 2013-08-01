@@ -3,7 +3,7 @@
 #include "boost/filesystem.hpp"
 #include "boost/thread.hpp"
 #include "abwt_thread.hpp"
-
+#include "thread.hpp"
 void buildBWT2 (const std::string& fileName, const std::string& prefixName) {
 	/* read input fasta file */
 	std::ifstream in {fileName};
@@ -101,7 +101,7 @@ ABWT_table loadBWT2 (const std::string& prefixName, std::ostream* out) {
 
 
 // tailing searching with dual strand
-void searchBWT_tail2 (ABWT_table&& abwtt, std::string fileName, int nthreads, std::ostream* out, int minLen) {
+void searchBWT_tail2 (ABWT_table&& abwtt, std::string fileName, std::size_t nthreads, std::ostream* out, int minLen) {
 	std::ifstream in {fileName};
 	int currentNThreads = 0;
 	std::unordered_map <int, std::ofstream*> outputFiles;
@@ -112,22 +112,25 @@ void searchBWT_tail2 (ABWT_table&& abwtt, std::string fileName, int nthreads, st
 	for (; i< nthreads; ++i)
 		outputFiles.insert (std::make_pair (i, new std::ofstream { std::string {randPrefix + ".thread" + std::to_string (i) }}));
 	i = 0;
-	boost::thread_group threads; /// thread_group is not using rvalue ...
+//	boost::thread_group threads; /// thread_group is not using rvalue ...
+	thread_pool tPool {nthreads};
 	while (in.good ()) {
-		if (currentNThreads < nthreads) {
-			std::vector<Fastq> vec; vec.reserve (blockSize);
-			for (int i = 0 ; i < blockSize && in.good (); ++i)
-				vec.emplace_back (in);
-//			threads.create_thread (ABWT_thread <ABWT_table> {abwtt, Fastq {in}, outputFiles[i++%nthreads]}); /// force to use lvalue copy ctor of fastq...
-			threads.create_thread (ABWT_threads<ABWT_table> {abwtt, std::move (vec), outputFiles[i++%nthreads], minLen});
-			++currentNThreads;
-		}
-		else {
-			threads.join_all (); ///FIXME: only need to finish one
-			currentNThreads = 0;
-		}
+		std::vector<Fastq> vec; vec.reserve (blockSize);
+		tPool.run_task<> (ABWT_threads<ABWT_table> {abwtt, std::move (vec), outputFiles[i++%nthreads], minLen});
+//		if (currentNThreads < nthreads) {
+//			std::vector<Fastq> vec; vec.reserve (blockSize);
+//			for (int i = 0 ; i < blockSize && in.good (); ++i)
+//				vec.emplace_back (in);
+//			threads.create_thread (ABWT_threads<ABWT_table> {abwtt, std::move (vec), outputFiles[i++%nthreads], minLen});
+//			++currentNThreads;
+//		}
+//		else {
+//			threads.join_all (); ///FIXME: only need to finish one
+//			currentNThreads = 0;
+//		}
 	}
-	threads.join_all ();
+//	threads.join_all ();
+	tPool.~thread_pool ();
 	/** close output file handler **/
 	for (auto& x : outputFiles) {
 		x.second->close ();
@@ -144,7 +147,7 @@ void searchBWT_tail2 (ABWT_table&& abwtt, std::string fileName, int nthreads, st
 }
 
 // tailing version for dual BWT
-void tailing2 (const std::string prefixName, const std::string fastqName, std::ostream* out, int nthread, int minLen) {
+void tailing2 (const std::string prefixName, const std::string fastqName, std::ostream* out, std::size_t nthread, int minLen) {
 	/* writting sam header */
 	*out << "@HD" << '\t' << "VN:1.0" << '\t' << "SO:unsorted\n";
 	searchBWT_tail2 (loadBWT2 (prefixName, out), fastqName, nthread, out, minLen);
