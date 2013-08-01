@@ -90,7 +90,7 @@ ABWT_table loadBWT2 (const std::string& prefixName, std::ostream* out) {
 	abwtt.readNPosLen (prefixName + "NposLen.z");
 	abwtt.readChrStartPos (prefixName + "chrStart");
 	abwtt.readChrLen (prefixName + "chrLen");
-	abwtt.using_jbwt();
+//	abwtt.using_jbwt();
 	/* continue to write header */
 	for (const auto& chrSizes : abwtt.chr_length) {
 		*out << "@SQ\tSN:" << chrSizes.first << "\tLN:" << chrSizes.second << '\n';
