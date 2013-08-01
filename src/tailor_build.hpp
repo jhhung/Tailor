@@ -41,7 +41,7 @@ and the sequences are reported under "TL:Z:" in the optional fields.
 			("help,h", "display this help message and exit")
 			("input,i", boost::program_options::value<std::string>(&inputFasta)->required(), "The input fasta file.")
 			("prefix,p", boost::program_options::value<std::string>(&indexPrefix)->required(), "Prefix of index file to generate.")
-			("force,f", boost::program_options::bool_switch(&overwrite)->default_value(false), "Overwrite the existing infex files if they already exist.")
+			("force,f", boost::program_options::bool_switch(&overwrite)->default_value(false), "Overwrite the existing index files if they already exist.")
 		;
 		boost::program_options::variables_map vm;
 		boost::program_options::store (boost::program_options::parse_command_line(argc, argv, opts), vm);
