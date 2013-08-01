@@ -149,7 +149,7 @@ void searchBWT_tail2 (ABWT_table&& abwtt, std::string fileName, std::size_t nthr
 }
 
 // tailing version for dual BWT
-void tailing2 (const std::string prefixName, const std::string fastqName, std::ostream* out, s nthread, int minLen) {
+void tailing2 (const std::string prefixName, const std::string fastqName, std::ostream* out, std::size_t nthread, int minLen) {
 	/* writting sam header */
 	*out << "@HD" << '\t' << "VN:1.0" << '\t' << "SO:unsorted\n";
 	searchBWT_tail2 (loadBWT2 (prefixName, out), fastqName, nthread, out, minLen);
