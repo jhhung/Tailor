@@ -116,6 +116,8 @@ void searchBWT_tail2 (ABWT_table&& abwtt, std::string fileName, std::size_t nthr
 	thread_pool tPool {nthreads};
 	while (in.good ()) {
 		std::vector<Fastq> vec; vec.reserve (blockSize);
+		for (int i = 0 ; i < blockSize && in.good (); ++i)
+			vec.emplace_back (in);
 		tPool.run_task<> (ABWT_threads<ABWT_table> {abwtt, std::move (vec), outputFiles[i++%nthreads], minLen});
 //		if (currentNThreads < nthreads) {
 //			std::vector<Fastq> vec; vec.reserve (blockSize);
@@ -147,7 +149,7 @@ void searchBWT_tail2 (ABWT_table&& abwtt, std::string fileName, std::size_t nthr
 }
 
 // tailing version for dual BWT
-void tailing2 (const std::string prefixName, const std::string fastqName, std::ostream* out, std::size_t nthread, int minLen) {
+void tailing2 (const std::string prefixName, const std::string fastqName, std::ostream* out, s nthread, int minLen) {
 	/* writting sam header */
 	*out << "@HD" << '\t' << "VN:1.0" << '\t' << "SO:unsorted\n";
 	searchBWT_tail2 (loadBWT2 (prefixName, out), fastqName, nthread, out, minLen);
