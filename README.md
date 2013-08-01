@@ -18,8 +18,8 @@ Tailor program is a Burrows–Wheeler transform based fast short read aligner (l
 
 	`cmake .`
    
-   - Set enviromental variable "BOOST_ROOT" to the directory of boost if CMake cannot find boost automatically;
-   - Set enviromental variable "CC" and "CXX" to the gcc/g++ compiler you want to use.	
+   - [x] Set enviromental variable "BOOST_ROOT" to the directory of boost if CMake cannot find boost automatically;
+   - [x] Set enviromental variable "CC" and "CXX" to the gcc/g++ compiler you want to use.	
 	
 4. Compile the software by typing:
 
