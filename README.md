@@ -24,6 +24,11 @@ Tailor program is a Burrows–Wheeler transform based fast short read aligner (l
 4. Compile the software by typing:
 
 	`make`
+5. troubleshooting
+	- 1.1. If you got linker error, it is possible that the default library in the lib/ is not suitable to your platform.
+	  There are two libraries available, one is for Mac OSX one is for Linux, rename the one that fit the best to "libabwt_table.a",
+          and retype 
+	`make`
 	
 ##USAGE
 =====
