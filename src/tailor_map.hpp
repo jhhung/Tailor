@@ -34,7 +34,7 @@ and the sequences are reported under "TL:Z:" in the optional fields.
 	std::string inputFastq {};
 	std::string indexPrefix {};
 	std::string outputSAM {};
-	int nthread {};
+	std::size_t nthread {};
 	int minLen {};
 	boost::program_options::options_description opts {usage};
 	try {
@@ -43,7 +43,7 @@ and the sequences are reported under "TL:Z:" in the optional fields.
 				("input,i", boost::program_options::value<std::string>(&inputFastq)->required(), "Input fastq file")
 				("index,p", boost::program_options::value<std::string>(&indexPrefix)->required(), "Prefix of the index")
 				("output,o", boost::program_options::value<std::string>(&outputSAM)->default_value(std::string{"stdout"}), "Output SAM file, stdout by default ")
-				("thread,n", boost::program_options::value<int>(&nthread)->default_value(1), "Number of thread to use")
+				("thread,n", boost::program_options::value<std::size_t>(&nthread)->default_value(1), "Number of thread to use")
 				("minLen,l", boost::program_options::value<int>(&minLen)->default_value(18), "minimal length of exact match (prefix match) allowed")
 				;
 		boost::program_options::variables_map vm;
