@@ -3,7 +3,6 @@
 #include "boost/filesystem.hpp"
 #include "boost/thread.hpp"
 #include "abwt_thread.hpp"
-#include "thread.hpp"
 void buildBWT2 (const std::string& fileName, const std::string& prefixName) {
 	/* read input fasta file */
 	std::ifstream in {fileName};
@@ -112,34 +111,27 @@ void searchBWT_tail2 (ABWT_table&& abwtt, std::string fileName, std::size_t nthr
 	for (; i< nthreads; ++i)
 		outputFiles.insert (std::make_pair (i, new std::ofstream { std::string {randPrefix + ".thread" + std::to_string (i) }}));
 	i = 0;
-//	boost::thread_group threads; /// thread_group is not using rvalue ...
-	thread_pool tPool {nthreads};
+	boost::thread_group threads; /// thread_group is not using rvalue ...
 	while (in.good ()) {
-		std::vector<Fastq> vec; vec.reserve (blockSize);
-		for (int i = 0 ; i < blockSize && in.good (); ++i)
-			vec.emplace_back (in);
-		tPool.run_task<> (ABWT_threads<ABWT_table> {abwtt, std::move (vec), outputFiles[i++%nthreads], minLen});
-//		if (currentNThreads < nthreads) {
-//			std::vector<Fastq> vec; vec.reserve (blockSize);
-//			for (int i = 0 ; i < blockSize && in.good (); ++i)
-//				vec.emplace_back (in);
-//			threads.create_thread (ABWT_threads<ABWT_table> {abwtt, std::move (vec), outputFiles[i++%nthreads], minLen});
-//			++currentNThreads;
-//		}
-//		else {
-//			threads.join_all (); ///FIXME: only need to finish one
-//			currentNThreads = 0;
-//		}
+		if (currentNThreads < nthreads) {
+			std::vector<Fastq> vec; vec.reserve (blockSize);
+			for (int i = 0 ; i < blockSize && in.good (); ++i)
+				vec.emplace_back (in);
+			threads.create_thread (ABWT_threads<ABWT_table> {abwtt, std::move (vec), outputFiles[i++%nthreads], minLen});
+			++currentNThreads;
+		}
+		else {
+			threads.join_all (); ///FIXME: only need to finish one
+			currentNThreads = 0;
+		}
 	}
-//	threads.join_all ();
-	tPool.~thread_pool ();
+	threads.join_all ();
 	/** close output file handler **/
 	for (auto& x : outputFiles) {
 		x.second->close ();
 		delete x.second;
 	}
 	/* cat all the files */
-//	std::ofstream fileOut {"merged.sam", std::ios_base::app | std::ios_base::binary}
 	for (int i = 0; i< nthreads; ++i) {
 		std::ifstream fileIn  { randPrefix + ".thread" + std::to_string (i), std::ios_base::in | std::ios_base::binary};
 		*out << fileIn.rdbuf();
