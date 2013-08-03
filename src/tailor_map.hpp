@@ -87,7 +87,7 @@ and the sequences are reported under "TL:Z:" in the optional fields.
 	}
 	/** check thread **/
 	auto nCore = boost::thread::hardware_concurrency();
-	if ( nthread > nCore) {
+	if ( nCore != 0 && nthread > nCore) {
 		std::cerr << "Warning: the number of threads set (" << nthread << ") is larger than the number of cores available (" << nCore << ") in this machine.\nSo reset -n=" << nCore << std::endl;
 		nthread = nCore;
 	}
