@@ -39,7 +39,6 @@
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 
-//#define INTTYPE uint64_t
 
 #include "boost/iostreams/filtering_stream.hpp"
 #include "boost/iostreams/device/file.hpp"
@@ -75,13 +74,13 @@ public:
 	std::shared_ptr<JBit> jbwt;
 	
 	// FIXME: this is just temperarily storing the real size of the genome
-	uint64_t _realSize = 0;
+	INTTYPE _realSize = 0;
 	// starting site -> chromosome
-	std::map <uint64_t, std::string> chr_start_pos {};
+	std::map <INTTYPE, std::string> chr_start_pos {};
 	// chr -> chr size
-	std::map <std::string, uint64_t> chr_length {};
+	std::map <std::string, INTTYPE> chr_length {};
 	// unambiguous segment sequence starting position of each chr
-	std::map <uint64_t, uint64_t > chr_umbiguous_starting_length {};
+	std::map <INTTYPE, INTTYPE > chr_umbiguous_starting_length {};
 
 	double get_c_time;
 	double get_occ_time;
