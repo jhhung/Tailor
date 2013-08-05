@@ -66,6 +66,29 @@ public:
 	{
 		
 	}
+	template <typename T>
+	void free( T & t ) {
+			T tmp;
+			t.swap( tmp );
+	}
+	void release()
+	{
+		free(vec);
+		//std::cout << "1" << std::endl;
+		free(self_vec);
+		//std::cout << "2" << std::endl;
+		free(random_table);
+		//std::cout << "3" << std::endl;
+		free(split_table);
+		//std::cout << "4" << std::endl;
+		free(SeqTables);
+		//std::cout << "5" << std::endl;
+		free(archive_name);
+		//std::cout << "6." << std::endl;
+		free(object_in_each_archive);
+		//std::cout << "7" << std::endl;
+		free(size_in_each_archive);
+	}
 	
 	void split_by_size_init(const INTTYPE s)
 	{
@@ -96,18 +119,12 @@ public:
 		start = clock();
 		std::clog << "sort final start:" <<std::endl;
 		
-		//34310
-		//archive_name.push_back("split_0");
-		//archive_name.push_back("split_1");
-		//object_in_each_archive.push_back(34310);
-		//object_in_each_archive.push_back(34000);
-		
 		mkq_sort();
 		
 		stop = clock();
 		std::clog << "sort final end: "<< double(stop - start)/CLOCKS_PER_SEC << std::endl;
 
-		merge();
+		//merge();
 	}
 	
 	inline void make_random_table()

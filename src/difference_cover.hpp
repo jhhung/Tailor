@@ -270,6 +270,16 @@ public:
 		make_dcs_table_mkq();
 	}
 	
+	void release()
+	{
+		FreeAll(dcs_D);
+		FreeAll(dcs_Di);
+		FreeAll(dcs_dh);
+		FreeAll(iDs);
+		FreeAll(sp);
+		FreeAll(ISAp);
+	}
+	
 	void make_dcs_table_mkq()
 	{
 //old 1
@@ -337,6 +347,7 @@ public:
 		}
 		//release iD
 		FreeAll(iD);	
+		FreeAll(iD_sames);
 		
 		return rank;
 	}

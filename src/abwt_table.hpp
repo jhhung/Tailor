@@ -19,28 +19,38 @@
 #include <string>
 #include <tuple>
 #include <utility>
+//#include <unordered_map>
+
 #include <boost/ref.hpp>
 #include <ctime>
 #include <cmath>
 #include <memory>
 #include "compression/abit.hpp"
 #include "compression/jbit.hpp"
+//#include "thread_pool.hpp"
+//#include "difference_cover.hpp"
 #include "mkq_sort.hpp"
 #include "split_sort.hpp"
+
 #include "boost/serialization/utility.hpp"
 #include "boost/archive/binary_oarchive.hpp"
 #include "boost/archive/binary_iarchive.hpp"
 #include "boost/unordered_map.hpp"
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
+
+//#define INTTYPE uint64_t
+
 #include "boost/iostreams/filtering_stream.hpp"
 #include "boost/iostreams/device/file.hpp"
 #include "boost/iostreams/filter/zlib.hpp"
 #include "boost/serialization/map.hpp"
 
+
 class ABWT_table
 {
 public:
+
 	typedef ABSequence<std::string> SEQTYPE;
 	INTTYPE interval, char_size, powerV, first_location;
 	std::string bwt;
@@ -57,18 +67,21 @@ public:
 	std::vector<INTTYPE> mtable;
 	std::vector< std::vector< std::vector<INTTYPE> > > occ_jbwt;
 	
+	std::string jbwt_idx_char;
+	
 	std::vector<uint8_t> fbwt;
-	std::vector<uint8_t> jbwt_seq;	
+	std::vector<uint8_t> jbwt_seq;
+	
 	std::shared_ptr<JBit> jbwt;
 	
 	// FIXME: this is just temperarily storing the real size of the genome
-	INTTYPE _realSize = 0;
+	uint64_t _realSize = 0;
 	// starting site -> chromosome
-	std::map <INTTYPE, std::string> chr_start_pos {};
+	std::map <uint64_t, std::string> chr_start_pos {};
 	// chr -> chr size
-	std::map <std::string, INTTYPE> chr_length {};
+	std::map <std::string, uint64_t> chr_length {};
 	// unambiguous segment sequence starting position of each chr
-	std::map <INTTYPE, INTTYPE > chr_umbiguous_starting_length {};
+	std::map <uint64_t, uint64_t > chr_umbiguous_starting_length {};
 
 	double get_c_time;
 	double get_occ_time;
@@ -144,7 +157,11 @@ public:
 	inline bool str_idx_compare(SEQTYPE &seq, INTTYPE a, INTTYPE b, INTTYPE len);
 	
 	inline INTTYPE get_c(INTTYPE i) const;
-	//
+	
+	inline INTTYPE get_c(char c) const;
+	
+	inline char get_jbwt_char(INTTYPE i) const;
+	
 	INTTYPE get_occ_using_jbwt(INTTYPE i, char c='\0', int show_error=0) const;
 	
 	inline INTTYPE get_occ(INTTYPE i, char c='\0') const;
