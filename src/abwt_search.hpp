@@ -443,7 +443,7 @@ public:
 /// begin recording tailing
 		if (start_end_pos_.first >= start_end_pos_.second) {
 			++queryPosition; /// substract an extra one when exiting the loop, so add it back
-			for (int i = last_start_end_pos_.first; i < last_start_end_pos_.second; i++) {
+			for (INTTYPE i = last_start_end_pos_.first; i < last_start_end_pos_.second; i++) {
 				auto position = this->find_nearest_mark(i);
 				auto prefixMatchLen = _query.size() - 1 - queryPosition;
 
@@ -528,7 +528,7 @@ public:
 		}
 /// found perfect match
 		if (queryPosition == -1) {
-			for (int i = start_end_pos_.first; i < start_end_pos_.second; i++) {
+			for (INTTYPE i = start_end_pos_.first; i < start_end_pos_.second; i++) {
 				auto position = this->find_nearest_mark(i);
 				if (position > this->abwt_table_._realSize) {
 					isRC = true;
