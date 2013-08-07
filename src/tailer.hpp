@@ -117,7 +117,9 @@ void searchBWT_tail2 (ABWT_table&& abwtt, std::string fileName, std::size_t nthr
 			std::vector<Fastq> vec; vec.reserve (blockSize);
 			for (int i = 0 ; i < blockSize && in.good (); ++i)
 				vec.emplace_back (in);
-			threads.create_thread (ABWT_threads<ABWT_table> {abwtt, std::move (vec), outputFiles[i++%nthreads], minLen});
+			//threads.create_thread (ABWT_threads<ABWT_table> {abwtt, std::move (vec), outputFiles[i++%nthreads], minLen});
+			boost::thread* t = new boost::thread {ABWT_threads<ABWT_table> {abwtt, std::move (vec), outputFiles[i++%nthreads], minLen}};
+			threads.add_thread (t);
 			++currentNThreads;
 		}
 		else {
