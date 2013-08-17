@@ -480,7 +480,7 @@ public:
 					*out << Sam { fq.getName (),
 						Sam::SAM_FLAG::REVERSE_COMPLEMENTED,
 						std::move (chr),
-						position + queryPosition,
+						position + 1,
 						255,
 						std::to_string (prefixMatchLen) + 'M' + std::to_string (queryPosition+1) + 'S',
 						"*",
