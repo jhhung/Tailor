@@ -487,7 +487,7 @@ public:
 						0,
 						0,
 						query,
-						fq.getQuality (),
+						fq.getRevQuality (),
 						last_start_end_pos_.second - last_start_end_pos_.first,
 						std::move(tailSeq)};
 				} else { /// same as start_tailing_match_S
@@ -564,7 +564,7 @@ public:
 						0,
 						0,
 						query,
-						fq.getQuality (),
+						fq.getRevQuality (),
 						last_start_end_pos_.second - last_start_end_pos_.first};
 				} else {
 					auto lowerIter = this->abwt_table_.chr_start_pos.upper_bound (position);

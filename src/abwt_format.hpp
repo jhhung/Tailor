@@ -262,6 +262,9 @@ public:
 		std::string getQuality () const {
 			return _quality;
 		}
+		std::string getRevQuality () const {
+			return std::string {_quality.rbegin(), _quality.rend()};
+		}
 		friend std::ostream& operator << (std::ostream& os, const Fastq& fastq) {
 			os << '@' << fastq._name << '\n' << fastq._sequence << "\n+\n" << fastq._quality << '\n';
 		}
