@@ -486,7 +486,7 @@ public:
 						"*",
 						0,
 						0,
-						_query,
+						query,
 						fq.getQuality (),
 						last_start_end_pos_.second - last_start_end_pos_.first,
 						std::move(tailSeq)};
@@ -563,7 +563,7 @@ public:
 						"*",
 						0,
 						0,
-						_query,
+						query,
 						fq.getQuality (),
 						last_start_end_pos_.second - last_start_end_pos_.first};
 				} else {
