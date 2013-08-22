@@ -482,7 +482,7 @@ public:
 						std::move (chr),
 						position + 1,
 						255,
-						std::to_string (prefixMatchLen) + 'M' + std::to_string (queryPosition+1) + 'S',
+						std::to_string (queryPosition+1) + 'S' + std::to_string (prefixMatchLen) + 'M',
 						"*",
 						0,
 						0,
