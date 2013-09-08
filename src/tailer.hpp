@@ -108,8 +108,8 @@ void searchBWT_tail2 (ABWT_table&& abwtt, std::string fileName, std::size_t nthr
 //	std::srand(std::time(0));
 //	std::string randPrefix = std::to_string (std::rand ());
 	boost::random::mt19937 rng;
-	boost::random::uniform_int_distribution<> uinIntDis (1,std::numeric_limits<int>::max());
-	boost::variate_generator< boost::random::mt19937, boost::uniform_int<> > vg (rng, uinIntDis);
+	boost::random::uniform_int<> uinInt (1,std::numeric_limits<int>::max());
+	boost::variate_generator< boost::random::mt19937, boost::uniform_int<> > vg (rng, uinInt);
 	std::string randPrefix = std::to_string ( vg ());
 
 	int i = 0;
