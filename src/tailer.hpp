@@ -109,7 +109,9 @@ void searchBWT_tail2 (ABWT_table&& abwtt, std::string fileName, std::size_t nthr
 //	std::string randPrefix = std::to_string (std::rand ());
 	boost::random::mt19937 rng;
 	boost::random::uniform_int_distribution<> uinIntDis (1,std::numeric_limits<int>::max());
-	std::string randPrefix = std::to_string (uinIntDis (rng));
+	boost::variate_generator< boost::random::mt19937, boost::uniform_int<> > vg (rng, uinIntDis);
+	std::string randPrefix = std::to_string ( vg ());
+
 	int i = 0;
 	for (; i< nthreads; ++i)
 		outputFiles.insert (std::make_pair (i, new std::ofstream { std::string {randPrefix + ".thread" + std::to_string (i) }}));
