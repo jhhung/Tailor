@@ -9,6 +9,7 @@
 #include "boost/utility/binary.hpp"
 #include "boost/lexical_cast.hpp"
 #include "boost/algorithm/string.hpp"
+#include "boost/random.hpp"
 #include "../src/abwt.hpp"
 #include "../src/abwt_search.hpp"
 #include "../src/abwt_table.hpp"

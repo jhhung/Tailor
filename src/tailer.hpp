@@ -105,8 +105,11 @@ void searchBWT_tail2 (ABWT_table&& abwtt, std::string fileName, std::size_t nthr
 	int currentNThreads = 0;
 	std::unordered_map <int, std::ofstream*> outputFiles;
 	int blockSize = 1000; // TODO: make this flexible
-	std::srand(std::time(0));
-	std::string randPrefix = std::to_string (std::rand ());
+//	std::srand(std::time(0));
+//	std::string randPrefix = std::to_string (std::rand ());
+	boost::random::mt19937 rng;
+	boost::random::uniform_int_distribution<> uinIntDis (1,std::numeric_limits<int>::max());
+	std::string randPrefix = std::to_string (uinIntDis (rng));
 	int i = 0;
 	for (; i< nthreads; ++i)
 		outputFiles.insert (std::make_pair (i, new std::ofstream { std::string {randPrefix + ".thread" + std::to_string (i) }}));
