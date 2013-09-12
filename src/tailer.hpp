@@ -102,14 +102,13 @@ ABWT_table loadBWT2 (const std::string& prefixName, std::ostream* out) {
 // tailing searching with dual strand
 void searchBWT_tail2 (ABWT_table&& abwtt, std::string fileName, std::size_t nthreads, std::ostream* out, int minLen) {
 	std::ifstream in {fileName};
-	int currentNThreads = 0;
-	std::unordered_map <int, std::ofstream*> outputFiles;
-	int blockSize = 1000; // TODO: make this flexible
+/*	
 	boost::mt19937 rng;
 	rng.seed (static_cast<unsigned int>(std::time(0) + getpid ()));
 	boost::uniform_int<> uinInt (1,std::numeric_limits<int>::max());
 	boost::variate_generator<boost::mt19937&, boost::uniform_int<> > vg (rng, uinInt);
 	std::string randPrefix = std::to_string ( vg ());
+*/
 	boost::thread* threads [nthreads];
 	for (int i = 0 ; i < nthreads; ++i) {
 		threads[i] = new boost::thread {ABWT_threads<ABWT_table> {abwtt, &in, out, minLen}};
@@ -117,7 +116,7 @@ void searchBWT_tail2 (ABWT_table&& abwtt, std::string fileName, std::size_t nthr
 	for (int i = 0 ; i < nthreads; ++i) {
 		if (threads[i]->joinable ())
 			threads[i]->join ();
-			delete threads[i];
+		delete threads[i];
 	}
 }
 
