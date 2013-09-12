@@ -14,7 +14,7 @@ class ABWT_threads : private ABWT_search<T>
 private:
 	static boost::mutex _io_mutex;
 private:
-	static const int _poolSize = 2500 ;
+	static const int _poolSize = 5000 ;
 
 	std::vector <Fastq> _queryBuffer {};
 	std::stringstream _resultBuffer {};
