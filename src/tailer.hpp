@@ -105,46 +105,19 @@ void searchBWT_tail2 (ABWT_table&& abwtt, std::string fileName, std::size_t nthr
 	int currentNThreads = 0;
 	std::unordered_map <int, std::ofstream*> outputFiles;
 	int blockSize = 1000; // TODO: make this flexible
-//	std::srand(std::time(0));
-//	std::string randPrefix = std::to_string (std::rand ());
 	boost::mt19937 rng;
 	rng.seed (static_cast<unsigned int>(std::time(0) + getpid ()));
 	boost::uniform_int<> uinInt (1,std::numeric_limits<int>::max());
 	boost::variate_generator<boost::mt19937&, boost::uniform_int<> > vg (rng, uinInt);
 	std::string randPrefix = std::to_string ( vg ());
-
-	int i = 0;
-	for (; i< nthreads; ++i)
-		outputFiles.insert (std::make_pair (i, new std::ofstream { std::string {randPrefix + ".thread" + std::to_string (i) }}));
-	i = 0;
-	boost::thread_group threads; /// thread_group is not using rvalue ...
-	while (in.good ()) {
-		if (currentNThreads < nthreads) {
-			std::vector<Fastq> vec; vec.reserve (blockSize);
-			for (int i = 0 ; i < blockSize && in.good (); ++i)
-				vec.emplace_back (in);
-			//threads.create_thread (ABWT_threads<ABWT_table> {abwtt, std::move (vec), outputFiles[i++%nthreads], minLen});
-			boost::thread* t = new boost::thread {ABWT_threads<ABWT_table> {abwtt, std::move (vec), outputFiles[i++%nthreads], minLen}};
-			threads.add_thread (t);
-			++currentNThreads;
-		}
-		else {
-			threads.join_all (); ///FIXME: only need to finish one
-			currentNThreads = 0;
-		}
+	boost::thread* threads [nthreads];
+	for (int i = 0 ; i < nthreads; ++i) {
+		threads[i] = new boost::thread {ABWT_threads<ABWT_table> {abwtt, &in, out, minLen}};
 	}
-	threads.join_all ();
-	/** close output file handler **/
-	for (auto& x : outputFiles) {
-		x.second->close ();
-		delete x.second;
-	}
-	/* cat all the files */
-	for (int i = 0; i< nthreads; ++i) {
-		std::ifstream fileIn  { randPrefix + ".thread" + std::to_string (i), std::ios_base::in | std::ios_base::binary};
-		*out << fileIn.rdbuf();
-		fileIn.close ();
-		boost::filesystem::remove_all ( randPrefix + ".thread" + std::to_string (i) );
+	for (int i = 0 ; i < nthreads; ++i) {
+		if (threads[i]->joinable ())
+			threads[i]->join ();
+			delete threads[i];
 	}
 }
 

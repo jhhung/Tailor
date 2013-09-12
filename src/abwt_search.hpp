@@ -413,7 +413,7 @@ public:
 	}
 
 	// tailing searching version for dual BWT
-	void start_tailing_match_Dual (const Fastq& fq, std::ostream* out, int minimalPrefixLength) const {
+	void start_tailing_match_Dual (const Fastq& fq, std::stringstream* out, int minimalPrefixLength) const {
 		std::string _query = fq.getSeq ();
 		/* reverse complement query string */
 		std::string query {_query.crbegin(), _query.crend()};

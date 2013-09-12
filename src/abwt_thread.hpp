@@ -2,78 +2,75 @@
 #define ABWT_THREAD_HPP_
 
 #include <vector>
+#include <sstream>
 #include "abwt_format.hpp"
 #include "abwt_search.hpp"
 #include "boost/thread.hpp"
-
-template <typename T>
-class ABWT_thread : private ABWT_search<T>
-{
-private:
-	Fastq _query;
-	std::ostream* _out {nullptr};
-	int _minLen {18};
-public:
-	ABWT_thread (T& table, Fastq&& q, std::ostream* out, int minLen) :
-		ABWT_search<T> {table},
-		_query {std::move (q)},
-		_out {out},
-		_minLen {minLen}
-		{ }
-
-	ABWT_thread (const ABWT_thread& other):
-		ABWT_search<T> {other},
-		_query {other._query},
-		_out {other._out},
-		_minLen {other._minLen}
-	{}
-
-	ABWT_thread (ABWT_thread&& other):
-		ABWT_search<T> {other},
-		_query {std::move (other._query)},
-		_out {other._out},
-		_minLen {other._minLen}
-	{}
-
-	void operator () () {
-		this->start_tailing_match_Dual(_query, _out);
-	}
-};
+#include "boost/thread/mutex.hpp"
 
 template <typename T>
 class ABWT_threads : private ABWT_search<T>
 {
 private:
-	std::vector <Fastq> _queryPool {};
+	static boost::mutex _io_mutex;
+private:
+	static const int _poolSize = 2500 ;
+
+	std::vector <Fastq> _queryBuffer {};
+	std::stringstream _resultBuffer {};
+
+	std::istream* _in {nullptr};
 	std::ostream* _out {nullptr};
+
 	int _minLen {18};
+
 public:
-	ABWT_threads (T& table, std::vector<Fastq>&& pool, std::ostream* out, int minLen) :
+	ABWT_threads () {}
+	ABWT_threads (T& table, std::istream* in, std::ostream* out, int minLen) :
 		ABWT_search<T> {table},
-		_queryPool {std::move (pool)},
+		_in {in},
 		_out {out},
 		_minLen {minLen}
 	{}
-	ABWT_threads (const ABWT_threads& other):
-			ABWT_search<T> {other},
-			_queryPool {other._queryPool},
-			_out {other._out},
-			_minLen {other._minLen}
-	{}
 
 	ABWT_threads (ABWT_threads&& other):
-			ABWT_search<T> {other},
-			_queryPool {std::move (other._queryPool)},
-			_out {other._out},
-			_minLen {other._minLen}
-	{}
+		ABWT_search<T> {other},
+		_queryBuffer {std::move (other._queryBuffer)},
+		_in {other._in},
+		_out {other._out}
+	{
+
+	}
+
+	ABWT_threads& operator=(const ABWT_threads&) = delete;
 
 	void operator () () {
-		for (const auto & _query : _queryPool)
-		this->start_tailing_match_Dual(_query, _out, _minLen);
-		this->start_end_pos_ = {0,0};
+		while (_in->good ()) {
+
+			{ 	/// reading from input
+				boost::mutex::scoped_lock lock(_io_mutex);
+				for (int i = 0 ; i < _poolSize && _in->good (); ++i)
+					_queryBuffer.emplace_back (*_in);
+			}
+
+			{	/// do searching
+				for (const auto & _query : _queryBuffer)
+					this->start_tailing_match_Dual(_query, &_resultBuffer, _minLen);
+				this->start_end_pos_ = {0,0};
+			}
+
+			{	/// writting
+				boost::mutex::scoped_lock lock(_io_mutex);
+				*_out << _resultBuffer.rdbuf ();
+				_resultBuffer.str(std::string());
+			}
+			_queryBuffer.clear ();
+		}
 	}
 };
+
+template <typename T>
+boost::mutex ABWT_threads<T>::_io_mutex;
 
 
 #endif /* ABWT_THREAD_HPP_ */
