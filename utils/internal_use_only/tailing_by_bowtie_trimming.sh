@@ -11,13 +11,13 @@ BOWTIE_INDEX=/share/biocore/genome/bowtie/hg19
 SAM=${1%.f[aq]*}.hg19.sam
 SAM_HEADER=""
 # keep iterating until the no reads left in 
-TIME_RUN=1
+TIME_RUN=0
 UN_MAPPED_FQ=${INPUT_FQ}"."${TIME_RUN}
-while [ -s $UN_MAPPED_FQ ]
+while [ -s $INPUT_FQ ]
 do
-	bowtie -S $SAM_HEADER -p 8 -v 0 --un $UN_MAPPED_FQ $BOWTIE_INDEX $INPUT_FQ >> $SAM && \
+	bowtie -S $SAM_HEADER -p 8 -v 0 -3 $TIME_RUN --un $UN_MAPPED_FQ $BOWTIE_INDEX $INPUT_FQ >> $SAM && \
 	TIME_RUN=$((TIME_RUN+1)) && \
 	SAM_HEADER="--sam-nohead" && \
 	INPUT_FQ=$UN_MAPPED_FQ && \
-	UN_MAPPED_FQ=${UN_MAPPED_FQ}"."${TIME_RUN}
+	UN_MAPPED_FQ=${1}"."${TIME_RUN}
 done
