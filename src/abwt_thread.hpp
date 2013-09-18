@@ -45,22 +45,24 @@ public:
 	ABWT_threads& operator=(const ABWT_threads&) = delete;
 
 	void operator () () {
-		while (_in->good ()) {
-
+		while (1) {
 			{ 	/// reading from input
-				boost::mutex::scoped_lock lock(_io_mutex);
+				boost::mutex::scoped_lock lock(this->_io_mutex);
+				if (!_in->good ())
+					break;
 				for (int i = 0 ; i < _poolSize && _in->good (); ++i)
 					_queryBuffer.emplace_back (*_in);
 			}
 
 			{	/// do searching
-				for (const auto & _query : _queryBuffer)
+				for (const auto & _query : _queryBuffer) {
 					this->start_tailing_match_Dual(_query, &_resultBuffer, _minLen);
-				this->start_end_pos_ = {0,0};
+					this->start_end_pos_ = {0,0};
+				}
 			}
 
 			{	/// writting
-				boost::mutex::scoped_lock lock(_io_mutex);
+				boost::mutex::scoped_lock lock(this->_io_mutex);
 				*_out << _resultBuffer.rdbuf ();
 				_resultBuffer.str(std::string());
 			}
@@ -74,3 +76,4 @@ boost::mutex ABWT_threads<T>::_io_mutex;
 
 
 #endif /* ABWT_THREAD_HPP_ */
+
