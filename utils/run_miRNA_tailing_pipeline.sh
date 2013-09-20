@@ -218,6 +218,7 @@ STEP=$((STEP+1))
 # getting statistics on each mature miRNA
 echo -e "`date "+$ISO_8601"`\tgetting statistics" | tee -a $LOG
 [ ! -f .${JOBUID}.status.statistics ] && \
+	echo -ne "miRNA\ttotal counts\tperfect match counts\tprefix match counts" > ${PREFIX}.count && \
 	awk '{if ($5==255) ++pm[$1]; else ++pf[$1]; ++all[$1]; }END{for (mir in all) {printf "%s\t%d\t%d\t%d\n", mir, all[mir], pm[mir]?pm[mir]:0, pf[mir]?pf[mir]:0}}' ${PREFIX}.reannoated.bed > ${PREFIX}.count && \
 	touch .${JOBUID}.status.statistics
 STEP=$((STEP+1))
