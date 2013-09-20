@@ -17,7 +17,7 @@ function checkExist {
 
 echo -e "\e[1;35mTesting required softwares/scripts:\e[0m"
 checkExist "echo" # used to print message
-checkExist "tee" # used to print message both to file and stdout
+checkExist "tee" # used to store to file while keeping piping
 checkExist "date" # used to get time
 checkExist "basename" # used to get basename
 checkExist "dirname" # used to get diretory name
@@ -89,6 +89,10 @@ then
 	usage && exit 1
 fi
 
+# check file status
+[ ! -s $INPUT_FQ ]  && echo -e "\e[1;31mError: cannot open $INPUT_FQ \e[0m" && exit 1
+[ ! -s $HAIRPIN_FA ] && echo -e "\e[1;31mError: cannot open $HAIRPIN_FA\e[0m" && exit 1
+
 # if CPU is undefined or containing non-numeric char, then use 8
 [ ! -z "${CPU##*[!0-9]*}" ] || CPU=8
 
@@ -96,19 +100,22 @@ fi
 [ ! -z $OUTDIR ] || OUTDIR=$PWD
 
 # test wether we need to create the new directory
-mkdir -p "${OUTDIR}" || (echo -e "\e[1;31mWarning: Cannot create directory ${OUTDIR}. Using the current direcory\e[0m" && OUTDIR=$PWD)
+mkdir -p "${OUTDIR}"
+if [[ $? == 1 ]]; then echo -e "\e[1;31mWarning: Cannot create directory ${OUTDIR}. Using the current direcory\e[0m" && OUTDIR=$PWD ;fi  
 
 # enter destination direcotry
-cd ${OUTDIR} || (echo -e "\e[1;31mError: Cannot access directory ${OUTDIR}... Exiting...\e[0m" && exit 1)
+cd ${OUTDIR}
+if [[ $? == 1 ]]; then echo -e "\e[1;31mError: Cannot access directory ${OUTDIR}... Exiting...\e[0m" && exit 1 ;fi
 
 # test writtability
-touch .writting_permission && rm -rf .writting_permission || (echo -e "\e[1;31mError: Cannot write in directory ${OUTDIR}... Exiting...\e[0m" && exit 1)
+touch .writting_permission && rm -rf .writting_permission
+if [[ $? == 1 ]]; then echo -e "\e[1;31mError: Cannot write in directory ${OUTDIR}... Exiting...\e[0m"  && exit 1 ;fi
 
 #############
 # Variables #
 #############
 # Prefix
-PREFIX=`basename INPUT_FQ` && PREFIX=${PREFIX%.f[qa]*}
+PREFIX=`basename $INPUT_FQ` && PREFIX=${PREFIX%.f[qa]*}
 
 # index configuration
 INDEX=${HAIRPIN_FA%.fa*}
@@ -160,7 +167,26 @@ STEP=$((STEP+1))
 
 # separating perfect match and tailing match
 [ ! -f .${JOBUID}.status.separate_perfect_and_tail ] && \
-	awk 'BEGIN{FS="\t"; OFS="\t"; getline; while (substr($1,1,1)=="@") getline; putback}'
+	awk 'BEGIN \
+	{ \
+		FS="\t"; OFS="\t"; \
+		getline; print $0 >> "/dev/stdout"; print $0 >> "/dev/stderr"; \
+		while (substr($1,1,1)=="@") \
+		{ \
+			getline; \
+			print $0 >> "/dev/stdout"; print $0 >> "/dev/stderr"; \
+		} \
+		if ($6~/S/) print $0 >> "/dev/stderr"; \
+		else print $0 >> "/dev/stdout"; \
+	} \
+	{ \
+		if ($6~/S/) print $0 >> "/dev/stderr"; \
+		else print $0 >> "/dev/stdout"; \
+	}' ${PREFIX}.tailor.sam \
+	1> ${PREFIX}.tailor.perfectMatch.sam \
+	2> ${PREFIX}.tailor.tailedMatch.sam && \
+	samtools view -bS ${PREFIX}.tailor.perfectMatch.sam | tee ${PREFIX}.tailor.perfectMatch.bam | bedtools bamtobed -i - > ${PREFIX}.tailor.perfectMatch.bed && \
+	samtools view -bS ${PREFIX}.tailor.tailedMatch.sam  | tee ${PREFIX}.tailor.tailedMatch.bam  | bedtools bamtobed -i - > ${PREFIX}.tailor.tailedMatch.bed  && \
 	touch .${JOBUID}.status.separate_perfect_and_tail
 STEP=$((STEP+1))
 
