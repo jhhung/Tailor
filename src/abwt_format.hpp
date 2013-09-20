@@ -91,9 +91,20 @@ public:
 	Fasta () = default ;
 	explicit Fasta (std::istream & is) {
 		std::string tmp {};
+		char c;
 		if (is.peek () == '>') {
-			is.get (); /// consume the '>'
-			getline (is, _name); /// read the rest as the name
+			is.ignore (); /// consume the '>'
+			// getline (is, _name); /// read the rest as the name
+			while (is.get (c)) {
+				if ( c == '\t' || c ==' ') {
+					is.ignore (100000, '\n');
+					break;
+				}
+				else if ( c == '\n' )
+					break;
+				else
+					_name += c;
+			} 
 			while (is.peek () != '>' && is.good ()) { /// if not ready for reading next Fasta and the stream is good
 				_sequences.emplace_back (is); /// continue to read fragments
 				auto& _seg = _sequences.back ();
@@ -224,9 +235,20 @@ public:
 	class badFastq {};
 	Fastq () = default;
 	explicit Fastq (std::istream& is) {
+		char c;
 		if (is.peek() == '@') {
-			is.get ();
-			std::getline (is, _name);
+			is.ignore ();
+//			std::getline (is, _name);
+			while (is.get (c)) {
+				if ( c == '\t' || c ==' ') {
+					is.ignore (100000, '\n');
+					break;
+				}
+				else if ( c == '\n' )
+					break;
+				else
+					_name += c;
+			}
 			std::getline (is, _sequence);
 			boost::to_upper (_sequence);
 			is.ignore (100000, '\n');
@@ -406,3 +428,4 @@ public:
 
 
 #endif /* ABWT_FORMAT_HPP_ */
+
