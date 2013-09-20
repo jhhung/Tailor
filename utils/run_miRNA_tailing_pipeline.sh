@@ -170,11 +170,11 @@ STEP=$((STEP+1))
 	awk 'BEGIN \
 	{ \
 		FS="\t"; OFS="\t"; \
-		getline; print $0 >> "/dev/stdout"; print $0 >> "/dev/stderr"; \
+		getline; \
 		while (substr($1,1,1)=="@") \
 		{ \
-			getline; \
 			print $0 >> "/dev/stdout"; print $0 >> "/dev/stderr"; \
+			getline; \
 		} \
 		if ($6~/S/) print $0 >> "/dev/stderr"; \
 		else print $0 >> "/dev/stdout"; \
