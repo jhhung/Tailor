@@ -453,7 +453,7 @@ public:
 					continue;
 				}
 
-				if (position > this->abwt_table_._realSize && position < (abwt_table_._realSize<<1)) { /// the second comparsion is to suppress weird bug of TTTTTTTTTTTT mapping to position == 2*abwt_table_._realSize
+				if (position >= this->abwt_table_._realSize && position < (abwt_table_._realSize<<1)) { /// the second comparsion is to suppress weird bug of TTTTTTTTTTTT mapping to position == 2*abwt_table_._realSize
 					isRC = true;
 					position = this->abwt_table_._realSize*2 - position - prefixMatchLen;
 				} else if (position < this->abwt_table_._realSize) {
@@ -534,7 +534,7 @@ public:
 			auto NH_tag = start_end_pos_.second - start_end_pos_.first;
 			for (INTTYPE i = start_end_pos_.first; i < start_end_pos_.second; i++) {
 				auto position = this->find_nearest_mark(i);
-				if (position > this->abwt_table_._realSize) {
+				if (position >= this->abwt_table_._realSize) {
 					isRC = true;
 					position = this->abwt_table_._realSize*2 - position - _query.size ();
 				} else {
