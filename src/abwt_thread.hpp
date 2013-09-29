@@ -22,7 +22,7 @@ private:
 	std::istream* _in {nullptr};
 	std::ostream* _out {nullptr};
 
-	int _minLen {18};
+	int _minLen;
 
 public:
 	ABWT_threads () {}
@@ -31,16 +31,15 @@ public:
 		_in {in},
 		_out {out},
 		_minLen {minLen}
-	{}
+	{ }
 
 	ABWT_threads (ABWT_threads&& other):
 		ABWT_search<T> {other},
 		_queryBuffer {std::move (other._queryBuffer)},
 		_in {other._in},
-		_out {other._out}
-	{
-
-	}
+		_out {other._out},
+		_minLen {other._minLen}
+	{ }
 
 	ABWT_threads& operator=(const ABWT_threads&) = delete;
 
