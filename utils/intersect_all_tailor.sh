@@ -57,7 +57,6 @@ fly)
 	FLY_REPEATMASKER_LINE=$FOLDER/repeat_mask.bed.LINE
 	FLY_REPEATMASKER_LTR=$FOLDER/repeat_mask.bed.LTR
 	declare -a TARGETS=( \
-	"FLY_PIRNA_CLUSTER" \
 	"FLY_cisNATs" \
 	"FLY_STRUCTURE_LOCI" \
 	"FLY_flyBase_GENE" \
@@ -186,10 +185,6 @@ done
 parafly_file="information_content".para
 for t in ${TARGETS[@]}
 do \
-	[ -n ${UNIQ_BED%bed2}${t}.perfect.S.bed2 ] && echo "bed22weblogo.sh ${UNIQ_BED%bed2}${t}.perfect.S.bed2  $FA" >> $parafly_file
-	[ -n ${UNIQ_BED%bed2}${t}.prefix.S.bed2 ]  && echo "bed22weblogo.sh ${UNIQ_BED%bed2}${t}.prefix.S.bed2 $FA"   >> $parafly_file
-	[ -n ${UNIQ_BED%bed2}${t}.perfect.AS.bed2 ] && echo "bed22weblogo.sh ${UNIQ_BED%bed2}${t}.perfect.AS.bed2  $FA" >> $parafly_file
-	[ -n ${UNIQ_BED%bed2}${t}.prefix.AS.bed2 ]  && echo "bed22weblogo.sh ${UNIQ_BED%bed2}${t}.prefix.AS.bed2 $FA"   >> $parafly_file
 	touch ${UNIQ_BED%bed2}${t}.perfect.S.bed2 && touch ${UNIQ_BED%bed2}${t}.perfect.AS.bed2 && echo "plot_length_S_AS.sh ${UNIQ_BED%bed2}${t}.perfect.S.bed2 ${UNIQ_BED%bed2}${t}.perfect.AS.bed2" >> $parafly_file	
 	touch ${UNIQ_BED%bed2}${t}.prefix.S.bed2 && touch ${UNIQ_BED%bed2}${t}.prefix.AS.bed2 && echo "plot_length_S_AS.sh ${UNIQ_BED%bed2}${t}.prefix.S.bed2 ${UNIQ_BED%bed2}${t}.prefix.AS.bed2" >> $parafly_file	
 	echo "ppbed2 -a ${UNIQ_BED%bed2}${t}.perfect.S.bed2 -b ${UNIQ_BED%bed2}${t}.perfect.AS.bed2 > ${UNIQ_BED%bed2}${t}.perfect.ppbed && Rscript --slave ${PIPELINE_DIRECTORY}/bin/draw_pp.R $${UNIQ_BED%bed2}${t}.perfect.ppbed ${UNIQ_BED%bed2}${t}.perfect" >> $parafly_file
