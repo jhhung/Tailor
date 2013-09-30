@@ -1,11 +1,4 @@
 #! /bin/bash -x
-# small RNA pipeline in the Zamore Lab
-# single library mode
-# 2013-05-29
-# Bo W Han (bo.han@umassmed.edu)
-# Phillip Zamore Lab
-# RNA Therapeutics Institute
-# HHMI & University of Massachusetts Medical School
 
 ###############
 #configuration#
@@ -20,61 +13,20 @@ human)
 mouse)
 	FOLDER=$PIPELINE_DIRECTORY/common_files/mm9/UCSC_BEDS
 	
-	# all annotation
-	# cat repeat_mask.bed UCSC.refSeq.Exon.bed UCSC.refSeq.Intron.bed piRNA.cluster.bed6 x100910.rnaseq.transcripts.NM.all.final.bed6.c x100910.rnaseq.transcripts.NR.all.final.bed6.c | sort -k1,1 -k2,2n | bedtools merge -s -nms -i - > all.merged.bed
-	MOUSE_ALL_ANNO=$FOLDER/all.merged.bed
-	rtRNA=$FOLDER/repeat_mask.bed.rtRNA
-	# piRNA clusters annoated in Li, et al, Mol Cell, 2013
-	MOUSE_PIRNACLUSTER=$FOLDER/piRNA.cluster.bed
-	MOUSE_PIRNACLUSTER_EXON=$FOLDER/piRNA.cluster.bed6
-	
-	MOUSE_PREPACHYTENE_PIRNA_CLUSTER=$FOLDER/piRNA.cluster.prepachytene.bed
-	MOUSE_PREPACHYTENE_PIRNA_CLUSTER_EXON=$FOLDER/piRNA.cluster.prepachytene.bed6
-	
-	MOUSE_HYBRID_PIRNA_CLUSTER=$FOLDER/piRNA.cluster.hybrid.bed
-	MOUSE_HYBRID_PIRNA_CLUSTER_EXON=$FOLDER/piRNA.cluster.hybrid.bed6
-	
-	MOUSE_PACHYTENE_PIRNA_CLUSTER=$FOLDER/piRNA.cluster.pachytene.bed
-	MOUSE_PACHYTENE_PIRNA_CLUSTER_EXON=$FOLDER/piRNA.cluster.pachytene.bed6
-	
-	# NM transcripts annotated in Zamore lab, 2013
-	MOUSE_ZAMORE_NM=$FOLDER/x100910.rnaseq.transcripts.NM.all.final.bed.c
-	MOUSE_ZAMORE_NM_EXON=$FOLDER/x100910.rnaseq.transcripts.NM.all.final.bed6.c
-	# NR transcripts annotated in Zamore lab, 2013
-	MOUSE_ZAMORE_NR=$FOLDER/x100910.rnaseq.transcripts.NR.all.final.bed.c
-	MOUSE_ZAMORE_NR_EXON=$FOLDER/x100910.rnaseq.transcripts.NR.all.final.bed6.c
-	
-	# refGene annotation in bed12 format, but only 1�6 is used
+	rtRNA=$FOLDER/repeat_mask.bed.rtRNA	
 	MOUSE_refSeq_GENE=$FOLDER/UCSC.refSeq.Genes.bed
-	# refGene exon annotation in bed6
 	MOUSE_refSeq_EXON=$FOLDER/UCSC.refSeq.Exon.bed
-	# refGene intron annotation in bed6
 	MOUSE_refSeq_INTRON=$FOLDER/UCSC.refSeq.Intron.bed
-	# refGene 5UTR annotation in bed6
 	MOUSE_refSeq_5UTR=$FOLDER/UCSC.refSeq.5UTR.bed
-	# refGene 3UTR annotation in bed6
 	MOUSE_refSeq_3UTR=$FOLDER/UCSC.refSeq.3UTR.bed
-	
-	# repeatMasker annotation in bed6 format
 	MOUSE_REPEATMASKER=$FOLDER/repeat_mask.bed
 	MOUSE_REPEATMASKER_DNA=$FOLDER/repeat_mask.bed.DNA
 	MOUSE_REPEATMASKER_SINE=$FOLDER/repeat_mask.bed.SINE
 	MOUSE_REPEATMASKER_LINE=$FOLDER/repeat_mask.bed.LINE
 	MOUSE_REPEATMASKER_LTR=$FOLDER/repeat_mask.bed.LTR
 	MOUSE_REPEATMASKER_SATELLITE=$FOLDER/repeat_mask.bed.Satellite
-	MOUSE_REPEATMASKER_SIMPLEREPEATS=$FOLDER/repeat_mask.bed.Simple_repeat
-	MOUSE_REPEATMASKER_tRNA=$FOLDER/repeat_mask.bed.tRNA
-	
+
 	declare -a TARGETS=( \
-	"MOUSE_ALL_ANNO" \
-	"MOUSE_PIRNACLUSTER" \
-	"MOUSE_PREPACHYTENE_PIRNA_CLUSTER" \
-	"MOUSE_HYBRID_PIRNA_CLUSTER" \
-	"MOUSE_PACHYTENE_PIRNA_CLUSTER" \
-	"MOUSE_ZAMORE_NM" \
-	"MOUSE_ZAMORE_NM_EXON" \
-	"MOUSE_ZAMORE_NR" \
-	"MOUSE_ZAMORE_NR_EXON" \
     "MOUSE_refSeq_GENE" \
     "MOUSE_refSeq_EXON" \
     "MOUSE_refSeq_INTRON" \
@@ -86,87 +38,37 @@ mouse)
     "MOUSE_REPEATMASKER_LINE" \
     "MOUSE_REPEATMASKER_LTR" \
     "MOUSE_REPEATMASKER_SATELLITE" \
-    "MOUSE_REPEATMASKER_SIMPLEREPEATS" )
-;;
-mm10)
-	FOLDER=$PIPELINE_DIRECTORY/common_files/mm9/UCSC_BEDS
-	declare -a TARGETS=( \
-	)
+    "MOUSE_REPEATMASKER_SATELLITE" )
 ;;
 ## fly specific intersectBed target files
 fly)
 	FOLDER=$PIPELINE_DIRECTORY/common_files/dm3/UCSC_BEDS
-	
 	rtRNA=$FOLDER/repeat_mask.bed.rtRNA
-	
-	FLY_ALL_ANNO=$FOLDER/all.merged.bed
-	FLY_PIRNA_CLUSTER=$FOLDER/Brennecke.pirnaCluster.bed 
-	FLY_PIRNA_CLUSTER_42AB=$FOLDER/Brennecke.pirnaCluster.42AB.bed
-	FLY_PIRNA_CLUSTER_FLAM=$FOLDER/Brennecke.pirnaCluster.flam.bed
 	
 	FLY_cisNATs=$FOLDER/cisNATs.bed
 	FLY_STRUCTURE_LOCI=$FOLDER/structured_loci.bed
-	
 	FLY_flyBase_GENE=$FOLDER/UCSC.flyBase.Genes.bed
 	FLY_flyBase_EXON=$FOLDER/UCSC.flyBase.Exon.bed
 	FLY_flyBase_INTRON=$FOLDER/UCSC.flyBase.Intron.bed
-	FLY_flyBase_INTRON_xRM=$FOLDER/UCSC.flyBase.Intron.xRM.bed
 	FLY_flyBase_5UTR=$FOLDER/UCSC.flyBase.5UTR.bed
 	FLY_flyBase_3UTR=$FOLDER/UCSC.flyBase.3UTR.bed
-# repeatMaskser: download all-field from table browser, do :
-## awk 'BEGIN{OFS="\t";getline}{print $6,$7,$8,$11,$2,$10 >> "repeat_mask.bed."$12}' UCSC.repeatMakser.dat 
-## for i in repeat_mask.bed.* ; do echo "FLY_REPEATMASKER_"${i##*bed.}=\$FOLDER/$i; done
 	FLY_REPEATMASKER=$FOLDER/repeat_mask.bed
-	FLY_REPEATMASKER_IN_CLUSTER=$FOLDER/repeat_mask.inCluster.bed
-	FLY_REPEATMASKER_OUT_CLUSTER=$FOLDER/repeat_mask.outCluster.bed
 	FLY_REPEATMASKER_DNA=$FOLDER/repeat_mask.bed.DNA
 	FLY_REPEATMASKER_LINE=$FOLDER/repeat_mask.bed.LINE
-	#FLY_REPEATMASKER_Low_complexity=$FOLDER/repeat_mask.bed.Low_complexity
 	FLY_REPEATMASKER_LTR=$FOLDER/repeat_mask.bed.LTR
-	#FLY_REPEATMASKER_Other=$FOLDER/repeat_mask.bed.Other
-	#FLY_REPEATMASKER_RC=$FOLDER/repeat_mask.bed.RC
-	FLY_REPEATMASKER_RNA=$FOLDER/repeat_mask.bed.RNA
-	FLY_REPEATMASKER_rRNA=$FOLDER/repeat_mask.bed.rRNA
-	FLY_REPEATMASKER_Satellite=$FOLDER/repeat_mask.bed.Satellite
-	FLY_REPEATMASKER_Simple_repeat=$FOLDER/repeat_mask.bed.Simple_repeat
-	FLY_REPEATMASKER_Unknown=$FOLDER/repeat_mask.bed.Unknown
-	
-	FLY_TRANSPOSON_ALL=$FOLDER/transposon.bed2
-	FLY_TRANSPOSON_ALL_IN_CLUSTER=$FOLDER/transposon.inCluster.bed2
-	FLY_TRANSPOSON_ALL_OUT_CLUSTER=$FOLDER/transposon.outCluster.bed2
-	FLY_TRANSPOSON_GROUP1=$FOLDER/Zamore.group1.bed
-	FLY_TRANSPOSON_GROUP2=$FOLDER/Zamore.group2.bed
-	FLY_TRANSPOSON_GROUP3=$FOLDER/Zamore.group3.bed
-	FLY_TRANSPOSON_GROUP0=$FOLDER/Zamore.group0.bed
 	declare -a TARGETS=( \
 	"FLY_PIRNA_CLUSTER" \
-	"FLY_PIRNA_CLUSTER_42AB" \
-	"FLY_PIRNA_CLUSTER_FLAM" \
-	"FLY_TRANSPOSON_ALL" \
-	"FLY_TRANSPOSON_ALL_IN_CLUSTER" \
-	"FLY_TRANSPOSON_ALL_OUT_CLUSTER" \
-	"FLY_TRANSPOSON_GROUP1" \
-	"FLY_TRANSPOSON_GROUP2" \
-	"FLY_TRANSPOSON_GROUP3" \
-	"FLY_TRANSPOSON_GROUP0" \
-	"FLY_REPEATMASKER" \
-	"FLY_REPEATMASKER_IN_CLUSTER" \
-    "FLY_REPEATMASKER_OUT_CLUSTER" \
-	"FLY_REPEATMASKER_DNA" \
-	"FLY_REPEATMASKER_LINE" \
-	"FLY_REPEATMASKER_LTR" \
 	"FLY_cisNATs" \
 	"FLY_STRUCTURE_LOCI" \
 	"FLY_flyBase_GENE" \
 	"FLY_flyBase_EXON" \
 	"FLY_flyBase_INTRON" \
-	"FLY_flyBase_INTRON_xRM" \
 	"FLY_flyBase_5UTR" \
 	"FLY_flyBase_3UTR" \
-	"FLY_REPEATMASKER_Satellite" \
-	"FLY_REPEATMASKER_Simple_repeat" \
-	"FLY_REPEATMASKER_RNA" \
-	"FLY_REPEATMASKER_Unknown" )
+	"FLY_REPEATMASKER" \
+	"FLY_REPEATMASKER_DNA" \
+	"FLY_REPEATMASKER_LINE" \
+	"FLY_REPEATMASKER_LTR" )
 ;;
 *)
 	echo "unknown orgnanism... currently only mouse/fly is supported"
