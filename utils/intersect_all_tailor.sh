@@ -5,69 +5,31 @@
 ###############
 case ${4} in
 human)
+# @! THIS IS SOMETHING YOU NEED TO CHANGE
 	FOLDER=$PIPELINE_DIRECTORY/common_files/mm9/UCSC_BEDS
 	declare -a TARGETS=( \
 	)
 ;;
 ## mouse specific intersectBed target files
 mouse)
+# @! THIS IS SOMETHING YOU NEED TO CHANGE
 	FOLDER=$PIPELINE_DIRECTORY/common_files/mm9/UCSC_BEDS
-	
-	rtRNA=$FOLDER/repeat_mask.bed.rtRNA	
-	MOUSE_refSeq_GENE=$FOLDER/UCSC.refSeq.Genes.bed
-	MOUSE_refSeq_EXON=$FOLDER/UCSC.refSeq.Exon.bed
-	MOUSE_refSeq_INTRON=$FOLDER/UCSC.refSeq.Intron.bed
-	MOUSE_refSeq_5UTR=$FOLDER/UCSC.refSeq.5UTR.bed
-	MOUSE_refSeq_3UTR=$FOLDER/UCSC.refSeq.3UTR.bed
-	MOUSE_REPEATMASKER=$FOLDER/repeat_mask.bed
-	MOUSE_REPEATMASKER_DNA=$FOLDER/repeat_mask.bed.DNA
-	MOUSE_REPEATMASKER_SINE=$FOLDER/repeat_mask.bed.SINE
-	MOUSE_REPEATMASKER_LINE=$FOLDER/repeat_mask.bed.LINE
-	MOUSE_REPEATMASKER_LTR=$FOLDER/repeat_mask.bed.LTR
-	MOUSE_REPEATMASKER_SATELLITE=$FOLDER/repeat_mask.bed.Satellite
-
 	declare -a TARGETS=( \
-    "MOUSE_refSeq_GENE" \
-    "MOUSE_refSeq_EXON" \
-    "MOUSE_refSeq_INTRON" \
-    "MOUSE_refSeq_5UTR" \
-    "MOUSE_refSeq_3UTR" \
-    "MOUSE_REPEATMASKER" \
-    "MOUSE_REPEATMASKER_DNA" \
-    "MOUSE_REPEATMASKER_SINE" \
-    "MOUSE_REPEATMASKER_LINE" \
-    "MOUSE_REPEATMASKER_LTR" \
-    "MOUSE_REPEATMASKER_SATELLITE" \
-    "MOUSE_REPEATMASKER_SATELLITE" )
+	)
 ;;
 ## fly specific intersectBed target files
 fly)
+# @! THIS IS SOMETHING YOU NEED TO CHANGE
 	FOLDER=$PIPELINE_DIRECTORY/common_files/dm3/UCSC_BEDS
+# get rid of rtRNA first
 	rtRNA=$FOLDER/repeat_mask.bed.rtRNA
+# @! EXAMPLES OF HOW TO ADD NEW FEATURE (NEED TO BE COMPATIBLE WITH BEDTOOLS)
 	
-	FLY_cisNATs=$FOLDER/cisNATs.bed
-	FLY_STRUCTURE_LOCI=$FOLDER/structured_loci.bed
 	FLY_flyBase_GENE=$FOLDER/UCSC.flyBase.Genes.bed
-	FLY_flyBase_EXON=$FOLDER/UCSC.flyBase.Exon.bed
-	FLY_flyBase_INTRON=$FOLDER/UCSC.flyBase.Intron.bed
-	FLY_flyBase_5UTR=$FOLDER/UCSC.flyBase.5UTR.bed
-	FLY_flyBase_3UTR=$FOLDER/UCSC.flyBase.3UTR.bed
 	FLY_REPEATMASKER=$FOLDER/repeat_mask.bed
-	FLY_REPEATMASKER_DNA=$FOLDER/repeat_mask.bed.DNA
-	FLY_REPEATMASKER_LINE=$FOLDER/repeat_mask.bed.LINE
-	FLY_REPEATMASKER_LTR=$FOLDER/repeat_mask.bed.LTR
 	declare -a TARGETS=( \
-	"FLY_cisNATs" \
-	"FLY_STRUCTURE_LOCI" \
 	"FLY_flyBase_GENE" \
-	"FLY_flyBase_EXON" \
-	"FLY_flyBase_INTRON" \
-	"FLY_flyBase_5UTR" \
-	"FLY_flyBase_3UTR" \
-	"FLY_REPEATMASKER" \
-	"FLY_REPEATMASKER_DNA" \
-	"FLY_REPEATMASKER_LINE" \
-	"FLY_REPEATMASKER_LTR" )
+	"FLY_REPEATMASKER" )
 ;;
 *)
 	echo "unknown orgnanism... currently only mouse/fly is supported"
@@ -187,7 +149,6 @@ for t in ${TARGETS[@]}
 do \
 	touch ${UNIQ_BED%bed2}${t}.perfect.S.bed2 && touch ${UNIQ_BED%bed2}${t}.perfect.AS.bed2 && echo "plot_length_S_AS.sh ${UNIQ_BED%bed2}${t}.perfect.S.bed2 ${UNIQ_BED%bed2}${t}.perfect.AS.bed2" >> $parafly_file	
 	touch ${UNIQ_BED%bed2}${t}.prefix.S.bed2 && touch ${UNIQ_BED%bed2}${t}.prefix.AS.bed2 && echo "plot_length_S_AS.sh ${UNIQ_BED%bed2}${t}.prefix.S.bed2 ${UNIQ_BED%bed2}${t}.prefix.AS.bed2" >> $parafly_file	
-	echo "ppbed2 -a ${UNIQ_BED%bed2}${t}.perfect.S.bed2 -b ${UNIQ_BED%bed2}${t}.perfect.AS.bed2 > ${UNIQ_BED%bed2}${t}.perfect.ppbed && Rscript --slave ${PIPELINE_DIRECTORY}/bin/draw_pp.R $${UNIQ_BED%bed2}${t}.perfect.ppbed ${UNIQ_BED%bed2}${t}.perfect" >> $parafly_file
 done
 # running ParaFly if no jobs has been ran (no .completed file) or it has ran but has some failed (has .failed_commands)
 if [[ ! -f ${parafly_file}.completed ]] || [[ -f $parafly_file.failed_commands ]]

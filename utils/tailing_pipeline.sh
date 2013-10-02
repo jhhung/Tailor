@@ -8,6 +8,7 @@ export PIPELINE_DIRECTORY=/home/hanb/nearline/small_RNA_Pipeline
 # set PATH to be aware of pipeline/bin; this bin directory needs to be searched first
 export PATH=${PIPELINE_DIRECTORY}/bin:$PATH
 # index location
+# @! THIS IS SOMETHING YOU NEED TO CHANGE
 TAILOR_INDEX_DM3=/home/hanb/nearline/Drosophila_melanogaster/UCSC/dm3/Sequence/tailorIndex/dm3
 TAILOR_INDEX_MM9=/home/hanb/nearline/Mus_musculus/UCSC/mm9/Sequence/tailorIndex/mm9
 
@@ -165,18 +166,18 @@ STEP=$((STEP+1))
 # converting bed to bed2
 echo -e "`date "+$ISO_8601"`\tconverting bed to bed2" | tee -a $LOG
 [ ! -f .status.${STEP}.converting2 ] && \
-	awk 'BEGIN{OFS="\t"}{if (ARGIND==1) {++ct[$4]} else {split ($4,arr,"_"); print $1,$2,$3,arr[2],ct[$4],$6,arr[1],$5}}' ${FQ%.f[qa]*}.tailor.bed ${FQ%.f[qa]*}.tailor.bed > ${FQ%.f[qa]*}.tailor.bed3 && \
+	awk 'BEGIN{OFS="\t"}{if (ARGIND==1) {++ct[$4]} else {split ($4,arr,"_"); print $1,$2,$3,arr[2],ct[$4],$6,arr[1],$5}}' ${FQ%.f[qa]*}.tailor.bed ${FQ%.f[qa]*}.tailor.bed > ${FQ%.f[qa]*}.tailor.bed2 && \
 touch .status.${STEP}.converting2
 STEP=$((STEP+1))
 
 # separating unique and multip 
-UNIQUE_BED=${FQ%.f[qa]*}.tailor.unique.bed3
-MULTIP_BED=${FQ%.f[qa]*}.tailor.multip.bed3
+UNIQUE_BED=${FQ%.f[qa]*}.tailor.unique.bed2
+MULTIP_BED=${FQ%.f[qa]*}.tailor.multip.bed2
 echo -e "`date "+$ISO_8601"`\tseparating unique and multip" | tee -a $LOG
 [ ! -f .status.${STEP}.sep_unique_multip ] && \
-	awk 'BEGIN{FS="\t"; OFS="\t"}{if ($5==1	) print $0 >> "/dev/stdout"; else print $0 >> "/dev/stderr"}' ${FQ%.f[qa]*}.tailor.bed3
-		1 > $UNIQUE_BED \
-		2 > $MULTIP_BED && \
+	awk 'BEGIN{FS="\t"; OFS="\t"}{if ($5==1	) print $0 >> "/dev/stdout"; else print $0 >> "/dev/stderr"}' ${FQ%.f[qa]*}.tailor.bed2 \
+		1> $UNIQUE_BED \
+		2> $MULTIP_BED && \
 touch .status.${STEP}.sep_unique_multip
 STEP=$((STEP+1))
 
