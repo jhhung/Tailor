@@ -21,3 +21,4 @@ do
 	INPUT_FQ=$UN_MAPPED_FQ && \
 	UN_MAPPED_FQ=${1}"."${TIME_RUN}
 done
+samtools view -bS $SAM > ${SAM%sam}bam
