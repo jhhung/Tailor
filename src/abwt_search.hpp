@@ -423,7 +423,7 @@ public:
 			case 'T': c = 'A'; break;
 			case 'C': c = 'G'; break;
 			case 'G': c = 'C'; break;
-			default : throw "illegal char";
+			default : return;
 			}
 		} /* end of RC */
 		bool isRC = false;
