@@ -14,39 +14,52 @@ Tailor is released under GPLv2.
 
 2. Get the latest version of the software
 
-	git clone git@github.com:jhhung/Tailor.git
+```
+git clone git@github.com:jhhung/Tailor.git
+```
 
 3. Enter the folder Tailor and type:
 
-	cmake .
+```
+cmake .
+```
    
     Set enviromental variable "BOOST_ROOT" to the directory of boost if CMake cannot find boost automatically;
     Set enviromental variable "CC" and "CXX" to the gcc/g++ compiler you want to use.	
 	
 4. Compile the software by typing:
 
-	make
+```
+make
+```
 
 5. troubleshooting
 	- 1.1. If you got linker error, it is possible that the default library in the lib/ is not suitable to your platform.
 	  There are two libraries available, one is for Mac OSX one is for Linux, rename the one that fit the best to "libabwt_table.a",
           and retype 
-	make
+
+```
+make
+```
 	
 ###USAGE
 
 1.	Build genomic index (similar to bowtie-build)
 
-	tailor build
-	tailor build -i genome.fa -p genome
-	
+```
+tailor build
+tailor build -i genome.fa -p genome
+```
+
 2.  Mapping 
 
-	tailor map -p genome -n 8 -i smallRNA.fq
+```
+tailor map -p genome -n 8 -i smallRNA.fq
+```
 
 ###Citing Tailor
 
-*not yet
+* not yet
 
 ###Contact
 	Jui-Hung Hung <juihunghung@gmail.com>
