@@ -44,41 +44,45 @@ make
 	
 ###USAGE
 
-1.	Build genomic index (similar to bowtie-build)
+1. Build genomic index (similar to bowtie-build)
 
 ```
-tailor build
 tailor build -i genome.fa -p genome
 ```
 
-2.  Mapping 
+2. Mapping 
 
 ```
 tailor map -p genome -n 8 -i smallRNA.fq
 ```
 
-3.  microRNA pipeline
+3. microRNA pipeline
+
+# modify the $PATH to include the Tailor/utils directory
 
 ```
-# modify the $PATH to include the Tailor/utils directory
 run_miRNA_tailing_pipeline.sh -i reads.fq -m miRNA.fa -p hairpin.fa
+```
+
 # miRNA.fa contains the mature miRNA sequences of a specific organism (from mirBase)
 # hairpin.fa contains the hairpin miRNA sequences of a specific organism (from mirBase)
-```
 
-4.  general small RNA pipeline
 
-```
+4. general small RNA pipeline
+
 # the general idea of this pipeline is to perform genomic mapping of small RNA to genome with Tailor
 # then the reads will be assigned to different genomic feature using BEDtools
 # you will need to modify intersect_all_tailor.sh to include the BED files you would like to include
 # examples have been given in that script
+
+```
 run_tailing_pipeline.sh -i reads.fq -s mouse/fly 
+```
+
 # -s mouse/fly choose the organism you are working on
 # in run_tailing_pipeline.sh and intersect_all_tailor.sh, there are "case" switch to choose different
 # behavior according to the organism. You will need to modify this according to your need. Examples
 # are given in the scripts. 
-```
 
 ###Citing Tailor
 
