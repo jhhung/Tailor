@@ -9,9 +9,10 @@ INSTALL
 =======
 
 #### Install the dependencies
-	- 1.1 Relative recent C++ compiler that support most features of C++11. We recommend [GCC](http://gcc.gnu.org/).
-	- 1.2 [Boost](http://www.boost.org/users/download/)
-	- 1.3 [CMake](http://www.cmake.org/)
+
+- 1.1 Relative recent C++ compiler that support most features of C++11. We recommend [GCC](http://gcc.gnu.org/).
+- 1.2 [Boost](http://www.boost.org/users/download/)
+- 1.3 [CMake](http://www.cmake.org/)
 
 #### Get the latest version of the software
 
