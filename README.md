@@ -5,8 +5,8 @@ Two shell based pipelines for miRNA or small RNA in general are included in the 
 
 Tailor is released under GPLv2. 
 
-INSTALL
-=======
+##INSTALL
+
 
 #### Install the dependencies
 
@@ -37,7 +37,7 @@ make
 ```
 
 #### troubleshooting
-- 1.1. If you got linker error, it is possible that the default library in the lib/ is not suitable to your platform. 
+- If you got linker error, it is possible that the default library in the lib/ is not suitable to your platform. 
  There are two libraries available, one is for Mac OSX one is for Linux, rename the one that fit the best to "libabwt_table.a",
  and retype 
 
@@ -45,8 +45,8 @@ make
 make
 ```
 	
-USAGE
-========
+##USAGE
+
 #### Build genomic index (similar to bowtie-build)
 
 ```
@@ -61,7 +61,7 @@ tailor map -p genome -n 8 -i smallRNA.fq
 
 ####microRNA pipeline
 
-- modify the $PATH to include the Tailor/utils directory
+- Modify the $PATH to include the Tailor/utils directory
 
 ```
 run_miRNA_tailing_pipeline.sh -i reads.fq -m miRNA.fa -p hairpin.fa
@@ -83,16 +83,13 @@ run_tailing_pipeline.sh -i reads.fq -s mouse/fly
 ```
 
 - -s mouse/fly choose the organism you are working on
-- in `run_tailing_pipeline.sh` and `intersect_all_tailor.sh`, there are "case" switch to choose different
-- behavior according to the organism. 
+- In `run_tailing_pipeline.sh` and `intersect_all_tailor.sh`, there are "case" switch to choose different behavior according to the organism. 
 - You will need to modify this according to your need. Examples are given in the scripts. 
 
-Citing Tailor
-================
+##Citing Tailor
 * not yet
 
-Contact
-==========
+##Contact
 	Jui-Hung Hung <juihunghung@gmail.com>
 	Chou Min-Te <poi5305@gmail.com>
 	Bo W Han <bowhan@me.com>
