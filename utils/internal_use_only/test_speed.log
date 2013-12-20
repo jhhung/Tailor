@@ -1,0 +1,1009 @@
++ bowtie=/home/andy/andy/bowtie-1.0.0/bowtie
++ bwa=/home/andy/andy/bwa-0.7.4/bwa
++ tailor=/home/andy/andy/Tailor/bin/tailor
++ TAILOR_INDEX=/home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/tailorIndex/dm3
++ BOWTIE_INDEX=/home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BowtieIndex/genome
++ BWA_INDEX=/home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa
++ FQ=Drosophila_melanogaster.all.randomeTailed.fq
++ for CPU in 2 4 8 12 24
++ /home/andy/andy/bowtie-1.0.0/bowtie -p 2 -S -v 0 -a /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BowtieIndex/genome Drosophila_melanogaster.all.randomeTailed.fq
+# reads processed: 2000000
+# reads with at least one reported alignment: 0 (0.00%)
+# reads that failed to align: 2000000 (100.00%)
+No alignments
+
+real	0m16.673s
+user	0m27.298s
+sys	0m2.348s
++ /home/andy/andy/bowtie-1.0.0/bowtie -p 2 -S -v 0 --best --strata -a /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BowtieIndex/genome Drosophila_melanogaster.all.randomeTailed.fq
+# reads processed: 2000000
+# reads with at least one reported alignment: 0 (0.00%)
+# reads that failed to align: 2000000 (100.00%)
+No alignments
+
+real	0m18.312s
+user	0m32.198s
+sys	0m2.388s
++ /home/andy/andy/bwa-0.7.4/bwa aln -t 2 -o0 -R1000000 /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.all.randomeTailed.fq
+[bwa_aln] 17bp reads: max_diff = 2
+[bwa_aln] 38bp reads: max_diff = 3
+[bwa_aln] 64bp reads: max_diff = 4
+[bwa_aln] 93bp reads: max_diff = 5
+[bwa_aln] 124bp reads: max_diff = 6
+[bwa_aln] 157bp reads: max_diff = 7
+[bwa_aln] 190bp reads: max_diff = 8
+[bwa_aln] 225bp reads: max_diff = 9
+[bwa_aln_core] calculate SA coordinate... 152.26 sec
+[bwa_aln_core] write to the disk... 0.12 sec
+[bwa_aln_core] 262144 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 136.12 sec
+[bwa_aln_core] write to the disk... 0.14 sec
+[bwa_aln_core] 524288 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 110.49 sec
+[bwa_aln_core] write to the disk... 0.11 sec
+[bwa_aln_core] 786432 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 113.30 sec
+[bwa_aln_core] write to the disk... 0.11 sec
+[bwa_aln_core] 1048576 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 89.12 sec
+[bwa_aln_core] write to the disk... 0.08 sec
+[bwa_aln_core] 1310720 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 83.50 sec
+[bwa_aln_core] write to the disk... 0.08 sec
+[bwa_aln_core] 1572864 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 68.40 sec
+[bwa_aln_core] write to the disk... 0.07 sec
+[bwa_aln_core] 1835008 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 41.42 sec
+[bwa_aln_core] write to the disk... 0.03 sec
+[bwa_aln_core] 2000000 sequences have been processed.
+[main] Version: 0.7.4-r385
+[main] CMD: /home/andy/andy/bwa-0.7.4/bwa aln -t 2 -o0 -R1000000 /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.all.randomeTailed.fq
+[main] Real time: 408.325 sec; CPU: 799.930 sec
++ /home/andy/andy/bwa-0.7.4/bwa samse /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.all.randomeTailed.sai Drosophila_melanogaster.all.randomeTailed.fq
+[bwa_aln_core] convert to sequence coordinate... 1.82 sec
+[bwa_aln_core] refine gapped alignments... 0.44 sec
+[bwa_aln_core] print alignments... 1.10 sec
+[bwa_aln_core] 262144 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.70 sec
+[bwa_aln_core] refine gapped alignments... 0.43 sec
+[bwa_aln_core] print alignments... 1.04 sec
+[bwa_aln_core] 524288 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.63 sec
+[bwa_aln_core] refine gapped alignments... 0.47 sec
+[bwa_aln_core] print alignments... 1.05 sec
+[bwa_aln_core] 786432 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.55 sec
+[bwa_aln_core] refine gapped alignments... 0.44 sec
+[bwa_aln_core] print alignments... 0.99 sec
+[bwa_aln_core] 1048576 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.20 sec
+[bwa_aln_core] refine gapped alignments... 0.36 sec
+[bwa_aln_core] print alignments... 0.70 sec
+[bwa_aln_core] 1310720 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.04 sec
+[bwa_aln_core] refine gapped alignments... 0.33 sec
+[bwa_aln_core] print alignments... 0.64 sec
+[bwa_aln_core] 1572864 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 0.86 sec
+[bwa_aln_core] refine gapped alignments... 0.28 sec
+[bwa_aln_core] print alignments... 0.50 sec
+[bwa_aln_core] 1835008 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 0.65 sec
+[bwa_aln_core] refine gapped alignments... 0.19 sec
+[bwa_aln_core] print alignments... 0.31 sec
+[bwa_aln_core] 2000000 sequences have been processed.
+[main] Version: 0.7.4-r385
+[main] CMD: /home/andy/andy/bwa-0.7.4/bwa samse /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.all.randomeTailed.sai Drosophila_melanogaster.all.randomeTailed.fq
+[main] Real time: 27.425 sec; CPU: 24.602 sec
+
+real	7m15.884s
+user	13m37.619s
+sys	0m6.928s
++ /home/andy/andy/Tailor/bin/tailor map -i Drosophila_melanogaster.all.randomeTailed.fq -p /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/tailorIndex/dm3 -n 2 -o Drosophila_melanogaster.all.randomeTailed.t.sam
+
+real	0m42.458s
+user	1m4.844s
+sys	0m4.316s
++ for CPU in 2 4 8 12 24
++ /home/andy/andy/bowtie-1.0.0/bowtie -p 4 -S -v 0 -a /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BowtieIndex/genome Drosophila_melanogaster.all.randomeTailed.fq
+# reads processed: 2000000
+# reads with at least one reported alignment: 0 (0.00%)
+# reads that failed to align: 2000000 (100.00%)
+No alignments
+
+real	0m11.115s
+user	0m29.494s
+sys	0m6.416s
++ /home/andy/andy/bowtie-1.0.0/bowtie -p 4 -S -v 0 --best --strata -a /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BowtieIndex/genome Drosophila_melanogaster.all.randomeTailed.fq
+# reads processed: 2000000
+# reads with at least one reported alignment: 0 (0.00%)
+# reads that failed to align: 2000000 (100.00%)
+No alignments
+
+real	0m12.121s
+user	0m35.346s
+sys	0m5.872s
++ /home/andy/andy/bwa-0.7.4/bwa aln -t 4 -o0 -R1000000 /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.all.randomeTailed.fq
+[bwa_aln] 17bp reads: max_diff = 2
+[bwa_aln] 38bp reads: max_diff = 3
+[bwa_aln] 64bp reads: max_diff = 4
+[bwa_aln] 93bp reads: max_diff = 5
+[bwa_aln] 124bp reads: max_diff = 6
+[bwa_aln] 157bp reads: max_diff = 7
+[bwa_aln] 190bp reads: max_diff = 8
+[bwa_aln] 225bp reads: max_diff = 9
+[bwa_aln_core] calculate SA coordinate... 169.85 sec
+[bwa_aln_core] write to the disk... 0.13 sec
+[bwa_aln_core] 262144 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 162.61 sec
+[bwa_aln_core] write to the disk... 0.10 sec
+[bwa_aln_core] 524288 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 130.36 sec
+[bwa_aln_core] write to the disk... 0.13 sec
+[bwa_aln_core] 786432 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 130.44 sec
+[bwa_aln_core] write to the disk... 0.11 sec
+[bwa_aln_core] 1048576 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 99.88 sec
+[bwa_aln_core] write to the disk... 0.08 sec
+[bwa_aln_core] 1310720 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 95.87 sec
+[bwa_aln_core] write to the disk... 0.07 sec
+[bwa_aln_core] 1572864 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 77.21 sec
+[bwa_aln_core] write to the disk... 0.07 sec
+[bwa_aln_core] 1835008 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 49.10 sec
+[bwa_aln_core] write to the disk... 0.04 sec
+[bwa_aln_core] 2000000 sequences have been processed.
+[main] Version: 0.7.4-r385
+[main] CMD: /home/andy/andy/bwa-0.7.4/bwa aln -t 4 -o0 -R1000000 /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.all.randomeTailed.fq
+[main] Real time: 242.283 sec; CPU: 920.898 sec
++ /home/andy/andy/bwa-0.7.4/bwa samse /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.all.randomeTailed.sai Drosophila_melanogaster.all.randomeTailed.fq
+[bwa_aln_core] convert to sequence coordinate... 1.75 sec
+[bwa_aln_core] refine gapped alignments... 0.40 sec
+[bwa_aln_core] print alignments... 1.07 sec
+[bwa_aln_core] 262144 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.65 sec
+[bwa_aln_core] refine gapped alignments... 0.41 sec
+[bwa_aln_core] print alignments... 1.04 sec
+[bwa_aln_core] 524288 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.59 sec
+[bwa_aln_core] refine gapped alignments... 0.45 sec
+[bwa_aln_core] print alignments... 1.04 sec
+[bwa_aln_core] 786432 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.52 sec
+[bwa_aln_core] refine gapped alignments... 0.40 sec
+[bwa_aln_core] print alignments... 0.98 sec
+[bwa_aln_core] 1048576 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.07 sec
+[bwa_aln_core] refine gapped alignments... 0.30 sec
+[bwa_aln_core] print alignments... 0.67 sec
+[bwa_aln_core] 1310720 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 0.91 sec
+[bwa_aln_core] refine gapped alignments... 0.26 sec
+[bwa_aln_core] print alignments... 0.64 sec
+[bwa_aln_core] 1572864 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 0.75 sec
+[bwa_aln_core] refine gapped alignments... 0.24 sec
+[bwa_aln_core] print alignments... 0.48 sec
+[bwa_aln_core] 1835008 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 0.57 sec
+[bwa_aln_core] refine gapped alignments... 0.16 sec
+[bwa_aln_core] print alignments... 0.30 sec
+[bwa_aln_core] 2000000 sequences have been processed.
+[main] Version: 0.7.4-r385
+[main] CMD: /home/andy/andy/bwa-0.7.4/bwa samse /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.all.randomeTailed.sai Drosophila_melanogaster.all.randomeTailed.fq
+[main] Real time: 25.823 sec; CPU: 23.033 sec
+
+real	4m28.288s
+user	15m37.447s
+sys	0m6.496s
++ /home/andy/andy/Tailor/bin/tailor map -i Drosophila_melanogaster.all.randomeTailed.fq -p /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/tailorIndex/dm3 -n 4 -o Drosophila_melanogaster.all.randomeTailed.t.sam
+
+real	0m27.716s
+user	1m6.868s
+sys	0m4.064s
++ for CPU in 2 4 8 12 24
++ /home/andy/andy/bowtie-1.0.0/bowtie -p 8 -S -v 0 -a /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BowtieIndex/genome Drosophila_melanogaster.all.randomeTailed.fq
+# reads processed: 2000000
+# reads with at least one reported alignment: 0 (0.00%)
+# reads that failed to align: 2000000 (100.00%)
+No alignments
+
+real	0m9.280s
+user	0m40.911s
+sys	0m17.645s
++ /home/andy/andy/bowtie-1.0.0/bowtie -p 8 -S -v 0 --best --strata -a /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BowtieIndex/genome Drosophila_melanogaster.all.randomeTailed.fq
+# reads processed: 2000000
+# reads with at least one reported alignment: 0 (0.00%)
+# reads that failed to align: 2000000 (100.00%)
+No alignments
+
+real	0m9.588s
+user	0m42.895s
+sys	0m14.961s
++ /home/andy/andy/bwa-0.7.4/bwa aln -t 8 -o0 -R1000000 /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.all.randomeTailed.fq
+[bwa_aln] 17bp reads: max_diff = 2
+[bwa_aln] 38bp reads: max_diff = 3
+[bwa_aln] 64bp reads: max_diff = 4
+[bwa_aln] 93bp reads: max_diff = 5
+[bwa_aln] 124bp reads: max_diff = 6
+[bwa_aln] 157bp reads: max_diff = 7
+[bwa_aln] 190bp reads: max_diff = 8
+[bwa_aln] 225bp reads: max_diff = 9
+[bwa_aln_core] calculate SA coordinate... 198.80 sec
+[bwa_aln_core] write to the disk... 0.12 sec
+[bwa_aln_core] 262144 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 186.53 sec
+[bwa_aln_core] write to the disk... 0.10 sec
+[bwa_aln_core] 524288 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 149.86 sec
+[bwa_aln_core] write to the disk... 0.13 sec
+[bwa_aln_core] 786432 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 149.46 sec
+[bwa_aln_core] write to the disk... 0.13 sec
+[bwa_aln_core] 1048576 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 116.50 sec
+[bwa_aln_core] write to the disk... 0.09 sec
+[bwa_aln_core] 1310720 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 111.24 sec
+[bwa_aln_core] write to the disk... 0.07 sec
+[bwa_aln_core] 1572864 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 89.62 sec
+[bwa_aln_core] write to the disk... 0.07 sec
+[bwa_aln_core] 1835008 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 56.78 sec
+[bwa_aln_core] write to the disk... 0.04 sec
+[bwa_aln_core] 2000000 sequences have been processed.
+[main] Version: 0.7.4-r385
+[main] CMD: /home/andy/andy/bwa-0.7.4/bwa aln -t 8 -o0 -R1000000 /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.all.randomeTailed.fq
+[main] Real time: 145.747 sec; CPU: 1064.563 sec
++ /home/andy/andy/bwa-0.7.4/bwa samse /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.all.randomeTailed.sai Drosophila_melanogaster.all.randomeTailed.fq
+[bwa_aln_core] convert to sequence coordinate... 1.94 sec
+[bwa_aln_core] refine gapped alignments... 0.48 sec
+[bwa_aln_core] print alignments... 1.12 sec
+[bwa_aln_core] 262144 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.76 sec
+[bwa_aln_core] refine gapped alignments... 0.49 sec
+[bwa_aln_core] print alignments... 1.08 sec
+[bwa_aln_core] 524288 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.62 sec
+[bwa_aln_core] refine gapped alignments... 0.45 sec
+[bwa_aln_core] print alignments... 1.04 sec
+[bwa_aln_core] 786432 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.57 sec
+[bwa_aln_core] refine gapped alignments... 0.43 sec
+[bwa_aln_core] print alignments... 0.96 sec
+[bwa_aln_core] 1048576 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.03 sec
+[bwa_aln_core] refine gapped alignments... 0.30 sec
+[bwa_aln_core] print alignments... 0.69 sec
+[bwa_aln_core] 1310720 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.00 sec
+[bwa_aln_core] refine gapped alignments... 0.29 sec
+[bwa_aln_core] print alignments... 0.63 sec
+[bwa_aln_core] 1572864 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 0.71 sec
+[bwa_aln_core] refine gapped alignments... 0.21 sec
+[bwa_aln_core] print alignments... 0.48 sec
+[bwa_aln_core] 1835008 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 0.57 sec
+[bwa_aln_core] refine gapped alignments... 0.14 sec
+[bwa_aln_core] print alignments... 0.31 sec
+[bwa_aln_core] 2000000 sequences have been processed.
+[main] Version: 0.7.4-r385
+[main] CMD: /home/andy/andy/bwa-0.7.4/bwa samse /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.all.randomeTailed.sai Drosophila_melanogaster.all.randomeTailed.fq
+[main] Real time: 26.551 sec; CPU: 23.833 sec
+
+real	2m52.487s
+user	18m0.776s
+sys	0m7.632s
++ /home/andy/andy/Tailor/bin/tailor map -i Drosophila_melanogaster.all.randomeTailed.fq -p /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/tailorIndex/dm3 -n 8 -o Drosophila_melanogaster.all.randomeTailed.t.sam
+
+real	0m22.621s
+user	1m15.089s
+sys	0m4.884s
++ for CPU in 2 4 8 12 24
++ /home/andy/andy/bowtie-1.0.0/bowtie -p 12 -S -v 0 -a /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BowtieIndex/genome Drosophila_melanogaster.all.randomeTailed.fq
+# reads processed: 2000000
+# reads with at least one reported alignment: 0 (0.00%)
+# reads that failed to align: 2000000 (100.00%)
+No alignments
+
+real	0m10.906s
+user	1m7.912s
+sys	0m35.146s
++ /home/andy/andy/bowtie-1.0.0/bowtie -p 12 -S -v 0 --best --strata -a /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BowtieIndex/genome Drosophila_melanogaster.all.randomeTailed.fq
+# reads processed: 2000000
+# reads with at least one reported alignment: 0 (0.00%)
+# reads that failed to align: 2000000 (100.00%)
+No alignments
+
+real	0m10.929s
+user	1m12.245s
+sys	0m32.790s
++ /home/andy/andy/bwa-0.7.4/bwa aln -t 12 -o0 -R1000000 /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.all.randomeTailed.fq
+[bwa_aln] 17bp reads: max_diff = 2
+[bwa_aln] 38bp reads: max_diff = 3
+[bwa_aln] 64bp reads: max_diff = 4
+[bwa_aln] 93bp reads: max_diff = 5
+[bwa_aln] 124bp reads: max_diff = 6
+[bwa_aln] 157bp reads: max_diff = 7
+[bwa_aln] 190bp reads: max_diff = 8
+[bwa_aln] 225bp reads: max_diff = 9
+[bwa_aln_core] calculate SA coordinate... 195.28 sec
+[bwa_aln_core] write to the disk... 0.13 sec
+[bwa_aln_core] 262144 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 182.75 sec
+[bwa_aln_core] write to the disk... 0.11 sec
+[bwa_aln_core] 524288 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 149.70 sec
+[bwa_aln_core] write to the disk... 0.11 sec
+[bwa_aln_core] 786432 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 148.15 sec
+[bwa_aln_core] write to the disk... 0.13 sec
+[bwa_aln_core] 1048576 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 115.62 sec
+[bwa_aln_core] write to the disk... 0.09 sec
+[bwa_aln_core] 1310720 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 110.97 sec
+[bwa_aln_core] write to the disk... 0.09 sec
+[bwa_aln_core] 1572864 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 88.71 sec
+[bwa_aln_core] write to the disk... 0.06 sec
+[bwa_aln_core] 1835008 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 55.98 sec
+[bwa_aln_core] write to the disk... 0.03 sec
+[bwa_aln_core] 2000000 sequences have been processed.
+[main] Version: 0.7.4-r385
+[main] CMD: /home/andy/andy/bwa-0.7.4/bwa aln -t 12 -o0 -R1000000 /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.all.randomeTailed.fq
+[main] Real time: 98.421 sec; CPU: 1052.822 sec
++ /home/andy/andy/bwa-0.7.4/bwa samse /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.all.randomeTailed.sai Drosophila_melanogaster.all.randomeTailed.fq
+[bwa_aln_core] convert to sequence coordinate... 1.77 sec
+[bwa_aln_core] refine gapped alignments... 0.41 sec
+[bwa_aln_core] print alignments... 1.10 sec
+[bwa_aln_core] 262144 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.59 sec
+[bwa_aln_core] refine gapped alignments... 0.41 sec
+[bwa_aln_core] print alignments... 1.05 sec
+[bwa_aln_core] 524288 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.58 sec
+[bwa_aln_core] refine gapped alignments... 0.44 sec
+[bwa_aln_core] print alignments... 1.07 sec
+[bwa_aln_core] 786432 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.56 sec
+[bwa_aln_core] refine gapped alignments... 0.42 sec
+[bwa_aln_core] print alignments... 0.99 sec
+[bwa_aln_core] 1048576 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.00 sec
+[bwa_aln_core] refine gapped alignments... 0.30 sec
+[bwa_aln_core] print alignments... 0.69 sec
+[bwa_aln_core] 1310720 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 0.95 sec
+[bwa_aln_core] refine gapped alignments... 0.29 sec
+[bwa_aln_core] print alignments... 0.62 sec
+[bwa_aln_core] 1572864 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 0.68 sec
+[bwa_aln_core] refine gapped alignments... 0.21 sec
+[bwa_aln_core] print alignments... 0.49 sec
+[bwa_aln_core] 1835008 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 0.62 sec
+[bwa_aln_core] refine gapped alignments... 0.16 sec
+[bwa_aln_core] print alignments... 0.31 sec
+[bwa_aln_core] 2000000 sequences have been processed.
+[main] Version: 0.7.4-r385
+[main] CMD: /home/andy/andy/bwa-0.7.4/bwa samse /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.all.randomeTailed.sai Drosophila_melanogaster.all.randomeTailed.fq
+[main] Real time: 25.655 sec; CPU: 23.165 sec
+
+real	2m4.236s
+user	17m48.555s
+sys	0m7.444s
++ /home/andy/andy/Tailor/bin/tailor map -i Drosophila_melanogaster.all.randomeTailed.fq -p /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/tailorIndex/dm3 -n 12 -o Drosophila_melanogaster.all.randomeTailed.t.sam
+
+real	0m21.708s
+user	1m14.469s
+sys	0m5.128s
++ for CPU in 2 4 8 12 24
++ /home/andy/andy/bowtie-1.0.0/bowtie -p 24 -S -v 0 -a /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BowtieIndex/genome Drosophila_melanogaster.all.randomeTailed.fq
+# reads processed: 2000000
+# reads with at least one reported alignment: 0 (0.00%)
+# reads that failed to align: 2000000 (100.00%)
+No alignments
+
+real	0m14.614s
+user	3m2.475s
+sys	1m6.408s
++ /home/andy/andy/bowtie-1.0.0/bowtie -p 24 -S -v 0 --best --strata -a /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BowtieIndex/genome Drosophila_melanogaster.all.randomeTailed.fq
+# reads processed: 2000000
+# reads with at least one reported alignment: 0 (0.00%)
+# reads that failed to align: 2000000 (100.00%)
+No alignments
+
+real	0m14.812s
+user	3m11.108s
+sys	1m4.292s
++ /home/andy/andy/bwa-0.7.4/bwa aln -t 24 -o0 -R1000000 /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.all.randomeTailed.fq
+[bwa_aln] 17bp reads: max_diff = 2
+[bwa_aln] 38bp reads: max_diff = 3
+[bwa_aln] 64bp reads: max_diff = 4
+[bwa_aln] 93bp reads: max_diff = 5
+[bwa_aln] 124bp reads: max_diff = 6
+[bwa_aln] 157bp reads: max_diff = 7
+[bwa_aln] 190bp reads: max_diff = 8
+[bwa_aln] 225bp reads: max_diff = 9
+[bwa_aln_core] calculate SA coordinate... 216.90 sec
+[bwa_aln_core] write to the disk... 0.16 sec
+[bwa_aln_core] 262144 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 191.68 sec
+[bwa_aln_core] write to the disk... 0.14 sec
+[bwa_aln_core] 524288 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 156.66 sec
+[bwa_aln_core] write to the disk... 0.14 sec
+[bwa_aln_core] 786432 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 157.90 sec
+[bwa_aln_core] write to the disk... 0.11 sec
+[bwa_aln_core] 1048576 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 123.34 sec
+[bwa_aln_core] write to the disk... 0.10 sec
+[bwa_aln_core] 1310720 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 118.51 sec
+[bwa_aln_core] write to the disk... 0.08 sec
+[bwa_aln_core] 1572864 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 93.55 sec
+[bwa_aln_core] write to the disk... 0.08 sec
+[bwa_aln_core] 1835008 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 59.00 sec
+[bwa_aln_core] write to the disk... 0.05 sec
+[bwa_aln_core] 2000000 sequences have been processed.
+[main] Version: 0.7.4-r385
+[main] CMD: /home/andy/andy/bwa-0.7.4/bwa aln -t 24 -o0 -R1000000 /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.all.randomeTailed.fq
+[main] Real time: 62.184 sec; CPU: 1123.774 sec
++ /home/andy/andy/bwa-0.7.4/bwa samse /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.all.randomeTailed.sai Drosophila_melanogaster.all.randomeTailed.fq
+[bwa_aln_core] convert to sequence coordinate... 1.75 sec
+[bwa_aln_core] refine gapped alignments... 0.42 sec
+[bwa_aln_core] print alignments... 1.11 sec
+[bwa_aln_core] 262144 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.66 sec
+[bwa_aln_core] refine gapped alignments... 0.41 sec
+[bwa_aln_core] print alignments... 1.09 sec
+[bwa_aln_core] 524288 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.70 sec
+[bwa_aln_core] refine gapped alignments... 0.46 sec
+[bwa_aln_core] print alignments... 1.07 sec
+[bwa_aln_core] 786432 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.52 sec
+[bwa_aln_core] refine gapped alignments... 0.43 sec
+[bwa_aln_core] print alignments... 1.02 sec
+[bwa_aln_core] 1048576 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.06 sec
+[bwa_aln_core] refine gapped alignments... 0.30 sec
+[bwa_aln_core] print alignments... 0.69 sec
+[bwa_aln_core] 1310720 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 0.93 sec
+[bwa_aln_core] refine gapped alignments... 0.29 sec
+[bwa_aln_core] print alignments... 0.64 sec
+[bwa_aln_core] 1572864 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 0.74 sec
+[bwa_aln_core] refine gapped alignments... 0.21 sec
+[bwa_aln_core] print alignments... 0.51 sec
+[bwa_aln_core] 1835008 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 0.57 sec
+[bwa_aln_core] refine gapped alignments... 0.15 sec
+[bwa_aln_core] print alignments... 0.31 sec
+[bwa_aln_core] 2000000 sequences have been processed.
+[main] Version: 0.7.4-r385
+[main] CMD: /home/andy/andy/bwa-0.7.4/bwa samse /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.all.randomeTailed.sai Drosophila_melanogaster.all.randomeTailed.fq
+[main] Real time: 26.296 sec; CPU: 23.397 sec
+
+real	1m28.644s
+user	18m58.055s
+sys	0m9.129s
++ /home/andy/andy/Tailor/bin/tailor map -i Drosophila_melanogaster.all.randomeTailed.fq -p /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/tailorIndex/dm3 -n 24 -o Drosophila_melanogaster.all.randomeTailed.t.sam
+
+real	0m23.701s
+user	1m17.041s
+sys	0m6.488s
++ FQ=Drosophila_melanogaster.2m.fq
++ for CPU in 2 4 8 12 24
++ /home/andy/andy/bowtie-1.0.0/bowtie -p 2 -S -v 0 -a /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BowtieIndex/genome Drosophila_melanogaster.2m.fq
+# reads processed: 2000000
+# reads with at least one reported alignment: 1999984 (100.00%)
+# reads that failed to align: 16 (0.00%)
+Reported 9088008 alignments to 1 output stream(s)
+
+real	1m7.882s
+user	2m1.080s
+sys	0m10.249s
++ /home/andy/andy/bowtie-1.0.0/bowtie -p 2 -S -v 0 --best --strata -a /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BowtieIndex/genome Drosophila_melanogaster.2m.fq
+# reads processed: 2000000
+# reads with at least one reported alignment: 1999984 (100.00%)
+# reads that failed to align: 16 (0.00%)
+Reported 9088008 alignments to 1 output stream(s)
+
+real	1m11.882s
+user	2m8.504s
+sys	0m10.169s
++ /home/andy/andy/bwa-0.7.4/bwa aln -t 2 -o0 -R1000000 /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.2m.fq
+[bwa_aln] 17bp reads: max_diff = 2
+[bwa_aln] 38bp reads: max_diff = 3
+[bwa_aln] 64bp reads: max_diff = 4
+[bwa_aln] 93bp reads: max_diff = 5
+[bwa_aln] 124bp reads: max_diff = 6
+[bwa_aln] 157bp reads: max_diff = 7
+[bwa_aln] 190bp reads: max_diff = 8
+[bwa_aln] 225bp reads: max_diff = 9
+[bwa_aln_core] calculate SA coordinate... 28.78 sec
+[bwa_aln_core] write to the disk... 0.11 sec
+[bwa_aln_core] 262144 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 28.76 sec
+[bwa_aln_core] write to the disk... 0.11 sec
+[bwa_aln_core] 524288 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 27.98 sec
+[bwa_aln_core] write to the disk... 0.10 sec
+[bwa_aln_core] 786432 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 28.21 sec
+[bwa_aln_core] write to the disk... 0.10 sec
+[bwa_aln_core] 1048576 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 28.28 sec
+[bwa_aln_core] write to the disk... 0.11 sec
+[bwa_aln_core] 1310720 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 29.46 sec
+[bwa_aln_core] write to the disk... 0.13 sec
+[bwa_aln_core] 1572864 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 28.40 sec
+[bwa_aln_core] write to the disk... 0.10 sec
+[bwa_aln_core] 1835008 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 18.51 sec
+[bwa_aln_core] write to the disk... 0.07 sec
+[bwa_aln_core] 2000000 sequences have been processed.
+[main] Version: 0.7.4-r385
+[main] CMD: /home/andy/andy/bwa-0.7.4/bwa aln -t 2 -o0 -R1000000 /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.2m.fq
+[main] Real time: 117.062 sec; CPU: 223.766 sec
++ /home/andy/andy/bwa-0.7.4/bwa samse /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.2m.sai Drosophila_melanogaster.2m.fq
+[bwa_aln_core] convert to sequence coordinate... 1.78 sec
+[bwa_aln_core] refine gapped alignments... 0.35 sec
+[bwa_aln_core] print alignments... 1.12 sec
+[bwa_aln_core] 262144 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.70 sec
+[bwa_aln_core] refine gapped alignments... 0.43 sec
+[bwa_aln_core] print alignments... 1.08 sec
+[bwa_aln_core] 524288 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.63 sec
+[bwa_aln_core] refine gapped alignments... 0.41 sec
+[bwa_aln_core] print alignments... 1.07 sec
+[bwa_aln_core] 786432 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.63 sec
+[bwa_aln_core] refine gapped alignments... 0.40 sec
+[bwa_aln_core] print alignments... 1.09 sec
+[bwa_aln_core] 1048576 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.66 sec
+[bwa_aln_core] refine gapped alignments... 0.41 sec
+[bwa_aln_core] print alignments... 1.07 sec
+[bwa_aln_core] 1310720 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.79 sec
+[bwa_aln_core] refine gapped alignments... 0.43 sec
+[bwa_aln_core] print alignments... 1.13 sec
+[bwa_aln_core] 1572864 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.61 sec
+[bwa_aln_core] refine gapped alignments... 0.42 sec
+[bwa_aln_core] print alignments... 1.08 sec
+[bwa_aln_core] 1835008 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.15 sec
+[bwa_aln_core] refine gapped alignments... 0.27 sec
+[bwa_aln_core] print alignments... 0.68 sec
+[bwa_aln_core] 2000000 sequences have been processed.
+[main] Version: 0.7.4-r385
+[main] CMD: /home/andy/andy/bwa-0.7.4/bwa samse /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.2m.sai Drosophila_melanogaster.2m.fq
+[main] Real time: 33.128 sec; CPU: 29.506 sec
+
+real	2m30.234s
+user	4m6.447s
+sys	0m6.844s
++ /home/andy/andy/Tailor/bin/tailor map -i Drosophila_melanogaster.2m.fq -p /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/tailorIndex/dm3 -n 2 -o Drosophila_melanogaster.2m.t.sam
+
+real	0m55.193s
+user	1m22.293s
+sys	0m4.412s
++ for CPU in 2 4 8 12 24
++ /home/andy/andy/bowtie-1.0.0/bowtie -p 4 -S -v 0 -a /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BowtieIndex/genome Drosophila_melanogaster.2m.fq
+# reads processed: 2000000
+# reads with at least one reported alignment: 1999984 (100.00%)
+# reads that failed to align: 16 (0.00%)
+Reported 9088008 alignments to 1 output stream(s)
+
+real	1m3.513s
+user	2m26.333s
+sys	1m18.325s
++ /home/andy/andy/bowtie-1.0.0/bowtie -p 4 -S -v 0 --best --strata -a /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BowtieIndex/genome Drosophila_melanogaster.2m.fq
+# reads processed: 2000000
+# reads with at least one reported alignment: 1999984 (100.00%)
+# reads that failed to align: 16 (0.00%)
+Reported 9088008 alignments to 1 output stream(s)
+
+real	1m3.727s
+user	2m35.458s
+sys	1m16.961s
++ /home/andy/andy/bwa-0.7.4/bwa aln -t 4 -o0 -R1000000 /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.2m.fq
+[bwa_aln] 17bp reads: max_diff = 2
+[bwa_aln] 38bp reads: max_diff = 3
+[bwa_aln] 64bp reads: max_diff = 4
+[bwa_aln] 93bp reads: max_diff = 5
+[bwa_aln] 124bp reads: max_diff = 6
+[bwa_aln] 157bp reads: max_diff = 7
+[bwa_aln] 190bp reads: max_diff = 8
+[bwa_aln] 225bp reads: max_diff = 9
+[bwa_aln_core] calculate SA coordinate... 37.12 sec
+[bwa_aln_core] write to the disk... 0.11 sec
+[bwa_aln_core] 262144 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 36.58 sec
+[bwa_aln_core] write to the disk... 0.13 sec
+[bwa_aln_core] 524288 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 36.34 sec
+[bwa_aln_core] write to the disk... 0.14 sec
+[bwa_aln_core] 786432 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 35.90 sec
+[bwa_aln_core] write to the disk... 0.12 sec
+[bwa_aln_core] 1048576 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 36.59 sec
+[bwa_aln_core] write to the disk... 0.15 sec
+[bwa_aln_core] 1310720 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 36.25 sec
+[bwa_aln_core] write to the disk... 0.10 sec
+[bwa_aln_core] 1572864 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 35.55 sec
+[bwa_aln_core] write to the disk... 0.10 sec
+[bwa_aln_core] 1835008 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 21.98 sec
+[bwa_aln_core] write to the disk... 0.06 sec
+[bwa_aln_core] 2000000 sequences have been processed.
+[main] Version: 0.7.4-r385
+[main] CMD: /home/andy/andy/bwa-0.7.4/bwa aln -t 4 -o0 -R1000000 /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.2m.fq
+[main] Real time: 77.968 sec; CPU: 282.034 sec
++ /home/andy/andy/bwa-0.7.4/bwa samse /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.2m.sai Drosophila_melanogaster.2m.fq
+[bwa_aln_core] convert to sequence coordinate... 1.66 sec
+[bwa_aln_core] refine gapped alignments... 0.34 sec
+[bwa_aln_core] print alignments... 1.07 sec
+[bwa_aln_core] 262144 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.50 sec
+[bwa_aln_core] refine gapped alignments... 0.34 sec
+[bwa_aln_core] print alignments... 0.99 sec
+[bwa_aln_core] 524288 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.51 sec
+[bwa_aln_core] refine gapped alignments... 0.33 sec
+[bwa_aln_core] print alignments... 1.00 sec
+[bwa_aln_core] 786432 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.56 sec
+[bwa_aln_core] refine gapped alignments... 0.35 sec
+[bwa_aln_core] print alignments... 0.99 sec
+[bwa_aln_core] 1048576 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.52 sec
+[bwa_aln_core] refine gapped alignments... 0.33 sec
+[bwa_aln_core] print alignments... 1.01 sec
+[bwa_aln_core] 1310720 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.59 sec
+[bwa_aln_core] refine gapped alignments... 0.33 sec
+[bwa_aln_core] print alignments... 1.02 sec
+[bwa_aln_core] 1572864 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.49 sec
+[bwa_aln_core] refine gapped alignments... 0.34 sec
+[bwa_aln_core] print alignments... 0.98 sec
+[bwa_aln_core] 1835008 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.07 sec
+[bwa_aln_core] refine gapped alignments... 0.22 sec
+[bwa_aln_core] print alignments... 0.64 sec
+[bwa_aln_core] 2000000 sequences have been processed.
+[main] Version: 0.7.4-r385
+[main] CMD: /home/andy/andy/bwa-0.7.4/bwa samse /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.2m.sai Drosophila_melanogaster.2m.fq
+[main] Real time: 30.233 sec; CPU: 26.650 sec
+
+real	1m48.414s
+user	5m2.079s
+sys	0m6.620s
++ /home/andy/andy/Tailor/bin/tailor map -i Drosophila_melanogaster.2m.fq -p /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/tailorIndex/dm3 -n 4 -o Drosophila_melanogaster.2m.t.sam
+
+real	0m38.322s
+user	1m25.673s
+sys	0m4.880s
++ for CPU in 2 4 8 12 24
++ /home/andy/andy/bowtie-1.0.0/bowtie -p 8 -S -v 0 -a /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BowtieIndex/genome Drosophila_melanogaster.2m.fq
+# reads processed: 2000000
+# reads with at least one reported alignment: 1999984 (100.00%)
+# reads that failed to align: 16 (0.00%)
+Reported 9088008 alignments to 1 output stream(s)
+
+real	0m56.231s
+user	3m48.818s
+sys	2m58.759s
++ /home/andy/andy/bowtie-1.0.0/bowtie -p 8 -S -v 0 --best --strata -a /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BowtieIndex/genome Drosophila_melanogaster.2m.fq
+# reads processed: 2000000
+# reads with at least one reported alignment: 1999984 (100.00%)
+# reads that failed to align: 16 (0.00%)
+Reported 9088008 alignments to 1 output stream(s)
+
+real	1m0.661s
+user	3m55.115s
+sys	3m14.456s
++ /home/andy/andy/bwa-0.7.4/bwa aln -t 8 -o0 -R1000000 /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.2m.fq
+[bwa_aln] 17bp reads: max_diff = 2
+[bwa_aln] 38bp reads: max_diff = 3
+[bwa_aln] 64bp reads: max_diff = 4
+[bwa_aln] 93bp reads: max_diff = 5
+[bwa_aln] 124bp reads: max_diff = 6
+[bwa_aln] 157bp reads: max_diff = 7
+[bwa_aln] 190bp reads: max_diff = 8
+[bwa_aln] 225bp reads: max_diff = 9
+[bwa_aln_core] calculate SA coordinate... 41.29 sec
+[bwa_aln_core] write to the disk... 0.11 sec
+[bwa_aln_core] 262144 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 38.76 sec
+[bwa_aln_core] write to the disk... 0.10 sec
+[bwa_aln_core] 524288 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 38.94 sec
+[bwa_aln_core] write to the disk... 0.09 sec
+[bwa_aln_core] 786432 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 39.28 sec
+[bwa_aln_core] write to the disk... 0.10 sec
+[bwa_aln_core] 1048576 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 40.15 sec
+[bwa_aln_core] write to the disk... 0.10 sec
+[bwa_aln_core] 1310720 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 40.42 sec
+[bwa_aln_core] write to the disk... 0.10 sec
+[bwa_aln_core] 1572864 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 39.60 sec
+[bwa_aln_core] write to the disk... 0.12 sec
+[bwa_aln_core] 1835008 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 25.25 sec
+[bwa_aln_core] write to the disk... 0.08 sec
+[bwa_aln_core] 2000000 sequences have been processed.
+[main] Version: 0.7.4-r385
+[main] CMD: /home/andy/andy/bwa-0.7.4/bwa aln -t 8 -o0 -R1000000 /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.2m.fq
+[main] Real time: 46.224 sec; CPU: 309.003 sec
++ /home/andy/andy/bwa-0.7.4/bwa samse /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.2m.sai Drosophila_melanogaster.2m.fq
+[bwa_aln_core] convert to sequence coordinate... 1.62 sec
+[bwa_aln_core] refine gapped alignments... 0.35 sec
+[bwa_aln_core] print alignments... 1.13 sec
+[bwa_aln_core] 262144 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.56 sec
+[bwa_aln_core] refine gapped alignments... 0.37 sec
+[bwa_aln_core] print alignments... 1.07 sec
+[bwa_aln_core] 524288 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.51 sec
+[bwa_aln_core] refine gapped alignments... 0.35 sec
+[bwa_aln_core] print alignments... 1.05 sec
+[bwa_aln_core] 786432 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.53 sec
+[bwa_aln_core] refine gapped alignments... 0.35 sec
+[bwa_aln_core] print alignments... 1.08 sec
+[bwa_aln_core] 1048576 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.59 sec
+[bwa_aln_core] refine gapped alignments... 0.35 sec
+[bwa_aln_core] print alignments... 1.05 sec
+[bwa_aln_core] 1310720 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.57 sec
+[bwa_aln_core] refine gapped alignments... 0.36 sec
+[bwa_aln_core] print alignments... 1.09 sec
+[bwa_aln_core] 1572864 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.51 sec
+[bwa_aln_core] refine gapped alignments... 0.34 sec
+[bwa_aln_core] print alignments... 1.07 sec
+[bwa_aln_core] 1835008 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.09 sec
+[bwa_aln_core] refine gapped alignments... 0.23 sec
+[bwa_aln_core] print alignments... 0.66 sec
+[bwa_aln_core] 2000000 sequences have been processed.
+[main] Version: 0.7.4-r385
+[main] CMD: /home/andy/andy/bwa-0.7.4/bwa samse /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.2m.sai Drosophila_melanogaster.2m.fq
+[main] Real time: 31.720 sec; CPU: 27.462 sec
+
+real	1m18.157s
+user	5m29.521s
+sys	0m6.956s
++ /home/andy/andy/Tailor/bin/tailor map -i Drosophila_melanogaster.2m.fq -p /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/tailorIndex/dm3 -n 8 -o Drosophila_melanogaster.2m.t.sam
+
+real	0m31.105s
+user	1m32.562s
+sys	0m6.008s
++ for CPU in 2 4 8 12 24
++ /home/andy/andy/bowtie-1.0.0/bowtie -p 12 -S -v 0 -a /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BowtieIndex/genome Drosophila_melanogaster.2m.fq
+# reads processed: 2000000
+# reads with at least one reported alignment: 1999984 (100.00%)
+# reads that failed to align: 16 (0.00%)
+Reported 9088008 alignments to 1 output stream(s)
+
+real	0m56.735s
+user	5m56.278s
+sys	4m3.311s
++ /home/andy/andy/bowtie-1.0.0/bowtie -p 12 -S -v 0 --best --strata -a /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BowtieIndex/genome Drosophila_melanogaster.2m.fq
+# reads processed: 2000000
+# reads with at least one reported alignment: 1999984 (100.00%)
+# reads that failed to align: 16 (0.00%)
+Reported 9088008 alignments to 1 output stream(s)
+
+real	1m5.387s
+user	7m4.231s
+sys	4m33.421s
++ /home/andy/andy/bwa-0.7.4/bwa aln -t 12 -o0 -R1000000 /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.2m.fq
+[bwa_aln] 17bp reads: max_diff = 2
+[bwa_aln] 38bp reads: max_diff = 3
+[bwa_aln] 64bp reads: max_diff = 4
+[bwa_aln] 93bp reads: max_diff = 5
+[bwa_aln] 124bp reads: max_diff = 6
+[bwa_aln] 157bp reads: max_diff = 7
+[bwa_aln] 190bp reads: max_diff = 8
+[bwa_aln] 225bp reads: max_diff = 9
+[bwa_aln_core] calculate SA coordinate... 46.68 sec
+[bwa_aln_core] write to the disk... 0.13 sec
+[bwa_aln_core] 262144 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 40.49 sec
+[bwa_aln_core] write to the disk... 0.10 sec
+[bwa_aln_core] 524288 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 42.45 sec
+[bwa_aln_core] write to the disk... 0.10 sec
+[bwa_aln_core] 786432 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 41.55 sec
+[bwa_aln_core] write to the disk... 0.14 sec
+[bwa_aln_core] 1048576 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 41.92 sec
+[bwa_aln_core] write to the disk... 0.13 sec
+[bwa_aln_core] 1310720 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 42.22 sec
+[bwa_aln_core] write to the disk... 0.12 sec
+[bwa_aln_core] 1572864 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 41.76 sec
+[bwa_aln_core] write to the disk... 0.09 sec
+[bwa_aln_core] 1835008 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 27.21 sec
+[bwa_aln_core] write to the disk... 0.08 sec
+[bwa_aln_core] 2000000 sequences have been processed.
+[main] Version: 0.7.4-r385
+[main] CMD: /home/andy/andy/bwa-0.7.4/bwa aln -t 12 -o0 -R1000000 /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.2m.fq
+[main] Real time: 35.978 sec; CPU: 330.061 sec
++ /home/andy/andy/bwa-0.7.4/bwa samse /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.2m.sai Drosophila_melanogaster.2m.fq
+[bwa_aln_core] convert to sequence coordinate... 1.82 sec
+[bwa_aln_core] refine gapped alignments... 0.42 sec
+[bwa_aln_core] print alignments... 1.13 sec
+[bwa_aln_core] 262144 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.53 sec
+[bwa_aln_core] refine gapped alignments... 0.36 sec
+[bwa_aln_core] print alignments... 1.03 sec
+[bwa_aln_core] 524288 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.60 sec
+[bwa_aln_core] refine gapped alignments... 0.40 sec
+[bwa_aln_core] print alignments... 1.03 sec
+[bwa_aln_core] 786432 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.72 sec
+[bwa_aln_core] refine gapped alignments... 0.40 sec
+[bwa_aln_core] print alignments... 1.04 sec
+[bwa_aln_core] 1048576 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.63 sec
+[bwa_aln_core] refine gapped alignments... 0.40 sec
+[bwa_aln_core] print alignments... 1.03 sec
+[bwa_aln_core] 1310720 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.71 sec
+[bwa_aln_core] refine gapped alignments... 0.39 sec
+[bwa_aln_core] print alignments... 1.08 sec
+[bwa_aln_core] 1572864 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.66 sec
+[bwa_aln_core] refine gapped alignments... 0.35 sec
+[bwa_aln_core] print alignments... 1.00 sec
+[bwa_aln_core] 1835008 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.06 sec
+[bwa_aln_core] refine gapped alignments... 0.22 sec
+[bwa_aln_core] print alignments... 0.65 sec
+[bwa_aln_core] 2000000 sequences have been processed.
+[main] Version: 0.7.4-r385
+[main] CMD: /home/andy/andy/bwa-0.7.4/bwa samse /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.2m.sai Drosophila_melanogaster.2m.fq
+[main] Real time: 32.118 sec; CPU: 28.478 sec
+
+real	1m8.315s
+user	5m49.898s
+sys	0m8.653s
++ /home/andy/andy/Tailor/bin/tailor map -i Drosophila_melanogaster.2m.fq -p /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/tailorIndex/dm3 -n 12 -o Drosophila_melanogaster.2m.t.sam
+
+real	0m31.018s
+user	1m35.886s
+sys	0m6.440s
++ for CPU in 2 4 8 12 24
++ /home/andy/andy/bowtie-1.0.0/bowtie -p 24 -S -v 0 -a /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BowtieIndex/genome Drosophila_melanogaster.2m.fq
+# reads processed: 2000000
+# reads with at least one reported alignment: 1999984 (100.00%)
+# reads that failed to align: 16 (0.00%)
+Reported 9088008 alignments to 1 output stream(s)
+
+real	1m1.079s
+user	11m57.765s
+sys	6m7.639s
++ /home/andy/andy/bowtie-1.0.0/bowtie -p 24 -S -v 0 --best --strata -a /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BowtieIndex/genome Drosophila_melanogaster.2m.fq
+# reads processed: 2000000
+# reads with at least one reported alignment: 1999984 (100.00%)
+# reads that failed to align: 16 (0.00%)
+Reported 9088008 alignments to 1 output stream(s)
+
+real	1m17.151s
+user	17m44.459s
+sys	6m57.766s
++ /home/andy/andy/bwa-0.7.4/bwa aln -t 24 -o0 -R1000000 /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.2m.fq
+[bwa_aln] 17bp reads: max_diff = 2
+[bwa_aln] 38bp reads: max_diff = 3
+[bwa_aln] 64bp reads: max_diff = 4
+[bwa_aln] 93bp reads: max_diff = 5
+[bwa_aln] 124bp reads: max_diff = 6
+[bwa_aln] 157bp reads: max_diff = 7
+[bwa_aln] 190bp reads: max_diff = 8
+[bwa_aln] 225bp reads: max_diff = 9
+[bwa_aln_core] calculate SA coordinate... 73.59 sec
+[bwa_aln_core] write to the disk... 0.15 sec
+[bwa_aln_core] 262144 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 48.40 sec
+[bwa_aln_core] write to the disk... 0.13 sec
+[bwa_aln_core] 524288 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 49.05 sec
+[bwa_aln_core] write to the disk... 0.11 sec
+[bwa_aln_core] 786432 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 48.53 sec
+[bwa_aln_core] write to the disk... 0.12 sec
+[bwa_aln_core] 1048576 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 46.61 sec
+[bwa_aln_core] write to the disk... 0.11 sec
+[bwa_aln_core] 1310720 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 48.14 sec
+[bwa_aln_core] write to the disk... 0.14 sec
+[bwa_aln_core] 1572864 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 48.08 sec
+[bwa_aln_core] write to the disk... 0.14 sec
+[bwa_aln_core] 1835008 sequences have been processed.
+[bwa_aln_core] calculate SA coordinate... 30.13 sec
+[bwa_aln_core] write to the disk... 0.09 sec
+[bwa_aln_core] 2000000 sequences have been processed.
+[main] Version: 0.7.4-r385
+[main] CMD: /home/andy/andy/bwa-0.7.4/bwa aln -t 24 -o0 -R1000000 /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.2m.fq
+[main] Real time: 30.508 sec; CPU: 398.813 sec
++ /home/andy/andy/bwa-0.7.4/bwa samse /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.2m.sai Drosophila_melanogaster.2m.fq
+[bwa_aln_core] convert to sequence coordinate... 1.68 sec
+[bwa_aln_core] refine gapped alignments... 0.35 sec
+[bwa_aln_core] print alignments... 1.11 sec
+[bwa_aln_core] 262144 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.51 sec
+[bwa_aln_core] refine gapped alignments... 0.35 sec
+[bwa_aln_core] print alignments... 1.04 sec
+[bwa_aln_core] 524288 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.53 sec
+[bwa_aln_core] refine gapped alignments... 0.34 sec
+[bwa_aln_core] print alignments... 1.03 sec
+[bwa_aln_core] 786432 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.58 sec
+[bwa_aln_core] refine gapped alignments... 0.35 sec
+[bwa_aln_core] print alignments... 1.03 sec
+[bwa_aln_core] 1048576 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.52 sec
+[bwa_aln_core] refine gapped alignments... 0.33 sec
+[bwa_aln_core] print alignments... 1.03 sec
+[bwa_aln_core] 1310720 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.59 sec
+[bwa_aln_core] refine gapped alignments... 0.34 sec
+[bwa_aln_core] print alignments... 1.07 sec
+[bwa_aln_core] 1572864 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.58 sec
+[bwa_aln_core] refine gapped alignments... 0.34 sec
+[bwa_aln_core] print alignments... 1.05 sec
+[bwa_aln_core] 1835008 sequences have been processed.
+[bwa_aln_core] convert to sequence coordinate... 1.06 sec
+[bwa_aln_core] refine gapped alignments... 0.22 sec
+[bwa_aln_core] print alignments... 0.67 sec
+[bwa_aln_core] 2000000 sequences have been processed.
+[main] Version: 0.7.4-r385
+[main] CMD: /home/andy/andy/bwa-0.7.4/bwa samse /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/BWAIndex/genome.fa Drosophila_melanogaster.2m.sai Drosophila_melanogaster.2m.fq
+[main] Real time: 31.129 sec; CPU: 27.254 sec
+
+real	1m1.867s
+user	6m56.150s
+sys	0m9.933s
++ /home/andy/andy/Tailor/bin/tailor map -i Drosophila_melanogaster.2m.fq -p /home/andy/andy/Tailor/utils/internal_use_only/test_index/Drosophila_melanogaster/tailorIndex/dm3 -n 24 -o Drosophila_melanogaster.2m.t.sam
+
+real	0m33.351s
+user	1m38.326s
+sys	0m7.280s
++ exit

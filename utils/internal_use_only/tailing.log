@@ -1,0 +1,78 @@
+# reads processed: 2000000
+# reads with at least one reported alignment: 0 (0.00%)
+# reads that failed to align: 2000000 (100.00%)
+No alignments
+35.86user 13.85system 0:10.60elapsed 469%CPU (0avgtext+0avgdata 246784maxresident)k
+0inputs+596376outputs (0major+15537minor)pagefaults 0swaps
+# reads processed: 2000000
+# reads with at least one reported alignment: 499984 (25.00%)
+# reads that failed to align: 1500016 (75.00%)
+Reported 2116665 alignments to 1 output stream(s)
+78.68user 49.46system 0:20.97elapsed 611%CPU (0avgtext+0avgdata 263152maxresident)k
+0inputs+900224outputs (0major+17187minor)pagefaults 0swaps
+# reads processed: 1500016
+# reads with at least one reported alignment: 500000 (33.33%)
+# reads that failed to align: 1000016 (66.67%)
+Reported 1880524 alignments to 1 output stream(s)
+62.80user 41.65system 0:17.32elapsed 602%CPU (0avgtext+0avgdata 257648maxresident)k
+0inputs+708512outputs (0major+16317minor)pagefaults 0swaps
+# reads processed: 1000016
+# reads with at least one reported alignment: 500000 (50.00%)
+# reads that failed to align: 500016 (50.00%)
+Reported 1482850 alignments to 1 output stream(s)
+39.26user 22.52system 0:12.07elapsed 511%CPU (0avgtext+0avgdata 257648maxresident)k
+0inputs+474928outputs (0major+16317minor)pagefaults 0swaps
+# reads processed: 500016
+# reads with at least one reported alignment: 500000 (100.00%)
+# reads that failed to align: 16 (0.00%)
+Reported 872818 alignments to 1 output stream(s)
+16.49user 5.74system 0:05.87elapsed 378%CPU (0avgtext+0avgdata 250800maxresident)k
+69176inputs+191392outputs (0major+15810minor)pagefaults 0swaps
+# reads processed: 16
+# reads with at least one reported alignment: 0 (0.00%)
+# reads that failed to align: 16 (100.00%)
+No alignments
+0.01user 0.14system 0:00.15elapsed 102%CPU (0avgtext+0avgdata 245200maxresident)k
+0inputs+24outputs (0major+15439minor)pagefaults 0swaps
+# reads processed: 16
+# reads with at least one reported alignment: 0 (0.00%)
+# reads that failed to align: 16 (100.00%)
+No alignments
+0.00user 0.16system 0:00.15elapsed 107%CPU (0avgtext+0avgdata 245232maxresident)k
+0inputs+24outputs (0major+15432minor)pagefaults 0swaps
+# reads processed: 16
+# reads with at least one reported alignment: 0 (0.00%)
+# reads that failed to align: 16 (100.00%)
+No alignments
+0.00user 0.15system 0:00.15elapsed 107%CPU (0avgtext+0avgdata 245264maxresident)k
+0inputs+32outputs (0major+15443minor)pagefaults 0swaps
+# reads processed: 16
+# reads with at least one reported alignment: 1 (6.25%)
+# reads that failed to align: 15 (93.75%)
+Reported 4 alignments to 1 output stream(s)
+0.00user 0.15system 0:00.15elapsed 99%CPU (0avgtext+0avgdata 244736maxresident)k
+0inputs+24outputs (0major+15398minor)pagefaults 0swaps
+# reads processed: 15
+# reads with at least one reported alignment: 8 (53.33%)
+# reads that failed to align: 7 (46.67%)
+Reported 8 alignments to 1 output stream(s)
+0.00user 0.14system 0:00.15elapsed 101%CPU (0avgtext+0avgdata 245024maxresident)k
+0inputs+24outputs (0major+15412minor)pagefaults 0swaps
+# reads processed: 7
+# reads with at least one reported alignment: 3 (42.86%)
+# reads that failed to align: 4 (57.14%)
+Reported 20 alignments to 1 output stream(s)
+0.01user 0.14system 0:00.16elapsed 102%CPU (0avgtext+0avgdata 245456maxresident)k
+0inputs+32outputs (0major+15441minor)pagefaults 0swaps
+# reads processed: 4
+# reads with at least one reported alignment: 2 (50.00%)
+# reads that failed to align: 2 (50.00%)
+Reported 22 alignments to 1 output stream(s)
+0.00user 0.14system 0:00.15elapsed 100%CPU (0avgtext+0avgdata 245136maxresident)k
+0inputs+24outputs (0major+15422minor)pagefaults 0swaps
+# reads processed: 2
+# reads with at least one reported alignment: 2 (100.00%)
+# reads that failed to align: 0 (0.00%)
+Reported 24 alignments to 1 output stream(s)
+0.00user 0.14system 0:00.15elapsed 97%CPU (0avgtext+0avgdata 245280maxresident)k
+0inputs+24outputs (0major+15419minor)pagefaults 0swaps
