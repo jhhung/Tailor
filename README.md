@@ -3,7 +3,7 @@ Tailor
 Tailor program is a Burrows–Wheeler transform based fast short read aligner (like bowtie/BWA/SOAP2) specialized in discovering trimming and tailing events for small silencing RNAs from Next Generation Sequencing data. 
 Two shell based pipelines for miRNA or small RNA in general are included in the **utils** directory.
 
-Tailor is released under GPLv2. 
+Tailor is released under GPLv2 with additional restriction so that is only applicable to individuals and non-profits and that any for-profit company must purchase a different license.
 
 ##INSTALL
 
