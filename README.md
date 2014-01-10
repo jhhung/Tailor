@@ -7,6 +7,23 @@ Tailor is released under GPLv2 with additional restriction so that is only appli
 
 ##INSTALL
 
+*Only 64 bits systems are able to compile and run Tailor. 
+
+#### Run the binary directly without instaillation (if you are lucky)
+
+Try the precompiled binaries first, most of the linux systems should be able to run Tailor without any troubles.
+
+Please find the binary that suits your platform:
+
+```
+bin/tailor_debian_x64  // for ubuntu/fedara/...
+bin/tailor_redhat_x64  // for centos/redhat/...
+bin/tailor_mac_x64     // for OSX
+```
+
+You can rename it to "Tailor" for your convinience.
+If you don't know which one is good for your platform, just pick one and try it out.
+If unfortunately, none of them works, please see below to build a binary for your box.
 
 #### Install the dependencies
 
