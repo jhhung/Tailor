@@ -21,6 +21,9 @@ bin/tailor_redhat_x64  // for centos/redhat/...
 bin/tailor_mac_x64     // for OSX
 ```
 
+Or you can find them in the release tab in this page or at this link:
+https://github.com/jhhung/Tailor/releases
+
 You can rename it to "Tailor" for your convinience.
 If you don't know which one is good for your platform, just pick one and try it out.
 If unfortunately, none of them works, please see below to build a binary for your box.
