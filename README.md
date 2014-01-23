@@ -106,6 +106,49 @@ run_tailing_pipeline.sh -i reads.fq -s mouse/fly
 - In `run_tailing_pipeline.sh` and `intersect_all_tailor.sh`, there are "case" switch to choose different behavior according to the organism. 
 - You will need to modify this according to your need. Examples are given in the scripts. 
 
+##Download
+
+#### Indexes
+
+- making
+
+#### Test speed files
+
+- You can download all the related files for "test speed" from the link
+
+```
+
+http://www.jhhlab.tw/Tailor/speed_test_samples/
+```
+
+- And the links of original reandom reads for non-tail and having tail
+
+```
+
+http://www.jhhlab.tw/Tailor/speed_test_samples/Drosophila_melanogaster.2m.fq
+http://www.jhhlab.tw/Tailor/speed_test_samples/Drosophila_melanogaster.all.randomeTailed.fq
+```
+
+- And the test speed log (3 times)
+
+```
+
+http://www.jhhlab.tw/Tailor/speed_test_samples/test_speed.log
+http://www.jhhlab.tw/Tailor/speed_test_samples/test_speed.log2
+http://www.jhhlab.tw/Tailor/speed_test_samples/test_speed.log3
+```
+
+- And the speed time of bowtie tailing
+
+```
+
+http://www.jhhlab.tw/Tailor/speed_test_samples/tailing.log
+http://www.jhhlab.tw/Tailor/speed_test_samples/tailing.log2
+http://www.jhhlab.tw/Tailor/speed_test_samples/tailing.log3
+```
+
+- All scripts of testing speed you can find in git
+
 ##Citing Tailor
 * not yet
 
