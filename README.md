@@ -110,21 +110,30 @@ run_tailing_pipeline.sh -i reads.fq -s mouse/fly
 
 #### Indexes
 
-- making
+- Tailor indexes
+
+```
+All indexes you can find in:
+http://www.jhhlab.tw/Tailor/index/
+
+And
+http://www.jhhlab.tw/Tailor/index/hg18.tar.gz
+http://www.jhhlab.tw/Tailor/index/hg19.tar.gz
+http://www.jhhlab.tw/Tailor/index/mm9.tar.gz
+http://www.jhhlab.tw/Tailor/index/mm10.tar.gz
+```
 
 #### Test speed files
 
 - You can download all the related files for "test speed" from the link
 
 ```
-
 http://www.jhhlab.tw/Tailor/speed_test_samples/
 ```
 
 - And the links of original reandom reads for non-tail and having tail
 
 ```
-
 http://www.jhhlab.tw/Tailor/speed_test_samples/Drosophila_melanogaster.2m.fq
 http://www.jhhlab.tw/Tailor/speed_test_samples/Drosophila_melanogaster.all.randomeTailed.fq
 ```
@@ -132,7 +141,6 @@ http://www.jhhlab.tw/Tailor/speed_test_samples/Drosophila_melanogaster.all.rando
 - And the test speed log (3 times)
 
 ```
-
 http://www.jhhlab.tw/Tailor/speed_test_samples/test_speed.log
 http://www.jhhlab.tw/Tailor/speed_test_samples/test_speed.log2
 http://www.jhhlab.tw/Tailor/speed_test_samples/test_speed.log3
@@ -141,7 +149,6 @@ http://www.jhhlab.tw/Tailor/speed_test_samples/test_speed.log3
 - And the speed time of bowtie tailing
 
 ```
-
 http://www.jhhlab.tw/Tailor/speed_test_samples/tailing.log
 http://www.jhhlab.tw/Tailor/speed_test_samples/tailing.log2
 http://www.jhhlab.tw/Tailor/speed_test_samples/tailing.log3
