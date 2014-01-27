@@ -125,6 +125,8 @@ http://www.jhhlab.tw/Tailor/index/mm9.tar.gz
 http://www.jhhlab.tw/Tailor/index/mm10.tar.gz
 
 For other species with shorter genome, it should be easy to build on your machine.
+
+You can use command `lftp -c "pget -n 4 http://www.jhhlab.tw/Tailor/index/hg18.tar.gz"` for quickly download
 ```
 
 #### Speed test files for the publication
