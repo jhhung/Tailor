@@ -9,7 +9,7 @@ Tailor is released under GPLv2 with additional restriction so that is only appli
 
 *Only 64 bits systems are able to compile and run Tailor. 
 
-#### Run the binary directly without instaillation 
+#### Run the binary directly without installation 
 
 Try the precompiled binaries first, most of the linux systems should be able to run Tailor without any troubles.
 
