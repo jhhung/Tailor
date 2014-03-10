@@ -100,8 +100,8 @@ Please don't use it for other purposes.
 		}
 		if ( (255 - mapq) <= max_tail_len) {
 			*out <<	rname << '\t'
-				<<	pos << '\t'
-				<<	pos + seq.size () - mapq + 255 << '\t'
+				<<	pos - 1 << '\t'
+				<<	pos + seq.size () + mapq - 255 - 1 << '\t'
 				<<	qname << '\t'
 				<<	NH_str.substr (NH_str.find_last_of (":")+1) << '\t'
 				<<	strand << '\t'
