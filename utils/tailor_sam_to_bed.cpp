@@ -5,6 +5,9 @@
 #include <boost/program_options.hpp>
 
 using namespace std;
+
+string reverse_complement (const string&);
+
 int main (int argc, char** argv) {
 	std::string usage = R"(
 ****************************
@@ -53,9 +56,9 @@ Please don't use it for other purposes.
 	/** reading header **/
 	string line;
 	char c {in->peek ()};
-	while (c == '#' && in->good ()) {
+	while (c == '@' && in->good ()) {
 		getline (*in, line);
-		*out << line << '\n';
+		// *out << line << '\n';
 		c = in->peek ();
 	}
 	/** reading SAM **/
@@ -93,19 +96,21 @@ Please don't use it for other purposes.
 		if (mapq != 255) {
 			*in >> TL_str;
 		}
-		if (flag & 0x10) { 
-			strand = '-';
-		} else {
-			strand = '+';
-		}
+
 		if ( (255 - mapq) <= max_tail_len) {
 			*out <<	rname << '\t'
 				<<	pos - 1 << '\t'
 				<<	pos + seq.size () + mapq - 255 - 1 << '\t'
 				<<	qname << '\t'
-				<<	NH_str.substr (NH_str.find_last_of (":")+1) << '\t'
-				<<	strand << '\t'
-				<<	seq << '\t';
+				<<	NH_str.substr (NH_str.find_last_of (":")+1) << '\t';
+				
+			if (flag & 0x10) { 
+				*out << "-\t"
+					<< reverse_complement (seq) << '\t';
+			} else {
+				*out << "+\t"
+					<<  seq << '\t';
+			}
 			if (mapq!=255) {
 				*out <<	TL_str.substr (TL_str.find_last_of (":")+1) << '\t';
 			} else {
@@ -125,4 +130,23 @@ Please don't use it for other purposes.
 	return 0;
 }
 
-
+string reverse_complement (const string& sense) {
+	string reverse {sense.rbegin (), sense.rend ()};
+	for (char& c : reverse) {
+		switch (c) {
+			case 'A':
+			case 'a':
+			c = 'T'; break;
+			case 'T':
+			case 't':
+			c = 'A'; break;
+			case 'C':
+			case 'c':
+			c = 'G'; break;
+			case 'G':
+			case 'g':
+			c = 'C'; break;
+		}
+	}
+	return reverse;
+}

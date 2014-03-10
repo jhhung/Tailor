@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 ##########
 # Config #
@@ -90,6 +90,7 @@ export -f bed2lendis
 [ -z $INDEX_FA ] && echo2 "missing -g for reference fasta file" "error"
 [ ! -f $INPUT_FQ ] && echo2 "cannot file $INPUT_FQ" "error"
 [ -z "${CPU##*[!0-9]*}" ] && export CPU=8 && echo2 "using 8 CPUs" "warning"
+[ -z "${MIN_PHRED}" ] && export MIN_PHRED=20 && echo2 "using 20 as minimal phred score allowed" "warning"
 [ -z $OUTDIR ] && export OUTDIR=$PWD
 mkdir -p "${OUTDIR}" || echo2 "Cannot create directory ${OUTDIR}. Using the direcory of input fastq file" "warning"
 cd ${OUTDIR} || echo2 "Cannot access directory ${OUTDIR}..." "error"
@@ -109,7 +110,7 @@ INSERT=${FQ%.f[qa]*}.insert
 # folder #
 ##########
 MAPPING_DIR=mapping && mkdir -p $MAPPING_DIR
-FEATURES_DIR=genomic_feature && mkdor -p $FEATURES_DIR
+FEATURES_DIR=genomic_feature && mkdir -p $FEATURES_DIR
 
 ##############################
 # beginning running pipeline #
@@ -119,7 +120,7 @@ echo2 "Begin running tailing pipeline version $VERSION"
 echo2 "Checking phred version" 
 PHRED_SCORE=`perl $PIPELINE_DIRECTORY/bin/SolexaQA_piper.pl ${INPUT_FQ}`
 case ${PHRED_SCORE} in
-solexa)		OFFSET=64 ;; # Solexa+64, raw reads typically (-5, 40)
+solexa)		OFFSET=59 ;; # Solexa+64, raw reads typically (-5, 40)
 illumina)	OFFSET=64 ;; # Illumina 1.5+ Phred+64,  raw reads typically (3, 40)
 sanger)		OFFSET=33 ;; # Phred+33,  raw reads typically (0, 40) (http://en.wikipedia.org/wiki/FASTQ_format)
 *)			echo2 "unable to determine the fastq version. Using sanger..." "warning"
@@ -143,12 +144,12 @@ tailor build -i $INDEX_FA -p $INDEX
 echo2 "Mapping the input fastq to the genome reference" 
 [ ! -f .status.${STEP}.tailor_mapping ] && \
 	tailor map \
-		-i ${INPUT_FQ} \
+		-i ${PREFIX}.p${MIN_PHRED}.fq \
 		-p $INDEX \
 		-n $CPU \
-		2> $MAPPING_DIR/${PREFIX}.tailor.log && \
+		2> $MAPPING_DIR/${PREFIX}.tailor.log | \
 	tailor_sam_to_bed \
-	> $MAPPING_DIR/${PREFIX}.tailor.bed && \
+	> $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.bed2 && \
 touch .status.${STEP}.tailor_mapping
 STEP=$((STEP+1))
 
