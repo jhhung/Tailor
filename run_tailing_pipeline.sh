@@ -1,5 +1,6 @@
 #!/bin/bash -x
 
+DEBUG='-x'
 ##########
 # Config #
 ##########
@@ -7,6 +8,7 @@ export PIPELINE_DIRECTORY=$(dirname `readlink -f $0`)
 export PATH=${PIPELINE_DIRECTORY}/bin:$PATH
 export TAILOR_INDEX=$PIPELINE_DIRECTORY/indexes
 export VERSION=1.0.0
+
 #########
 # USAGE #
 #########
@@ -23,7 +25,8 @@ A generalized pipeline to analyze tailing events from Next Generation Sequencing
 usage: $0 \ 
 	-i input_file.fq \ 
 	-g dm3.fa \ 
-	-o output_directory[current directory] \ 
+	-t genomic_feature_file [ annotation/dm3.genomic_features ]
+	-o output_directory [current directory] \ 
 	-c cpu[8] 
 
 OPTIONS:
@@ -31,6 +34,7 @@ OPTIONS:
 	-h      Show this message
 	-i      Input file in fastq format; it is highly recommend to filter reads by Phred score
 	-g      Genome fasta file. The pipeline will automatically generate index with the prefix if it does not already exist
+	-t      Files to store the genomic features. See annotation folder for examples.
 <optional>
 	-o      Output directory, default <current working directory>
 	-c      Number of CPUs to use, default <8>
@@ -39,7 +43,7 @@ OPTIONS:
 EOF
 }
 
-while getopts "hi:g:o:c:q:" OPTION
+while getopts "hi:g:o:c:q:t:" OPTION
 do
 	case $OPTION in
 		h)	usage && exit 0 ;;
@@ -52,6 +56,7 @@ do
 		o)	export	OUTDIR=`readlink -f $OPTARG` ;;
 		c)	export	CPU=$OPTARG ;;
 		q)	MIN_PHRED=$OPTARG ;;
+		t)	export GENOMIC_FEATURE_FILE=$OPTARG ;;
 		?)	usage && exit 1 ;;
 	esac
 done
@@ -91,6 +96,10 @@ export -f bed2lendis
 [ ! -f $INPUT_FQ ] && echo2 "cannot file $INPUT_FQ" "error"
 [ -z "${CPU##*[!0-9]*}" ] && export CPU=8 && echo2 "using 8 CPUs" "warning"
 [ -z "${MIN_PHRED}" ] && export MIN_PHRED=20 && echo2 "using 20 as minimal phred score allowed" "warning"
+[ -z "$GENOMIC_FEATURE_FILE" ] && \
+	echo2 "-t option unspecified, using ${PIPELINE_DIRECTORY}/annotation/dm3.genomic_features" "warning" && \
+	export GENOMIC_FEATURE_FILE=${PIPELINE_DIRECTORY}/annotation/dm3.genomic_features
+
 [ -z $OUTDIR ] && export OUTDIR=$PWD
 mkdir -p "${OUTDIR}" || echo2 "Cannot create directory ${OUTDIR}. Using the direcory of input fastq file" "warning"
 cd ${OUTDIR} || echo2 "Cannot access directory ${OUTDIR}..." "error"
@@ -111,6 +120,7 @@ INSERT=${FQ%.f[qa]*}.insert
 ##########
 MAPPING_DIR=mapping && mkdir -p $MAPPING_DIR
 FEATURES_DIR=genomic_feature && mkdir -p $FEATURES_DIR
+export PDF_DIR=pdfs && mkdir -p $PDF_DIR
 
 ##############################
 # beginning running pipeline #
@@ -153,13 +163,24 @@ echo2 "Mapping the input fastq to the genome reference"
 touch .status.${STEP}.tailor_mapping
 STEP=$((STEP+1))
 
-# # intersecting to genomic features
-# echo2 "Assigning reads to different genomic structures"
-# [ ! -f .status.${STEP}.intersecting ] && \
-# 	intersect_to_genomic_feature_tailor.sh \
-# 		$MAPPING_DIR/${PREFIX}.tailor.bed2 && \
-# 	touch .status.${STEP}.intersecting
-# STEP=$((STEP+1))
+echo2 "Draw overall length distribution with tailing information"
+[ ! -f .status.${STEP}.draw_overall_lendis ] && \
+	python $PIPELINE_DIRECTORY/bin/tailor_bed2_counter.py \
+		$MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.bed2 \
+		1> $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.sum \
+		2> $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.single_nt_sum && \
+	Rscript --slave $PIPELINE_DIRECTORY/bin/draw_tailor_lendis.R \
+		$MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.single_nt_sum \
+		$PDF_DIR/${PREFIX}.p${MIN_PHRED}.pdf && \
+touch .status.${STEP}.draw_overall_lendis
+STEP=$((STEP+1))
+
+echo2 "Assigning reads to different genomic structures"
+[ ! -f .status.${STEP}.intersecting ] && \
+	bash $DEBUG intersect_to_genomic_feature_tailor.sh \
+		$MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.bed2 && \
+	touch .status.${STEP}.intersecting
+STEP=$((STEP+1))
 
 
 
