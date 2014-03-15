@@ -1,236 +1,197 @@
 #! /bin/bash -x
 
-# This script is small RNA tailing analysis pipeline 
-# associated with the Tailor software.
 
-################
-# Major Config #
-################
-VERSION="1.0.0"
-TAILOR_PATH=
-# function to check whether current shell can find all the software/programs needed to finish running the pipeline
-function checkExist {
-	echo -ne "\e[1;32m\"${1}\" is using: \e[0m" && which "$1"
-	[[ $? != 0 ]] && echo -e "\e[1;36mError: cannot find software/function ${1}! Please make sure that you have installed the pipeline correctly.\nExiting...\e[0m" && \
-	exit 1
-}
-
-echo -e "\e[1;35mTesting required softwares/scripts:\e[0m"
-checkExist "echo" # used to print message
-checkExist "tee" # used to store to file while keeping piping
-checkExist "date" # used to get time
-checkExist "basename" # used to get basename
-checkExist "dirname" # used to get diretory name
-checkExist "mkdir" # used to creat new directory
-checkExist "readlink" # used to find the real location of a file
-checkExist "rm" # used to delete file/directory
-checkExist "mv" # used to move or rename file
-checkExist "sort" # used to sort alphnum
-checkExist "touch" # used to create new empty file
-checkExist "md5sum" # used to create a uid so that the status file for different run will not mess up eath other
-checkExist "awk" # a programming language
-checkExist "samtools" # tools to process sam/bam file
-checkExist "bedtools" # tools to process bed formatted file
-checkExist "tailor" # tools to perform mapping
-echo -e "\e[1;35mDone with testing required softwares/scripts, starting pipeline...\e[0m"
-
-
+##########
+# Config #
+##########
+export PIPELINE_DIRECTORY=$(dirname `readlink -f $0`)
+export PATH=${PIPELINE_DIRECTORY}/bin:$PATH
+export TAILOR_INDEX=$PIPELINE_DIRECTORY/indexes
+export VERSION=1.0.0
 #########
 # USAGE #
 #########
 # usage function
 usage() {
-echo -en "\e[1;36m"
 cat << EOF
 
-usage: $0 -i input_file.fq -p hairpin.fa -m mature.fa -o output_directory[current directory] -c cpu[8] 
+++++++++++++++++++++++++++
++Tailor microRNA pipeline+
+++++++++++++++++++++++++++
 
-This is a small RNA tailing pipeline associated with the software Tailor (git@github.com:jhhung/Tailor.git).
+A specialized pipeline to analyze tailing events for microRNA from Next Generation Sequencing.
+
+usage: $0 \ 
+	-i  input_file.fq \ 
+	-H  miRBase.hairpin.fa \ 
+	-M  miRBase.mature.fa \ 
+	-o  output_directory [current directory] \ 
+	-c  cpu[8] 
 
 OPTIONS:
+<required>
 	-h      Show this message
-	-i      Input file in fastq
-	-m      Mature miRNA fasta file from miRBase
-	-p      Hairpin fasta file from miRBase
-	-o      Output directory, default: current directory
-	-c      Number of CPUs to use, default: 8
-
+	-i      Input file in fastq format; it is highly recommend to filter reads by Phred score
+	-H      annotated microRNA hairpin sequence in fasta file. The pipeline will automatically generate index with the prefix if it does not already exist
+	-M      annotated microRNA mature sequence in fasta format. It is used to annotation the 5' and 3' ends
+<optional>
+	-o      Output directory, default <current working directory>
+	-c      Number of CPUs to use, default <8>
+	-q      The Phred score used to filter the reads. One read needs to have all its bases no less than this value to pass, default <20>
+	
 EOF
-echo -en "\e[0m"
 }
 
 # taking options
-while getopts "hi:p:o:c:m:" OPTION
+while getopts "hi:H:M:o:c:q:" OPTION
 do
 	case $OPTION in
-		h)
-			usage && exit 1
+		h)	usage && exit 0 ;;
+		i)	export	INPUT_FQ=`readlink -f $OPTARG` ;;
+		H)	HAIRPIN_INDEX_FA=`readlink -f $OPTARG` 
+			HAIRPIN_INDEX_FA_NAME=`basename $INDEX_FA`
+			HAIRPIN_INDEX_PREFIX=${INDEX_FA_NAME%.fa*}
+			HAIRPIN_INDEX=$TAILOR_INDEX/$INDEX_PREFIX
 		;;
-		i)
-			INPUT_FQ=`readlink -f $OPTARG`
-		;;
-		o)
-			OUTDIR=$OPTARG
-		;;
-		c)
-			CPU=$OPTARG
-		;;
-		p)
-			HAIRPIN_FA=`readlink -f $OPTARG`
-		;;
-		m)
-			MATURE_FA=`readlink -f $OPTARG`
-		;;
-		?)
-			usage && exit 1
-		;;
+		M)	MATURE_FA=`readlink -f $OPTARG` ;;
+		o)	export	OUTDIR=`readlink -f $OPTARG` ;;
+		c)	export	CPU=$OPTARG ;;
+		q)	MIN_PHRED=$OPTARG ;;
+		?)	usage && exit 1 ;;
 	esac
 done
 
-# if INPUT_FQ or HAIRPIN_FA is undefined, print out usage and exit
-if [[ -z $INPUT_FQ ]] || [[ -z $HAIRPIN_FA ]] || [[ -z $MATURE_FA ]]
-then
-	usage && exit 1
-fi
+#######################
+# Function definition #
+#######################
+function echo2 {
+COLOR_GREEN="\e[32;40m";
+COLOR_RED_BOLD="\e[31;1m"; 
+COLOR_MAGENTA="\e[35;40m"; 
+COLOR_END="\e[0m"; 	
+ISO_8601='%Y-%m-%d %H:%M:%S %Z'
+case $2 in 
+	error)		echo -e $COLOR_RED_BOLD"[`date "+$ISO_8601"`] Error: $1${COLOR_END}" && exit 1 ;;
+	warning)	echo -e $COLOR_MAGENTA"[`date "+$ISO_8601"`] Warning: $1${COLOR_END}" ;;
+	*)			echo -e $COLOR_GREEN"[`date "+$ISO_8601"`] $1${COLOR_END}";;
+esac
+}
+export -f echo2
 
-# check file status
-[ ! -s $INPUT_FQ ]  && echo -e "\e[1;31mError: cannot open $INPUT_FQ \e[0m" && exit 1
-[ ! -s $HAIRPIN_FA ] && echo -e "\e[1;31mError: cannot open $HAIRPIN_FA\e[0m" && exit 1
-[ ! -s $MATURE_FA ] && echo -e "\e[1;31mError: cannot open $MATURE_FA\e[0m" && exit 1 
+function bedwc {
+	awk '{a[$7]=$4}END{COUNTER=0; for (b in a){COUNTER+=a[b]} printf "%d" , COUNTER}' $1
+}
+export -f bedwc 
 
-# if CPU is undefined or containing non-numeric char, then use 8
-[ ! -z "${CPU##*[!0-9]*}" ] || CPU=8
+function bed2lendis {
+	awk '{a[$7]=$4}END{m=0; for (b in a){c[length(b)]+=a[b]; if (length(b)>m) m=length(b)} for (d=1;d<=m;++d) {print d"\t"(c[d]?c[d]:0)}}'  $1 | sort -k1,1n 
+}
+export -f bed2lendis
 
-# OUTPUT directory defined? otherwise use current directory
-[ ! -z $OUTDIR ] || OUTDIR=$PWD
-
-# test wether we need to create the new directory
-mkdir -p "${OUTDIR}"
-if [[ $? == 1 ]]; then echo -e "\e[1;31mWarning: Cannot create directory ${OUTDIR}. Using the current direcory\e[0m" && OUTDIR=$PWD ;fi  
-
-# enter destination direcotry
-cd ${OUTDIR}
-if [[ $? == 1 ]]; then echo -e "\e[1;31mError: Cannot access directory ${OUTDIR}... Exiting...\e[0m" && exit 1 ;fi
-
-# test writtability
-touch .writting_permission && rm -rf .writting_permission
-if [[ $? == 1 ]]; then echo -e "\e[1;31mError: Cannot write in directory ${OUTDIR}... Exiting...\e[0m"  && exit 1 ;fi
+##################
+# File/Dir check #
+##################
+[ -z $INPUT_FQ ]  && echo2 "missing -i for input fastq file" "error"
+[ -z $MATURE_FA ] && echo2 "missing -M for mirBase mature miRNA in fasta format" "error"
+[ -z $HAIRPIN_INDEX_FA ] && echo2 "missing -H for mirBase hairpin in fasta format" "error"
+[ ! -s $INPUT_FQ ] && echo2 "cannot find file $INPUT_FQ" "error"
+[ ! -s $MATURE_FA ] && echo2 "cannot find file $MATURE_FA" "error"
+[ ! -s $HAIRPIN_INDEX_FA ] && echo2 "cannot find file $HAIRPIN_INDEX_FA" "error"
+[ -z "${CPU##*[!0-9]*}" ] && export CPU=8 && echo2 "using 8 CPUs" "warning"
+[ -z "${MIN_PHRED}" ] && export MIN_PHRED=20 && echo2 "using 20 as minimal phred score allowed" "warning"
+[ -z $OUTDIR ] && export OUTDIR=$PWD
+mkdir -p "${OUTDIR}" || echo2 "Cannot create directory ${OUTDIR}. Using the direcory of input fastq file" "warning"
+cd ${OUTDIR} || echo2 "Cannot access directory ${OUTDIR}..." "error"
+touch .writting_permission  || echo2 "Cannot write in directory ${OUTDIR}..." "error"
+rm -rf .writting_permission
 
 #############
 # Variables #
 #############
-# Prefix
-PREFIX=`basename $INPUT_FQ` && PREFIX=${PREFIX%.f[qa]*}
-
-# index configuration
-INDEX=${HAIRPIN_FA%.fa*}
-INDEX_PREFIX=`basename $HAIRPIN_FA`
-INDEX_FOLDER=`dirname $HAIRPIN_FA`
-MATURE_BASENAME=`basename $MATURE_FA`
-# test if the user has privilege to write in the hairpin.fa folder
-touch ${INDEX_FOLDER}/.writting_permission && rm -rf ${INDEX_FOLDER}/.writting_permission || INDEX=$PWD/$INDEX_PREFIX
-
-# step counter
 STEP=1
+FQ=`basename $INPUT_FQ`
+export PREFIX=${FQ%.f[aq]*}
+JOBUID=`echo ${FQ##*/} | md5sum | cut -d" " -f1`
+INSERT=${FQ%.f[qa]*}.insert
 
-# unique job id
-JOBUID=`echo ${PREFIX} | md5sum | cut -d" " -f1`
-
-# formating date for log
-ISO_8601='%Y-%m-%d %H:%M:%S %Z'
-
-# table to store the basic statistics of the library (genomic mappability). PS: counts of each genomic features will be stored in .summary file, produced by intersect_all.sh 
-TABLE=${PREFIX}.stats
-
-# log file to store the timing
-LOG=${PREFIX}.log
+##########
+# folder #
+##########
+ANNOTATION_DIR=annotate_mature_miRNA && mkdir -p $ANNOTATION_DIR
+MAPPING_DIR=hairpin_mapping && mkdir -p $MAPPING_DIR
+export PDF_DIR=pdfs && mkdir -p $PDF_DIR
 
 ##############################
 # beginning running pipeline #
 ##############################
-# if log file already exists, then "resume" it. otherwise "begin" it.
-[ ! -f $LOG ] && \
-echo -e "`date "+$ISO_8601"`\tbeginning Tailor pipeline for small RNA version $VERSION"   | tee -a $LOG || \
-echo -e "`date "+$ISO_8601"`\tresuming Tailor pipeline for small RNA version $VERSION" | tee -a $LOG
+echo2 "Begin running microRNA tailing pipeline version $VERSION"
+echo2 "Checking phred version" 
+PHRED_SCORE=`perl $PIPELINE_DIRECTORY/bin/SolexaQA_piper.pl ${INPUT_FQ}`
+case ${PHRED_SCORE} in
+solexa)		OFFSET=59 ;; # Solexa+64, raw reads typically (-5, 40)
+illumina)	OFFSET=64 ;; # Illumina 1.5+ Phred+64,  raw reads typically (3, 40)
+sanger)		OFFSET=33 ;; # Phred+33,  raw reads typically (0, 40) (http://en.wikipedia.org/wiki/FASTQ_format)
+*)			echo2 "unable to determine the fastq version. Using sanger..." "warning"
+			OFFSET=33 ;;
+esac
 
-# build index, if an index has already exist, tailor will not rewrite it, until using -f option
-echo -e "`date "+$ISO_8601"`\tbuilding hairpin index if not exist" | tee -a $LOG
-[ ! -f .${JOBUID}.status.build_hairpin_index ] && \
-	tailor build -i $HAIRPIN_FA -p $INDEX && \
-	touch .${JOBUID}.status.build_hairpin_index
+echo2 "Filtering the fastq by the phred score and pool reads with same sequence"
+[ ! -f .status.${STEP}.phred_filter_and_pool ] && \
+phred_filter_and_pool \
+	-i	$INPUT_FQ \
+	-q	$MIN_PHRED \
+	-s	$OFFSET \
+	-o	$MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.fq \
+	2>  $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.phred_filter.log
+touch .status.${STEP}.phred_filter_and_pool
 STEP=$((STEP+1))
 
-# map annotated mature miRNA sequence to hairpin index and determine the annotated coordinate
-echo -e "`date "+$ISO_8601"`\tmap annoated mature miRNA to hairpin to determine the annoated coordiate" | tee -a $LOG
+echo2 "Building index, if not already exist"
+tailor build -i $HAIRPIN_INDEX_FA -p $HAIRPIN_INDEX
+
+echo2 "Map annoated mature miRNA to hairpin to determine the annoated coordiate"
 [ ! -f .${JOBUID}.status.find_annotated_coordinates ] && \
-	awk '{printf "@%s\n", substr($1,2); getline; l=length($1); printf "%s\n+\n", $1; for (i=1;i<=l;++i) printf "%s","I"; printf "\n" }' $MATURE_FA > ${MATURE_BASENAME%.fa*}.fq && \
-	tailor map -i ${MATURE_BASENAME%.fa*}.fq -p $INDEX -n $CPU | \
+	awk '{printf "@%s\n", substr($1,2); getline; l=length($1); printf "%s\n+\n", $1; for (i=1;i<=l;++i) printf "%s","I"; printf "\n" }' $MATURE_FA > $ANNOTATION_DIR/mature.fq && \
+	tailor map -i $ANNOTATION_DIR/mature.fq -p $HAIRPIN_INDEX -n $CPU | \
 	samtools view -bS - | \
 	bedtools bamtobed -i - > \
-	${PREFIX}.annotated_coordinates.bed && \
-	rm -rf ${MATURE_BASENAME%.fa*}.fq && \
+	$ANNOTATION_DIR/mature.annotated_coordinates.bed && \
+	rm -rf $ANNOTATION_DIR/mature.fq && \
 	touch .${JOBUID}.status.find_annotated_coordinates
 STEP=$((STEP+1))
 
-# perform the mapping
-echo -e "`date "+$ISO_8601"`\tmap small RNA reads to the index" | tee -a $LOG
-[ ! -f .${JOBUID}.status.tailor_mapping ] && \
-	tailor map -i $INPUT_FQ -p $INDEX -n $CPU -o ${PREFIX}.tailor.sam && \
-	touch .${JOBUID}.status.tailor_mapping
+echo2 "Mapping the input fastq to the hairpin reference" 
+[ ! -f .status.${STEP}.tailor_mapping ] && \
+	tailor map \
+		-i ${PREFIX}.p${MIN_PHRED}.fq \
+		-p $HAIRPIN_INDEX \
+		-n $CPU \
+		2> $MAPPING_DIR/${PREFIX}.tailor.log | \
+	tailor_sam_to_bed \
+	> $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.bed2 && \
+touch .status.${STEP}.tailor_mapping
 STEP=$((STEP+1))
 
-# separating perfect match and tailing match and count their length distribution
-echo -e "`date "+$ISO_8601"`\tseparating perfect mapping and prefix mapping and generate bed" | tee -a $LOG
-[ ! -f .${JOBUID}.status.separate_perfect_and_tail ] && \
-	awk 'BEGIN \
-	{ \
-		FS="\t"; OFS="\t"; \
-		getline; \
-		while (substr($1,1,1)=="@") \
-		{ \
-			print $0 >> "/dev/stdout"; print $0 >> "/dev/stderr"; \
-			getline; \
-		} \
-		if ($5<255) print $0 >> "/dev/stderr"; \
-		else print $0 >> "/dev/stdout"; \
-	} \
-	{ \
-		if ($5<255) print $0 >> "/dev/stderr"; \
-		else print $0 >> "/dev/stdout"; \
-	}' ${PREFIX}.tailor.sam \
-	1> ${PREFIX}.tailor.perfectMatch.sam \
-	2> ${PREFIX}.tailor.tailedMatch.sam && \
-	samtools view -bS ${PREFIX}.tailor.perfectMatch.sam | tee ${PREFIX}.tailor.perfectMatch.bam | bedtools bamtobed -i - | tee ${PREFIX}.tailor.perfectMatch.bed | awk 'BEGIN{minLen=18; maxLen=30}{l=$3-$2; if (l<minLen) minLen=l; if (l>maxLen) maxLen=l; ++ct[l]}END{for (i=minLen;i<=maxLen;++i){printf "%d\t%d\n", i, ct[i]?ct[i]:0}}' > ${PREFIX}.tailor.perfectMatch.lenDis && \
-	samtools view -bS ${PREFIX}.tailor.tailedMatch.sam  | tee ${PREFIX}.tailor.tailedMatch.bam  | bedtools bamtobed -i - | tee ${PREFIX}.tailor.tailedMatch.bed  | awk 'BEGIN{minLen=18; maxLen=30}{l=$3-$2; if (l<minLen) minLen=l; if (l>maxLen) maxLen=l; ++ct[l]}END{for (i=minLen;i<=maxLen;++i){printf "%d\t%d\n", i, ct[i]?ct[i]:0}}' > ${PREFIX}.tailor.tailedMatch.lenDis
-	touch .${JOBUID}.status.separate_perfect_and_tail
+echo2 "Draw overall length distribution with tailing information"
+[ ! -f .status.${STEP}.draw_overall_lendis ] && \
+	python $PIPELINE_DIRECTORY/bin/tailor_bed2_counter.py \
+		$MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.bed2 \
+		1> $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.sum \
+		2> $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.single_nt_sum && \
+	Rscript --slave $PIPELINE_DIRECTORY/bin/draw_tailor_lendis.R \
+		$MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.single_nt_sum \
+		$PDF_DIR/${PREFIX}.p${MIN_PHRED}.pdf && \
+touch .status.${STEP}.draw_overall_lendis
 STEP=$((STEP+1))
 
 # rename the reads based on the mature name;adjust the 5' and 3' end positions
-echo -e "`date "+$ISO_8601"`\treannoated the bed file based on miRBase annoated mature name" | tee -a $LOG
+echo2 "Adjust the coordinate according to the annotated mature miRNA"
 [ ! -f .${JOBUID}.status.reannotate ] && \
-	cat ${PREFIX}.tailor.perfectMatch.bed ${PREFIX}.tailor.tailedMatch.bed | \
-	bedtools intersect -wo -a - -b ${PREFIX}.annotated_coordinates.bed -f 0.75 | \
+	bedtools intersect -wo -a $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.bed2 -b ${PREFIX}.annotated_coordinates.bed -f 0.75 | \
 	awk 'BEGIN{FS="\t";OFS="\t"}{print $10,$2-$8,$3-$9,$4,$5,$6}' \
-	> ${PREFIX}.reannoated.bed && \
+	> $MAPPING_DIR/${PREFIX}.relative.bed && \
 	touch .${JOBUID}.status.reannotate
 STEP=$((STEP+1))
-
-# getting statistics on each mature miRNA
-echo -e "`date "+$ISO_8601"`\tgetting statistics" | tee -a $LOG
-[ ! -f .${JOBUID}.status.statistics ] && \
-	echo -ne "miRNA\ttotal counts\tperfect match counts\tprefix match counts\n" > ${PREFIX}.count && \
-	awk '{if ($5==255) ++pm[$1]; else ++pf[$1]; ++all[$1]; }END{for (mir in all) {printf "%s\t%d\t%d\t%d\n", mir, all[mir], pm[mir]?pm[mir]:0, pf[mir]?pf[mir]:0}}' ${PREFIX}.reannoated.bed >> ${PREFIX}.count && \
-	touch .${JOBUID}.status.statistics
-STEP=$((STEP+1))
-
-################
-# draw figures #
-################
-checkExist "Rscript" # R, a programing language
-checkExist "draw_lendis.R" # drawing reads
-draw_lendis.R ${PREFIX}.tailor.perfectMatch.lenDis ${PREFIX}.tailor.tailedMatch.lenDis $PREFIX
-
-
 
 
 

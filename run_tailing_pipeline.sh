@@ -1,6 +1,5 @@
 #!/bin/bash -x
 
-DEBUG='-x'
 ##########
 # Config #
 ##########
@@ -32,7 +31,7 @@ usage: $0 \
 OPTIONS:
 <required>
 	-h      Show this message
-	-i      Input file in fastq format; it is highly recommend to filter reads by Phred score
+	-i      Input file in fastq format; already has its adaptor and baracode removed
 	-g      Genome fasta file. The pipeline will automatically generate index with the prefix if it does not already exist
 	-t      Files to store the genomic features. See annotation folder for examples.
 <optional>
@@ -93,7 +92,7 @@ export -f bed2lendis
 ##################
 [ -z $INPUT_FQ ] && echo2 "missing -i for input fastq file" "error"
 [ -z $INDEX_FA ] && echo2 "missing -g for reference fasta file" "error"
-[ ! -f $INPUT_FQ ] && echo2 "cannot file $INPUT_FQ" "error"
+[ ! -s $INPUT_FQ ] && echo2 "cannot file file $INPUT_FQ" "error"
 [ -z "${CPU##*[!0-9]*}" ] && export CPU=8 && echo2 "using 8 CPUs" "warning"
 [ -z "${MIN_PHRED}" ] && export MIN_PHRED=20 && echo2 "using 20 as minimal phred score allowed" "warning"
 [ -z "$GENOMIC_FEATURE_FILE" ] && \

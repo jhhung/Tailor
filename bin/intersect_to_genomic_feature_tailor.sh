@@ -1,13 +1,4 @@
 
-# small RNA pipeline from piper: https://github.com/bowhan/piper.git
-# piper: https://github.com/bowhan/piper.git
-# An integrated pipeline for small RNA analysis 
-# from small RNA Seq, RNASeq, CAGE/Degradome, ChIP-Seq and Genomic-Seq
-# Wei Wang (wei.wang2@umassmed.edu)
-# Bo W Han (bo.han@umassmed.edu, bowhan@me.com)
-# the Zamore lab and the Weng lab
-# University of Massachusetts Medical School
-
 TOTAL_BED=$1
 UNIQ_BED=${TOTAL_BED%bed2}uniq.bed2
 awk '$5==1' $TOTAL_BED > $UNIQ_BED
