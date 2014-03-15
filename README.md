@@ -1,7 +1,9 @@
 Tailor
 =========
-Tailor program is a Burrows–Wheeler transform (BWT) based fast aligner (like bowtie/BWA/SOAP2) specialized in discovering tailing events for small silencing RNAs from Next Generation Sequencing data.   
+Tailor program is a Burrows–Wheeler transform (BWT) based fast aligner (like bowtie/BWA/SOAP2) specialized in discovering tailing events for small silencing RNAs from Next Generation Sequencing data.  
+
 Tailor is released under GPLv2 with additional restriction so that is only applicable to individuals and non-profits and that any for-profit company must purchase a different license.   
+
 Two shell based pipelines are provided using fastq as input and produce publication quality figures.    
 
 ##INSTALL
@@ -46,21 +48,22 @@ make
 make
 ```
 	
-##USAGE - tailor
+##USAGE
 
-#### Build genomic index (similar to bowtie-build)
+#### tailor
+##### Build genomic index (similar to bowtie-build)
 
 ```bash
 tailor build -i genome.fa -p genome
 ```
 
-#### Mapping 
+##### Mapping 
 
 ```bash
 tailor map -p genome -n 8 -i smallRNA.fq
 ```
 
-####USAGE - tailing pipeline
+#### tailing pipeline
 
 ```bash
 # input reads.fq
@@ -77,7 +80,7 @@ run_miRNA_tailing_pipeline.sh \
 	-q 20
 ```
 
-####USAGE - microRNA tailing pipeline
+#### microRNA tailing pipeline
 
 ```bash
 # input reads.fq
@@ -112,7 +115,7 @@ http://www.jhhlab.tw/Tailor/index/mm9.tar.gz
 http://www.jhhlab.tw/Tailor/index/mm10.tar.gz
 
 # download
-lftp -c "pget -n 4 http://www.jhhlab.tw/Tailor/index/hg18.tar.gz
+lftp -c "pget -n 4 http://www.jhhlab.tw/Tailor/index/hg18.tar.gz"
 ```
 
 #### Speed test files for the publication
@@ -152,6 +155,8 @@ http://www.jhhlab.tw/Tailor/speed_test_samples/tailing.log3
 * not yet
 
 ##Contact
-	Jui-Hung Hung <juihunghung@gmail.com>
-	Chou Min-Te <poi5305@gmail.com>
-	Bo W Han <bowhan@me.com>
+```bash
+	Jui-Hung Hung <juihunghung `at` gmail.com>
+	Chou Min-Te <poi5305 `at` gmail.com>
+	Bo W Han <bowhan `at` me.com>
+```
