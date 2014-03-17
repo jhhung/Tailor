@@ -1,0 +1,46 @@
+COMMON_FOLDER=$PIPELINE_DIRECTORY/annotation/TAIR10
+CDS=${COMMON_FOLDER}/TAIR10.CDS.bed
+chromosome=${COMMON_FOLDER}/TAIR10.chromosome.bed
+exon=${COMMON_FOLDER}/TAIR10.exon.bed
+five_prime_UTR=${COMMON_FOLDER}/TAIR10.five_prime_UTR.bed
+gene=${COMMON_FOLDER}/TAIR10.gene.bed
+TAIR10_GFF3_genes_transposons=${COMMON_FOLDER}/TAIR10_GFF3_genes_transposons.bed
+miRNA=${COMMON_FOLDER}/TAIR10.miRNA.bed
+mRNA=${COMMON_FOLDER}/TAIR10.mRNA.bed
+ncRNA=${COMMON_FOLDER}/TAIR10.ncRNA.bed
+protein=${COMMON_FOLDER}/TAIR10.protein.bed
+pseudogene=${COMMON_FOLDER}/TAIR10.pseudogene.bed
+pseudogenic_exon=${COMMON_FOLDER}/TAIR10.pseudogenic_exon.bed
+pseudogenic_transcript=${COMMON_FOLDER}/TAIR10.pseudogenic_transcript.bed
+rRNA=${COMMON_FOLDER}/TAIR10.rRNA.bed
+snoRNA=${COMMON_FOLDER}/TAIR10.snoRNA.bed
+snRNA=${COMMON_FOLDER}/TAIR10.snRNA.bed
+three_prime_UTR=${COMMON_FOLDER}/TAIR10.three_prime_UTR.bed
+transposable_element=${COMMON_FOLDER}/TAIR10.transposable_element.bed
+transposable_element_gene=${COMMON_FOLDER}/TAIR10.transposable_element_gene.bed
+transposon_fragment=${COMMON_FOLDER}/TAIR10.transposon_fragment.bed
+tRNA=${COMMON_FOLDER}/TAIR10.tRNA.bed
+
+	declare -a TARGETS=( \
+"CDS" \
+"chromosome" \
+"exon" \
+"five_prime_UTR" \
+"gene" \
+"TAIR10_GFF3_genes_transposons" \
+"miRNA" \
+"mRNA" \
+"ncRNA" \
+"protein" \
+"pseudogene" \
+"pseudogenic_exon" \
+"pseudogenic_transcript" \
+"rRNA" \
+"snoRNA" \
+"snRNA" \
+"three_prime_UTR" \
+"transposable_element" \
+"transposable_element_gene" \
+"transposon_fragment" \
+"tRNA" \
+)

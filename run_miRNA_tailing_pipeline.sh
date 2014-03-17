@@ -8,10 +8,10 @@ export PIPELINE_DIRECTORY=$(dirname `readlink -f $0`)
 export PATH=${PIPELINE_DIRECTORY}/bin:$PATH
 export TAILOR_INDEX=$PIPELINE_DIRECTORY/indexes
 export VERSION=1.0.0
+
 #########
 # USAGE #
 #########
-# usage function
 usage() {
 cat << EOF
 
@@ -42,7 +42,6 @@ OPTIONS:
 EOF
 }
 
-# taking options
 while getopts "hi:H:M:o:c:q:" OPTION
 do
 	case $OPTION in
@@ -65,16 +64,16 @@ done
 # Function definition #
 #######################
 function echo2 {
-COLOR_GREEN="\e[32;40m";
-COLOR_RED_BOLD="\e[31;1m"; 
-COLOR_MAGENTA="\e[35;40m"; 
-COLOR_END="\e[0m"; 	
-ISO_8601='%Y-%m-%d %H:%M:%S %Z'
-case $2 in 
-	error)		echo -e $COLOR_RED_BOLD"[`date "+$ISO_8601"`] Error: $1${COLOR_END}" && exit 1 ;;
-	warning)	echo -e $COLOR_MAGENTA"[`date "+$ISO_8601"`] Warning: $1${COLOR_END}" ;;
-	*)			echo -e $COLOR_GREEN"[`date "+$ISO_8601"`] $1${COLOR_END}";;
-esac
+	COLOR_GREEN="\e[32;40m";
+	COLOR_RED_BOLD="\e[31;1m"; 
+	COLOR_MAGENTA="\e[35;40m"; 
+	COLOR_END="\e[0m"; 	
+	ISO_8601='%Y-%m-%d %H:%M:%S %Z'
+	case $2 in 
+		error)		echo -e $COLOR_RED_BOLD"[`date "+$ISO_8601"`] Error: $1${COLOR_END}" && exit 1 ;;
+		warning)	echo -e $COLOR_MAGENTA"[`date "+$ISO_8601"`] Warning: $1${COLOR_END}" ;;
+		*)			echo -e $COLOR_GREEN"[`date "+$ISO_8601"`] $1${COLOR_END}";;
+	esac
 }
 export -f echo2
 
@@ -119,6 +118,7 @@ INSERT=${FQ%.f[qa]*}.insert
 ##########
 ANNOTATION_DIR=annotate_mature_miRNA && mkdir -p $ANNOTATION_DIR
 MAPPING_DIR=hairpin_mapping && mkdir -p $MAPPING_DIR
+BALLOON_DIR=balloon_plot_individual && mkdir -p $BALLOON_DIR
 export PDF_DIR=pdfs && mkdir -p $PDF_DIR
 
 ##############################
@@ -135,62 +135,75 @@ sanger)		OFFSET=33 ;; # Phred+33,  raw reads typically (0, 40) (http://en.wikipe
 			OFFSET=33 ;;
 esac
 
+echo2 "Building index, if not already exist"
+tailor build -i $HAIRPIN_INDEX_FA -p $HAIRPIN_INDEX 2>/dev/null
+
 echo2 "Filtering the fastq by the phred score and pool reads with same sequence"
-[ ! -f .status.${STEP}.phred_filter_and_pool ] && \
+[ ! -f .${JOBUID}.status.${STEP}.phred_filter_and_pool ] && \
 phred_filter_and_pool \
 	-i	$INPUT_FQ \
 	-q	$MIN_PHRED \
 	-s	$OFFSET \
 	-o	$MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.fq \
 	2>  $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.phred_filter.log
-touch .status.${STEP}.phred_filter_and_pool
+touch .${JOBUID}.status.${STEP}.phred_filter_and_pool
 STEP=$((STEP+1))
 
-echo2 "Building index, if not already exist"
-tailor build -i $HAIRPIN_INDEX_FA -p $HAIRPIN_INDEX
-
 echo2 "Map annoated mature miRNA to hairpin to determine the annoated coordiate"
-[ ! -f .${JOBUID}.status.find_annotated_coordinates ] && \
+[ ! -f .${JOBUID}.status.${STEP}.find_annotated_coordinates ] && \
 	awk '{printf "@%s\n", substr($1,2); getline; l=length($1); printf "%s\n+\n", $1; for (i=1;i<=l;++i) printf "%s","I"; printf "\n" }' $MATURE_FA > $ANNOTATION_DIR/mature.fq && \
 	tailor map -i $ANNOTATION_DIR/mature.fq -p $HAIRPIN_INDEX -n $CPU | \
 	samtools view -bS - | \
 	bedtools bamtobed -i - > \
 	$ANNOTATION_DIR/mature.annotated_coordinates.bed && \
 	rm -rf $ANNOTATION_DIR/mature.fq && \
-	touch .${JOBUID}.status.find_annotated_coordinates
+	touch .${JOBUID}.status.${STEP}.find_annotated_coordinates
 STEP=$((STEP+1))
 
 echo2 "Mapping the input fastq to the hairpin reference" 
-[ ! -f .status.${STEP}.tailor_mapping ] && \
+[ ! -f .${JOBUID}.status.${STEP}.tailor_mapping ] && \
 	tailor map \
 		-i ${PREFIX}.p${MIN_PHRED}.fq \
 		-p $HAIRPIN_INDEX \
 		-n $CPU \
-		2> $MAPPING_DIR/${PREFIX}.tailor.log | \
+		2> $MAPPING_DIR/${PREFIX}.hairpin.tailor.log | \
 	tailor_sam_to_bed \
-	> $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.bed2 && \
-touch .status.${STEP}.tailor_mapping
+	> $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.hairpin.bed2 && \
+touch .${JOBUID}.status.${STEP}.tailor_mapping
 STEP=$((STEP+1))
 
 echo2 "Draw overall length distribution with tailing information"
-[ ! -f .status.${STEP}.draw_overall_lendis ] && \
+[ ! -f .${JOBUID}.status.${STEP}.draw_overall_lendis ] && \
 	python $PIPELINE_DIRECTORY/bin/tailor_bed2_counter.py \
-		$MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.bed2 \
-		1> $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.sum \
-		2> $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.single_nt_sum && \
+		$MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.hairpin.bed2 \
+		1> $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.hairpin.sum \
+		2> $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.hairpin.single_nt_sum && \
 	Rscript --slave $PIPELINE_DIRECTORY/bin/draw_tailor_lendis.R \
-		$MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.single_nt_sum \
-		$PDF_DIR/${PREFIX}.p${MIN_PHRED}.pdf && \
-touch .status.${STEP}.draw_overall_lendis
+		$MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.hairpin.single_nt_sum \
+		$PDF_DIR/${PREFIX}.p${MIN_PHRED}.hairpin.pdf \
+		${PREFIX} \
+		"total miRNA" && \
+touch .${JOBUID}.status.${STEP}.draw_overall_lendis
 STEP=$((STEP+1))
 
-# rename the reads based on the mature name;adjust the 5' and 3' end positions
 echo2 "Adjust the coordinate according to the annotated mature miRNA"
-[ ! -f .${JOBUID}.status.reannotate ] && \
-	bedtools intersect -wo -a $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.bed2 -b ${PREFIX}.annotated_coordinates.bed -f 0.75 | \
-	awk 'BEGIN{FS="\t";OFS="\t"}{print $10,$2-$8,$3-$9,$4,$5,$6}' \
+[ ! -f .${JOBUID}.status.${STEP}.reannotate ] && \
+	bedtools intersect -wo -s -a $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.hairpin.bed2 -b $ANNOTATION_DIR/mature.annotated_coordinates.bed -f 0.75 | \
+	tee $MAPPING_DIR/${PREFIX}.relative.bed.wo | \
+	awk 'BEGIN{FS="\t";OFS="\t"}{print $13,$11-$2,$3-$12,$4,$5,$6,$7,$8,$9}' \
 	> $MAPPING_DIR/${PREFIX}.relative.bed && \
-	touch .${JOBUID}.status.reannotate
+	touch .${JOBUID}.status.${STEP}.reannotate
+STEP=$((STEP+1))
+
+echo2 "Draw balloon plot for tailing"
+[ ! -f .${JOBUID}.status.${STEP}.draw_balloon ] && \
+	Rscript --slave $PIPELINE_DIRECTORY/bin/draw_tailor_balloon.R  \
+		$MAPPING_DIR/${PREFIX}.relative.bed \
+		$CPU \
+		$PREFIX \
+		$BALLOON_DIR && \
+	gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=$PDF_DIR/${PREFIX}.p${MIN_PHRED}.balloon.pdf $BALLOON_DIR/*miRNATailingBalloonPlot.pdf && \	
+	touch .${JOBUID}.status.${STEP}.draw_balloon
 STEP=$((STEP+1))
 
 

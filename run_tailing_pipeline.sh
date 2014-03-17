@@ -170,7 +170,9 @@ echo2 "Draw overall length distribution with tailing information"
 		2> $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.single_nt_sum && \
 	Rscript --slave $PIPELINE_DIRECTORY/bin/draw_tailor_lendis.R \
 		$MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.single_nt_sum \
-		$PDF_DIR/${PREFIX}.p${MIN_PHRED}.pdf && \
+		$PDF_DIR/${PREFIX}.p${MIN_PHRED}.pdf \
+		${PREFIX} \
+		"total" && \
 touch .status.${STEP}.draw_overall_lendis
 STEP=$((STEP+1))
 

@@ -2,7 +2,7 @@
 TOTAL_BED=$1
 UNIQ_BED=${TOTAL_BED%bed2}uniq.bed2
 awk '$5==1' $TOTAL_BED > $UNIQ_BED
-OUT=${TOTAL_BED%bed2}.summary
+OUT=${TOTAL_BED%bed2}summary
 
 [ -z $GENOMIC_FEATURE_FILE ] && echo2 "variable GENOMIC_FEATURE_FILE unspecified" "error"
 [ -s $GENOMIC_FEATURE_FILE ] || echo2 "file $GENOMIC_FEATURE_FILE is not-exist or empty" "error"
@@ -43,9 +43,8 @@ echo2 "Draw figures for different genomic structure"
 parafly_file="draw_fig".para
 for t in ${TARGETS[@]}
 do \
-		echo "python $PIPELINE_DIRECTORY/bin/tailor_bed2_counter.py ${TOTAL_BED%bed2}${t}.bed2 1> ${TOTAL_BED%bed2}${t}.sum 2> ${TOTAL_BED%bed2}${t}.single_nt_sum && Rscript --slave $PIPELINE_DIRECTORY/bin/draw_tailor_lendis.R ${TOTAL_BED%bed2}${t}.single_nt_sum $PDF_DIR/`basename ${TOTAL_BED%bed2}${t}.single_nt_sum`.pdf" >> $parafly_file
+		echo "python $PIPELINE_DIRECTORY/bin/tailor_bed2_counter.py ${TOTAL_BED%bed2}${t}.bed2 1> ${TOTAL_BED%bed2}${t}.sum 2> ${TOTAL_BED%bed2}${t}.single_nt_sum && Rscript --slave $PIPELINE_DIRECTORY/bin/draw_tailor_lendis.R ${TOTAL_BED%bed2}${t}.single_nt_sum $PDF_DIR/`basename ${TOTAL_BED%bed2}${t}.single_nt_sum`.pdf ${PREFIX} ${t}" >> $parafly_file
 done
-# running ParaFly if no jobs has been ran (no .completed file) or it has ran but has some failed (has .failed_commands)
 if [[ ! -f ${parafly_file}.completed ]] || [[ -f $parafly_file.failed_commands ]]
 then
 	ParaFly -c $parafly_file -CPU $CPU -failed_cmds $parafly_file.failed_commands
@@ -58,4 +57,4 @@ for t in ${TARGETS[@]}
 do \
 	[ -f $PDF_DIR/`basename ${TOTAL_BED%bed2}${t}.single_nt_sum`.pdf ] && PDF_NAMES=${PDF_NAMES}" "$PDF_DIR/`basename ${TOTAL_BED%bed2}${t}.single_nt_sum`.pdf
 done
-gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=${TOTAL_BED%bed2}features.pdf ${PDF_NAMES} && rm -rf $PDF_NAMES
+gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=$PDF_DIR/`basename ${TOTAL_BED%bed2}features.pdf` ${PDF_NAMES} && rm -rf $PDF_NAMES
