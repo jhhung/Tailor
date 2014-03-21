@@ -18,19 +18,23 @@ private:
 
 	std::vector <Fastq> _queryBuffer {};
 	std::stringstream _resultBuffer {};
+	std::vector<INTTYPE> _resultBuffer2 {};
 
 	std::istream* _in {nullptr};
 	std::ostream* _out {nullptr};
 
 	int _minLen;
+	int _allowMismatch;
 
 public:
 	ABWT_threads () {}
-	ABWT_threads (T& table, std::istream* in, std::ostream* out, int minLen) :
+	ABWT_threads (T& table, std::istream* in, std::ostream* out, int minLen, int allow_mismatch) :
 		ABWT_search<T> {table},
 		_in {in},
 		_out {out},
-		_minLen {minLen}
+		_minLen {minLen},
+		_allowMismatch {allow_mismatch}
+		
 	{ }
 
 	ABWT_threads (ABWT_threads&& other):
@@ -38,7 +42,8 @@ public:
 		_queryBuffer {std::move (other._queryBuffer)},
 		_in {other._in},
 		_out {other._out},
-		_minLen {other._minLen}
+		_minLen {other._minLen},
+		_allowMismatch {other._allowMismatch}
 	{ }
 
 	ABWT_threads& operator=(const ABWT_threads&) = delete;
@@ -54,8 +59,9 @@ public:
 			}
 
 			{	/// do searching
-				for (const auto & _query : _queryBuffer) {
-					this->start_tailing_match_Dual(_query, &_resultBuffer, _minLen);
+				for (const auto & _query : _queryBuffer) 
+				{
+					this->start_tailing_match_Dual(_query, &_resultBuffer, _minLen, _allowMismatch);
 					this->start_end_pos_ = {0,0};
 				}
 			}
