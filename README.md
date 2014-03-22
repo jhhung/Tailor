@@ -149,10 +149,10 @@ http://www.jhhlab.tw/Tailor/speed_test_samples/tailing.log2
 http://www.jhhlab.tw/Tailor/speed_test_samples/tailing.log3
 ```
 
-- All scripts of testing speed you can find in git
+- All scripts for speed test can be found in the `utils` directory
 
 ##Citing Tailor
-* not yet
+* in preparation
 
 ##Contact
 ```bash

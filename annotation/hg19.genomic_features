@@ -7,7 +7,7 @@ refSeq_EXON=$COMMON_FOLDER/UCSC.refSeq.Exon.bed.gz
 refSeq_INTRON=$COMMON_FOLDER/UCSC.refSeq.Intron.bed.gz
 refSeq_5UTR=$COMMON_FOLDER/UCSC.refSeq.5UTR.bed.gz
 refSeq_3UTR=$COMMON_FOLDER/UCSC.refSeq.3UTR.bed.gz
-repeatMasker=$COMMON_FOLDER/UCSC.RepeatMask.bed
+repeatMasker=$COMMON_FOLDER/UCSC.RepeatMask.bed.gz
 lincRNA=$COMMON_FOLDER/UCSC.lincRNA.bed.gz
 snoRNA=$COMMON_FOLDER/UCSC.snoRNA.bed.gz
 
