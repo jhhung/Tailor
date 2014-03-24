@@ -37,7 +37,6 @@ if [[ ! -f ${parafly_file}.completed ]] || [[ -f $parafly_file.failed_commands ]
 then
 	ParaFly -c $parafly_file -CPU $CPU -failed_cmds $parafly_file.failed_commands
 fi
-rm -rf ${parafly_file}*
 
 echo2 "Draw figures for different genomic structure"
 parafly_file="draw_fig".para
@@ -49,7 +48,6 @@ if [[ ! -f ${parafly_file}.completed ]] || [[ -f $parafly_file.failed_commands ]
 then
 	ParaFly -c $parafly_file -CPU $CPU -failed_cmds $parafly_file.failed_commands
 fi
-rm -rf ${parafly_file}*
 
 echo2 "Joining pdf"
 PDF_NAMES=""
