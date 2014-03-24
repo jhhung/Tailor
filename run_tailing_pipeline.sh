@@ -155,21 +155,21 @@ sanger)		OFFSET=33 ;; # Phred+33,  raw reads typically (0, 40) (http://en.wikipe
 esac
 
 echo2 "Filtering the fastq by the phred score and pool reads with same sequence"
-[ ! -f .status.${STEP}.phred_filter_and_pool ] && \
+[ ! -f .${JOBUID}.status.${STEP}.phred_filter_and_pool ] && \
 phred_filter_and_pool \
 	-i	$INPUT_FQ \
 	-q	$MIN_PHRED \
 	-s	$OFFSET \
 	-o	${PREFIX}.p${MIN_PHRED}.fq \
 	2> ${PREFIX}.p${MIN_PHRED}.phred_filter.log
-touch .status.${STEP}.phred_filter_and_pool
+touch .${JOBUID}.status.${STEP}.phred_filter_and_pool
 STEP=$((STEP+1))
 
 echo2 "Building the index if not exist"
 tailor build -i $INDEX_FA -p $INDEX
 
 echo2 "Mapping the input fastq to the genome reference" 
-[ ! -f .status.${STEP}.tailor_mapping ] && \
+[ ! -f .${JOBUID}.status.${STEP}.tailor_mapping ] && \
 	tailor map \
 		-i ${PREFIX}.p${MIN_PHRED}.fq \
 		-p $INDEX \
@@ -177,11 +177,11 @@ echo2 "Mapping the input fastq to the genome reference"
 		2> $MAPPING_DIR/${PREFIX}.tailor.log | \
 	tailor_sam_to_bed \
 	> $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.bed2 && \
-touch .status.${STEP}.tailor_mapping
+touch .${JOBUID}.status.${STEP}.tailor_mapping
 STEP=$((STEP+1))
 
 echo2 "Draw overall length distribution with tailing information"
-[ ! -f .status.${STEP}.draw_overall_lendis ] && \
+[ ! -f .${JOBUID}.status.${STEP}.draw_overall_lendis ] && \
 	python $PIPELINE_DIRECTORY/bin/tailor_bed2_counter.py \
 		$MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.bed2 \
 		1> $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.sum \
@@ -191,14 +191,14 @@ echo2 "Draw overall length distribution with tailing information"
 		$PDF_DIR/${PREFIX}.p${MIN_PHRED}.pdf \
 		${PREFIX} \
 		"total" && \
-touch .status.${STEP}.draw_overall_lendis
+touch .${JOBUID}.status.${STEP}.draw_overall_lendis
 STEP=$((STEP+1))
 
 echo2 "Assigning reads to different genomic structures"
-[ ! -f .status.${STEP}.intersecting ] && \
+[ ! -f .${JOBUID}.status.${STEP}.intersecting ] && \
 	bash $DEBUG intersect_to_genomic_feature_tailor.sh \
 		$MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.bed2 && \
-	touch .status.${STEP}.intersecting
+	touch .${JOBUID}.status.${STEP}.intersecting
 STEP=$((STEP+1))
 
 #############################
@@ -207,8 +207,8 @@ STEP=$((STEP+1))
 if [ ! -z $HAIRPIN_INDEX_FA ]; then
 	
 	[ -z $MATURE_FA ]	&& echo2 "missing -M for mirBase mature miRNA in fasta format" "error"
-	[ ! -s $INPUT_FQ ]	&& echo2 "cannot find file $INPUT_FQ" "error"
 	[ ! -s $MATURE_FA ]	&& echo2 "cannot find file $MATURE_FA" "error"
+	[ ! -s $HAIRPIN_INDEX_FA ] && echo2 "cannot fine file $HAIRPIN_INDEX_FA" "error"
 	
 	ANNOTATION_DIR=annotate_mature_miRNA && mkdir -p $ANNOTATION_DIR
 	MAPPING_DIR=hairpin_mapping && mkdir -p $MAPPING_DIR
@@ -226,7 +226,7 @@ if [ ! -z $HAIRPIN_INDEX_FA ]; then
 			-n $CPU | \
 		samtools view -bS - | \
 		bedtools bamtobed -i - > \
-		$ANNOTATION_DIR/mature.annotated_coordinates.bed && \
+		$ANNOTATION_DIR/mature.annotate_coordinates.bed && \
 		rm -rf $ANNOTATION_DIR/mature.fq && \
 		touch .${JOBUID}.status.${STEP}.find_annotated_coordinates
 	STEP=$((STEP+1))
@@ -259,7 +259,7 @@ if [ ! -z $HAIRPIN_INDEX_FA ]; then
 
 	echo2 "Adjust the coordinate according to the annotated mature miRNA"
 	[ ! -f .${JOBUID}.status.${STEP}.reannotate ] && \
-		bedtools intersect -wo -s -a $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.hairpin.bed2 -b $ANNOTATION_DIR/mature.annotated_coordinates.bed -f 0.75 | \
+		bedtools intersect -wo -s -a $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.hairpin.bed2 -b $ANNOTATION_DIR/mature.annotate_coordinates.bed -f 0.75 | \
 		tee $MAPPING_DIR/${PREFIX}.relative.bed.wo | \
 		awk 'BEGIN{FS="\t";OFS="\t"}{print $13,$11-$2,$3-$12,$4,$5,$6,$7,$8,$9}' \
 		> $MAPPING_DIR/${PREFIX}.relative.bed && \
@@ -273,7 +273,7 @@ if [ ! -z $HAIRPIN_INDEX_FA ]; then
 			$CPU \
 			$PREFIX \
 			$BALLOON_DIR && \
-		gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=$PDF_DIR/${PREFIX}.p${MIN_PHRED}.balloon.pdf $BALLOON_DIR/*miRNATailingBalloonPlot.pdf && \	
+		gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=$PDF_DIR/${PREFIX}.p${MIN_PHRED}.balloon.pdf $BALLOON_DIR/*miRNATailingBalloonPlot.pdf && \
 		touch .${JOBUID}.status.${STEP}.draw_balloon
 	STEP=$((STEP+1))
 
