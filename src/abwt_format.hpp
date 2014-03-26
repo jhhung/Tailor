@@ -322,6 +322,7 @@ private:
 	int64_t TLEN = 0;
 	std::string SEQ = "";
 	std::string QUAL = "";
+	std::string _MD = "";
 	INTTYPE _NH = 0;
 	std::string _tailSeq = "";
 //	std::unordered_map<std::string, std::string> OPTIONAL_FIELDS {};
@@ -330,7 +331,7 @@ public:
 	/**! default constructor **/
 	Sam () = default ;
 	/** ctor from individuals*/
-	Sam (std::string&& _QNAME, SAM_FLAG _FLAG, std::string&& _RNAME, INTTYPE _POS, int _MAPQ, std::string&& _CIGAR, std::string&& _RNEXT, INTTYPE _PNEXT, int64_t _TLEN, const std::string& _SEQ, std::string&& _QUAL, INTTYPE NH, std::string&& tailSeq = ""):
+	Sam (std::string&& _QNAME, SAM_FLAG _FLAG, std::string&& _RNAME, INTTYPE _POS, int _MAPQ, std::string&& _CIGAR, std::string&& _RNEXT, INTTYPE _PNEXT, int64_t _TLEN, const std::string& _SEQ, std::string&& _QUAL, INTTYPE NH, std::string&& tailSeq = "", std::string&& MD=""):
 		QNAME {_QNAME},
 		FLAG {_FLAG},
 		RNAME {_RNAME},
@@ -343,7 +344,8 @@ public:
 		SEQ {_SEQ},
 		QUAL {_QUAL},
 		_NH {NH},
-		_tailSeq {tailSeq}
+		_tailSeq {tailSeq},
+		_MD {MD}
 		{ }
 		/**! copy ctor **/
 		Sam (const Sam&) = default;
@@ -382,6 +384,7 @@ public:
 				QUAL.swap (other.QUAL);
 				_NH = other._NH;
 				_tailSeq.swap (other._tailSeq);
+				_MD.swap(other._MD);
 				other.~Sam ();
 			}
 			return *this;
@@ -417,7 +420,10 @@ public:
 					<< sam.TLEN << '\t'
 					<< sam.SEQ << '\t'
 					<< sam.QUAL << '\t'
+					//<< "MD:Z:" << sam._MD << '\t'
 					<< "NH:i:" << sam._NH;
+			if (!sam._MD.empty ())
+				os << "\tMD:Z:" << sam._MD;
 			if (!sam._tailSeq.empty ())
 				os << "\tTL:Z:" << sam._tailSeq;
 			os << '\n';
