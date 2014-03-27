@@ -46,7 +46,7 @@ and the sequences are reported under "TL:Z:" in the optional fields.
 				("output,o", boost::program_options::value<std::string>(&outputSAM)->default_value(std::string{"stdout"}), "Output SAM file, stdout by default ")
 				("thread,n", boost::program_options::value<std::size_t>(&nthread)->default_value(1), "Number of thread to use; if the number is larger than the core available, it will be adjusted automatically")
 				("minLen,l", boost::program_options::value<int>(&minLen)->default_value(18), "minimal length of exact match (prefix match) allowed")
-				("mismatch,v", boost::program_options::value<int>(&allow_mismatch)->default_value(0), "is allow mismatch, 0 or 1")
+				("mismatch,v", boost::program_options::value<int>(&allow_mismatch)->default_value(0), "mismatch supported, 0=false or 1=true")
 				;
 		boost::program_options::variables_map vm;
 		boost::program_options::store (boost::program_options::parse_command_line(argc, argv, opts), vm);
