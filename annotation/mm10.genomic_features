@@ -1,0 +1,24 @@
+
+COMMON_FOLDER=$PIPELINE_DIRECTORY/annotation/mm10
+
+MM10_piRNAcluster=$COMMON_FOLDER/mm10.piRNAcluster.bed.gz
+MM10_3UTR=$COMMON_FOLDER/UCSC.mm10.refSeq.3UTR.bed6.gz
+MM10_5UTR=$COMMON_FOLDER/UCSC.mm10.refSeq.5UTR.bed6.gz
+MM10_CDS=$COMMON_FOLDER/UCSC.mm10.refSeq.CDS.bed6.gz
+MM10_exons=$COMMON_FOLDER/UCSC.mm10.refSeq.exons.bed6.gz
+MM10_genes=$COMMON_FOLDER/UCSC.mm10.refSeq.genes.bed6.gz
+MM10_introns=$COMMON_FOLDER/UCSC.mm10.refSeq.introns.bed6.gz
+MM10_repeatMasker=$COMMON_FOLDER/UCSC.mm10.repeatMasker.bed6.gz
+MM10_tRNA=$COMMON_FOLDER/UCSC.mm10.tRNA.bed6.gz
+
+declare -a TARGETS=( \
+	"MM10_piRNAcluster" \
+	"MM10_genes" \
+	"MM10_exons" \
+	"MM10_introns" \
+	"MM10_5UTR" \
+	"MM10_3UTR" \
+	"MM10_CDS" \
+	"MM10_repeatMasker" \
+	"MM10_tRNA" \
+)
