@@ -79,9 +79,10 @@ Please don't use it for other purposes.
 	string TL_str;		// value of TL tag
 	/** for bed **/
 	char strand;
-	
 	while (in->peek () && in->good ()) {
 		*in >> qname;
+		if(qname[0]=='M')
+			*in >> qname;
 		*in >> flag;
 		*in >> rname;
 		*in >> pos;
@@ -95,8 +96,12 @@ Please don't use it for other purposes.
 		*in >> NH_str;
 		if (mapq != 255) {
 			*in >> TL_str;
+			if(TL_str[0] == 'M')
+			{
+				*in >> TL_str;
+			}
 		}
-
+		
 		if ( (255 - mapq) <= max_tail_len) {
 			*out <<	rname << '\t'
 				<<	pos - 1 << '\t'
