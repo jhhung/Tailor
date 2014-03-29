@@ -24,6 +24,7 @@
 #include <ctime>
 #include <cmath>
 #include <memory>
+#include <type_traits>
 #include "compression/abit.hpp"
 #include "compression/jbit.hpp"
 #include "mkq_sort.hpp"
@@ -36,6 +37,7 @@
 #include "boost/unordered_map.hpp"
 #include "abwt_format.hpp"
 #include "constant_def.hpp"
+
 
 template <class TABLE>
 class ABWT_search
@@ -622,7 +624,7 @@ public:
 	}
 
 	// tailing searching version for dual BWT
-    template <bool allowMismatch>
+    template <class allowMismatch>
 	void start_tailing_match_Dual (const Fastq& fq, std::stringstream* out, int minimalPrefixLen)//, int maximumTailLen=3)
 	{
 		std::string _query = fq.getSeq ();
@@ -658,7 +660,7 @@ public:
 		}
 		/// substract an extra one when exiting the loop, so add it back
 		auto prefixMatchLen = _query.size() - 1 - (queryPosition + 1);
-		if (prefixMatchLen < minimalPrefixLength && allowMismatch )
+		if (prefixMatchLen < minimalPrefixLength && allowMismatch::value )
 		{
 			//std::cout << "do mismatch" << std::endl;
 			//return;
@@ -689,7 +691,7 @@ public:
 			
 			
 			//測試是不是真的 tail，還是只是 mismatch
-			if(queryPosition != 0  && allowMismatch)
+			if(queryPosition != 0  && allowMismatch::value)
 			{
 				bool is_real_tail = true;
 				for(int cn(0); cn < all_char.size(); ++cn)
