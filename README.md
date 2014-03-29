@@ -11,8 +11,7 @@ Two shell based pipelines are provided using fastq as input and produce publicat
 #### Run the binary directly without installation 
 Please try the precompiled binaries first, most of the linux systems should be able to run Tailor without any troubles.
 ```bash
-bin/tailor_debian_x64  # for ubuntu/fedara/...
-bin/tailor_redhat_x64  # for centos/redhat/...
+bin/tailor_linux       # for Ubuntu/Fedora/CentOS/RedHat/...
 bin/tailor_mac_x64     # for OSX
 ```
 Or you can find them in the release tab in this page or at this [link](https://github.com/jhhung/Tailor/releases).
@@ -35,7 +34,7 @@ cmake .
 ```
 
 #### Compile the software by typing:
-``` bash
+```bash
 make
 ```
 
