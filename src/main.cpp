@@ -7,16 +7,22 @@ int main (int argc, char** argv)
 	string usage = R"(
 
 *********************************************************************************
+
 +------+
 |Tailor|
 +------+
-  A software using BWT to perform genomic mapping with ability to detect 
-untemplated addition of nucleotide to the 3' end of small RNA (tailing). 
+  Tailor uses BWT to perform genomic mapping with ability to detect non-templated
+addition of nucleotide to the 3' end of the query sequence (tailing).
   All hits will be aligned to a reference sequence with exact match. Any unmapped
 sequences at the 3' end are considered "tail". The exact matching process is 
 equivalent to -v 0 -a mode of bowtie.
-  Reports will be in SAM format. Tails will be described as "soft-clip" in CIGAR
-and the sequences are reported under "TL:Z:" in the optional fields.
+    Tailor also offer to allow mismatches in the middle of the query string. But
+this is not the default behavior.
+    Reports will be in SAM format. Tails will be described as "soft-clip" in CIGAR
+and the sequences are reported under "TL:Z:" in the optional fields. Mismatches, if
+allowed, will be reported in the "MD" tag.
+
+    Tailor is freely avaible on github: jhhung.github.com/Tailor
 
 Usage:
 
@@ -25,6 +31,8 @@ Usage:
   
  2. mapping fastq to the index
 >	tailor map --help
+
+
 *********************************************************************************
 
 )";
