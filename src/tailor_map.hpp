@@ -34,9 +34,11 @@ and the sequences are reported under "TL:Z:" in the optional fields.
 	std::string inputFastq {};
 	std::string indexPrefix {};
 	std::string outputSAM {};
+	std::string allow_mm;
 	std::size_t nthread {};
 	int minLen {};
 	int allow_mismatch {};
+	
 	boost::program_options::options_description opts {usage};
 	try {
 		opts.add_options ()
@@ -46,7 +48,7 @@ and the sequences are reported under "TL:Z:" in the optional fields.
 				("output,o", boost::program_options::value<std::string>(&outputSAM)->default_value(std::string{"stdout"}), "Output SAM file, stdout by default ")
 				("thread,n", boost::program_options::value<std::size_t>(&nthread)->default_value(1), "Number of thread to use; if the number is larger than the core available, it will be adjusted automatically")
 				("minLen,l", boost::program_options::value<int>(&minLen)->default_value(18), "minimal length of exact match (prefix match) allowed")
-				("mismatch,v", boost::program_options::value<int>(&allow_mismatch)->default_value(0), "mismatch supported, 0=false or 1=true")
+				("mismatch,v", boost::program_options::value<std::string>(&allow_mm)->default_value("true"), "mismatch supported, false or true")
 				;
 		boost::program_options::variables_map vm;
 		boost::program_options::store (boost::program_options::parse_command_line(argc, argv, opts), vm);
@@ -62,7 +64,7 @@ and the sequences are reported under "TL:Z:" in the optional fields.
 		std::cerr << opts << std::endl;
 		exit (1);
 	}
-
+	
 	/** check index **/
 	if (indexPrefix.back () != '.') {
 		indexPrefix += '.';
@@ -93,6 +95,21 @@ and the sequences are reported under "TL:Z:" in the optional fields.
 		std::cerr << "Warning: the number of threads set (" << nthread << ") is larger than the number of cores available (" << nCore << ") in this machine.\nSo reset -n=" << nCore << std::endl;
 		nthread = nCore;
 	}
+	/** check mismatch **/
+	if(allow_mm == "true" || allow_mm == "1")
+	{
+		allow_mismatch = 1;
+	}
+	else if(allow_mm == "false" || allow_mm == "0")
+	{
+		allow_mismatch = 0;
+	}
+	else
+	{
+		std::cerr << "Error: mismatch only allow true or false" << std::endl;
+		exit(1);
+	}
+	
 	/** execute mapping **/
 	tailing2 (indexPrefix, inputFastq, out, nthread, minLen, allow_mismatch);
 	/** close file handle **/

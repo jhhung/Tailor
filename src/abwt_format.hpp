@@ -275,6 +275,10 @@ public:
 			}
 			return *this;
 		}
+		int seq_size() const
+		{
+			return _sequence.size();
+		}
 		std::string getName () const {
 			return _name;
 		}

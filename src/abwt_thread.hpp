@@ -61,6 +61,10 @@ public:
 			{	/// do searching
 				for (const auto & _query : _queryBuffer) 
 				{
+					if(_query.seq_size() < 12)
+					{
+						continue;
+					}
 					this->start_tailing_match_Dual(_query, &_resultBuffer, _minLen, _allowMismatch);
 					this->start_end_pos_ = {0,0};
 				}
