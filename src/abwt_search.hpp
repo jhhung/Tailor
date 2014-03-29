@@ -622,7 +622,8 @@ public:
 	}
 
 	// tailing searching version for dual BWT
-	void start_tailing_match_Dual (const Fastq& fq, std::stringstream* out, int minimalPrefixLen, int allowMismatch)//, int maximumTailLen=3)
+    template <bool allowMismatch>
+	void start_tailing_match_Dual (const Fastq& fq, std::stringstream* out, int minimalPrefixLen)//, int maximumTailLen=3)
 	{
 		std::string _query = fq.getSeq ();
 		
@@ -657,7 +658,7 @@ public:
 		}
 		/// substract an extra one when exiting the loop, so add it back
 		auto prefixMatchLen = _query.size() - 1 - (queryPosition + 1);
-		if (prefixMatchLen < minimalPrefixLength && allowMismatch == 1)
+		if (prefixMatchLen < minimalPrefixLength && allowMismatch )
 		{
 			//std::cout << "do mismatch" << std::endl;
 			//return;
@@ -688,7 +689,7 @@ public:
 			
 			
 			//測試是不是真的 tail，還是只是 mismatch
-			if(queryPosition != 0  && allowMismatch == 1)
+			if(queryPosition != 0  && allowMismatch)
 			{
 				bool is_real_tail = true;
 				for(int cn(0); cn < all_char.size(); ++cn)

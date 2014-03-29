@@ -24,11 +24,11 @@ private:
 	std::ostream* _out {nullptr};
 
 	int _minLen;
-	int _allowMismatch;
+	bool _allowMismatch;
 
 public:
 	ABWT_threads () {}
-	ABWT_threads (T& table, std::istream* in, std::ostream* out, int minLen, int allow_mismatch) :
+	ABWT_threads (T& table, std::istream* in, std::ostream* out, int minLen, bool allow_mismatch) :
 		ABWT_search<T> {table},
 		_in {in},
 		_out {out},
@@ -65,7 +65,10 @@ public:
 					{
 						continue;
 					}
-					this->start_tailing_match_Dual(_query, &_resultBuffer, _minLen, _allowMismatch);
+                    if (_allowMismatch)
+                        this->start_tailing_match_Dual<true>(_query, &_resultBuffer, _minLen);
+                    else
+                        this->start_tailing_match_Dual<false>(_query, &_resultBuffer, _minLen);
 					this->start_end_pos_ = {0,0};
 				}
 			}
