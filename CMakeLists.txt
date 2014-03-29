@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 2.6)
 project (Tailor)
-
+set(CMAKE_VERBOSE_MAKEFILE ON)
 # Initialize CXXFLAGS.
 set(CMAKE_CXX_FLAGS "-Ofast -std=c++11")
 #if your boost is installed in somewhere CMake cannot find, please specified as below:
@@ -22,7 +22,6 @@ endif ()
 include (${CMAKE_ROOT}/Modules/FindBoost.cmake)
 
 #boost
-set(Boost_USE_STATIC_LIBS        ON)
 set(Boost_USE_MULTITHREADED      ON)
 set(Boost_USE_STATIC_RUNTIME    OFF)
 find_package( Boost COMPONENTS date_time filesystem system serialization system filesystem regex thread iostreams program_options)
@@ -34,5 +33,5 @@ if(Boost_FOUND AND Threads_FOUND AND ZLIB_FOUND)
 # add the executable
 	add_executable(bin/tailor src/main.cpp)
 	add_definitions(-DmyALPHABET)
-	target_link_libraries( bin/tailor ${Boost_LIBRARIES} ${ZLIB_LIBRARIES} ${CMAKE_SOURCE_DIR}/lib/libabwt_table.a)
+	target_link_libraries( bin/tailor ${Boost_LIBRARIES} ${ZLIB_LIBRARIES} ${CMAKE_SOURCE_DIR}/lib/libabwt_table_LINUX.a)
 endif()

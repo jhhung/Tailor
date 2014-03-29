@@ -7,6 +7,7 @@
 #include "abwt_search.hpp"
 #include "boost/thread.hpp"
 #include "boost/thread/mutex.hpp"
+#include <type_traits>
 
 template <typename T>
 class ABWT_threads : private ABWT_search<T>
@@ -24,11 +25,11 @@ private:
 	std::ostream* _out {nullptr};
 
 	int _minLen;
-	int _allowMismatch;
+	bool _allowMismatch;
 
 public:
 	ABWT_threads () {}
-	ABWT_threads (T& table, std::istream* in, std::ostream* out, int minLen, int allow_mismatch) :
+	ABWT_threads (T& table, std::istream* in, std::ostream* out, int minLen, bool allow_mismatch) :
 		ABWT_search<T> {table},
 		_in {in},
 		_out {out},
@@ -61,7 +62,16 @@ public:
 			{	/// do searching
 				for (const auto & _query : _queryBuffer) 
 				{
-					this->start_tailing_match_Dual(_query, &_resultBuffer, _minLen, _allowMismatch);
+					if(_query.seq_size() < 12)
+					{
+						continue;
+					}
+					typedef std::integral_constant<bool, true> true_type;
+					typedef std::integral_constant<bool, false> false_type;
+                    if (_allowMismatch)
+                        this->template start_tailing_match_Dual <true_type>(_query, &_resultBuffer, _minLen);
+                    else
+                        this->template start_tailing_match_Dual <false_type>(_query, &_resultBuffer, _minLen);
 					this->start_end_pos_ = {0,0};
 				}
 			}
