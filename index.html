@@ -1,61 +1,68 @@
-<!DOCTYPE html>
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
 <html>
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <title>Tailor by jhhung</title>
-  </head>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <body>
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen"/>
+  <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/script.js"></script>
+
+  <title>Tailor</title>
+  <meta name="description" content="Tailor is a fast short read aligner like bowtie/BWA/SOAP2 but is designed specifically to discovering trimming and tailing events for small silencing RNAs.">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <header>
+      <h1 class="title">Tailor</h1>
+    </header>
     <div id="container">
-      <div class="inner">
-
-        <header>
-          <h1>Tailor</h1>
-          <h2>Tailor is a fast short read aligner like bowtie/BWA/SOAP2 but is designed specifically to discovering trimming and tailing events for small silencing RNAs.</h2>
-        </header>
-
-        <section id="downloads" class="clearfix">
-          <a href="https://github.com/jhhung/Tailor/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
-          <a href="https://github.com/jhhung/Tailor/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
-          <a href="https://github.com/jhhung/Tailor" id="view-on-github" class="button"><span>View on GitHub</span></a>
-        </section>
-
-        <hr>
-
-        <section id="main_content">
+      <p class="tagline">Tailor is a fast short read aligner like bowtie/BWA/SOAP2 but is designed specifically to discovering trimming and tailing events for small silencing RNAs.</p>
+      <div id="main" role="main">
+        <div class="download-bar">
+        <div class="inner">
+          <a href="https://github.com/jhhung/Tailor/tarball/master" class="download-button tar"><span>Download</span></a>
+          <a href="https://github.com/jhhung/Tailor/zipball/master" class="download-button zip"><span>Download</span></a>
+          <a href="https://github.com/jhhung/Tailor" class="code">View Tailor on GitHub</a>
+        </div>
+        <span class="blc"></span><span class="trc"></span>
+        </div>
+        <article class="markdown-body">
           <h1>
 <a name="tailor" class="anchor" href="#tailor"><span class="octicon octicon-link"></span></a>Tailor</h1>
 
-<p>Tailor program is a Burrows–Wheeler transform (BWT) based fast aligner (like bowtie/BWA/SOAP2) specialized in discovering tailing events for small silencing RNAs from Next Generation Sequencing data.  </p>
+<p>Tailor is a Burrows–Wheeler transform (BWT) based fast aligner specialized in discovering non-templated addition of nucleotide to the 3' end of nucleic acids (a.k.a., tailing) from Next Generation Sequencing data.  </p>
 
 <p>Tailor is released under GPLv2 with additional restriction so that is only applicable to individuals and non-profits and that any for-profit company must purchase a different license.   </p>
 
-<p>Two shell based pipelines are provided using fastq as input and produce publication quality figures.    </p>
+<p>A Shell based pipelines are provided using fastq as input and produce publication quality figures.    </p>
 
 <h2>
 <a name="install" class="anchor" href="#install"><span class="octicon octicon-link"></span></a>INSTALL</h2>
 
-<p>*Only 64 bits systems are able to compile and run Tailor.    </p>
+<p>*Only 64 bits systems are able to compile and run Tailor.</p>
 
-<h4>
-<a name="run-the-binary-directly-without-installation" class="anchor" href="#run-the-binary-directly-without-installation"><span class="octicon octicon-link"></span></a>Run the binary directly without installation</h4>
+<h3>
+<a name="run-the-binary-directly-without-installation" class="anchor" href="#run-the-binary-directly-without-installation"><span class="octicon octicon-link"></span></a>Run the binary directly without installation</h3>
 
 <p>Please try the precompiled binaries first, most of the linux systems should be able to run Tailor without any troubles.</p>
 
-<div class="highlight highlight-bash"><pre>bin/tailor_debian_x64  <span class="c"># for ubuntu/fedara/...</span>
-bin/tailor_redhat_x64  <span class="c"># for centos/redhat/...</span>
-bin/tailor_mac_x64     <span class="c"># for OSX</span>
+<div class="highlight highlight-bash"><pre>bin/tailor_linux        <span class="c"># for linux</span>
+bin/tailor_mac_x64      <span class="c"># for OSX</span>
 </pre></div>
 
 <p>Or you can find them in the release tab in this page or at this <a href="https://github.com/jhhung/Tailor/releases">link</a>.</p>
+
+<h3>
+<a name="compile-from-the-source-code" class="anchor" href="#compile-from-the-source-code"><span class="octicon octicon-link"></span></a>Compile from the source code</h3>
 
 <h4>
 <a name="install-the-dependencies" class="anchor" href="#install-the-dependencies"><span class="octicon octicon-link"></span></a>Install the dependencies</h4>
@@ -69,15 +76,16 @@ bin/tailor_mac_x64     <span class="c"># for OSX</span>
 </ul><h4>
 <a name="get-the-latest-version-of-the-software" class="anchor" href="#get-the-latest-version-of-the-software"><span class="octicon octicon-link"></span></a>Get the latest version of the software</h4>
 
-<pre><code>git clone git@github.com:jhhung/Tailor.git
-</code></pre>
+<div class="highlight highlight-bash"><pre>git clone git@github.com:jhhung/Tailor.git
+</pre></div>
 
 <h4>
 <a name="enter-the-folder-tailor-and" class="anchor" href="#enter-the-folder-tailor-and"><span class="octicon octicon-link"></span></a>Enter the folder Tailor and:</h4>
 
 <ul>
-<li>Set enviromental variable "BOOST_ROOT" to the directory of boost if CMake cannot find boost automatically;</li>
-<li>Set enviromental variable "CC" and "CXX" to the gcc/g++ compiler you want to use. </li>
+<li>Set environmental variable <code>$BOOST_ROOT</code> to the directory of boost if CMake cannot find boost automatically;</li>
+<li>Set environmental variable <code>$CC</code> and <code>$CXX</code> to the gcc/g++ compiler you want to use.<br>
+</li>
 </ul><div class="highlight highlight-bash"><pre>cmake .
 </pre></div>
 
@@ -100,27 +108,27 @@ and retype </li>
 <h2>
 <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>USAGE</h2>
 
-<h4>
-<a name="tailor-1" class="anchor" href="#tailor-1"><span class="octicon octicon-link"></span></a>tailor</h4>
+<hr><h3>
+<a name="tailor-1" class="anchor" href="#tailor-1"><span class="octicon octicon-link"></span></a>tailor</h3>
 
-<h5>
-<a name="build-genomic-index-similar-to-bowtie-build" class="anchor" href="#build-genomic-index-similar-to-bowtie-build"><span class="octicon octicon-link"></span></a>Build genomic index (similar to bowtie-build)</h5>
+<h4>
+<a name="build-genomic-index-similar-to-bowtie-build" class="anchor" href="#build-genomic-index-similar-to-bowtie-build"><span class="octicon octicon-link"></span></a>Build genomic index (similar to bowtie-build)</h4>
 
 <div class="highlight highlight-bash"><pre>tailor build -i genome.fa -p genome
 </pre></div>
 
-<h5>
-<a name="mapping" class="anchor" href="#mapping"><span class="octicon octicon-link"></span></a>Mapping</h5>
+<h4>
+<a name="mapping" class="anchor" href="#mapping"><span class="octicon octicon-link"></span></a>Mapping</h4>
 
 <div class="highlight highlight-bash"><pre>tailor map -p genome -n 8 -i smallRNA.fq
 </pre></div>
 
-<h4>
-<a name="tailing-pipeline" class="anchor" href="#tailing-pipeline"><span class="octicon octicon-link"></span></a>tailing pipeline</h4>
+<hr><h3>
+<a name="tailing-pipeline" class="anchor" href="#tailing-pipeline"><span class="octicon octicon-link"></span></a>tailing pipeline</h3>
 
-<div class="highlight highlight-bash"><pre><span class="c"># input reads.fq</span>
-<span class="c"># genome dm3.fa; it will generate index in the index folder of tailor directory, if it doesn't exist</span>
-<span class="c"># genomic_feature_file; used to generate figures for different genomic features (exon, intron...). See our example in the folder to make such file</span>
+<div class="highlight highlight-bash"><pre><span class="c"># reads.fq: input reads in fastq format: </span>
+<span class="c"># dm3.fa: genome sequence in fasta format; it will generate index in the index folder of tailor directory, if it doesn't exist</span>
+<span class="c"># genomic_feature_file; used to generate figures for different genomic features (exon, intron...). See our example in the annotation folder to make such file</span>
 <span class="c"># using 24 CPUs</span>
 <span class="c"># use PHRED score 20 as filter: only reads with every base equal to to higher than 20 pass the filter and enters the pipeline</span>
 run_miRNA_tailing_pipeline.sh <span class="se">\ </span>
@@ -132,26 +140,10 @@ run_miRNA_tailing_pipeline.sh <span class="se">\ </span>
     -q 20
 </pre></div>
 
-<h4>
-<a name="microrna-tailing-pipeline" class="anchor" href="#microrna-tailing-pipeline"><span class="octicon octicon-link"></span></a>microRNA tailing pipeline</h4>
-
-<div class="highlight highlight-bash"><pre><span class="c"># input reads.fq</span>
-<span class="c"># miRBase.hairpin.fa, hairpin sequence from miRBase, in fasta format</span>
-<span class="c"># miRBase.mature.fa, mature sequence from miRBase, in fasta format</span>
-<span class="c"># using 24 CPUs</span>
-<span class="c"># use PHRED score 20 as filter: only reads with every base equal to to higher than 20 pass the filter and enters the pipeline</span>
-run_miRNA_tailing_pipeline.sh <span class="se">\</span>
-    -i reads.fq <span class="se">\</span>
-    -H miRBase.hairpin.fa <span class="se">\ </span>
-    -M miRBase.mature.fa <span class="se">\ </span>
-    -c 24 <span class="se">\ </span>
-    -q 20
-</pre></div>
-
 <h2>
 <a name="download" class="anchor" href="#download"><span class="octicon octicon-link"></span></a>Download</h2>
 
-<h4>
+<hr><h4>
 <a name="indexes" class="anchor" href="#indexes"><span class="octicon octicon-link"></span></a>Indexes</h4>
 
 <ul>
@@ -167,11 +159,11 @@ http://www.jhhlab.tw/Tailor/index/hg19.tar.gz
 http://www.jhhlab.tw/Tailor/index/mm9.tar.gz
 http://www.jhhlab.tw/Tailor/index/mm10.tar.gz
 
-<span class="c"># download</span>
+<span class="c"># for downloading</span>
 lftp -c <span class="s2">"pget -n 4 http://www.jhhlab.tw/Tailor/index/hg18.tar.gz"</span>
 </pre></div>
 
-<h4>
+<hr><h4>
 <a name="speed-test-files-for-the-publication" class="anchor" href="#speed-test-files-for-the-publication"><span class="octicon octicon-link"></span></a>Speed test files for the publication</h4>
 
 <ul>
@@ -200,12 +192,12 @@ http://www.jhhlab.tw/Tailor/speed_test_samples/tailing.log3
 </code></pre>
 
 <ul>
-<li>All scripts of testing speed you can find in git</li>
+<li>All scripts for speed test can be found in the <code>utils</code> directory</li>
 </ul><h2>
 <a name="citing-tailor" class="anchor" href="#citing-tailor"><span class="octicon octicon-link"></span></a>Citing Tailor</h2>
 
 <ul>
-<li>not yet</li>
+<li>in preparation</li>
 </ul><h2>
 <a name="contact" class="anchor" href="#contact"><span class="octicon octicon-link"></span></a>Contact</h2>
 
@@ -213,15 +205,26 @@ http://www.jhhlab.tw/Tailor/speed_test_samples/tailing.log3
     Chou Min-Te &lt;poi5305 <span class="sb">`</span>at<span class="sb">`</span> gmail.com&gt;
     Bo W Han &lt;bowhan <span class="sb">`</span>at<span class="sb">`</span> me.com&gt;
 </pre></div>
-        </section>
-
-        <footer>
-          Tailor is maintained by <a href="https://github.com/jhhung">jhhung</a><br>
-          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
-        </footer>
-
-        
+        </article>
       </div>
     </div>
-  </body>
+    <footer>
+      <div class="owner">
+      <p><a href="https://github.com/jhhung" class="avatar"><img src="https://avatars2.githubusercontent.com/u/1647797?s=60" width="48" height="48"/></a> <a href="https://github.com/jhhung">jhhung</a> maintains <a href="https://github.com/jhhung/Tailor">Tailor</a></p>
+
+
+      </div>
+      <div class="creds">
+        <small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br/>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+      </div>
+    </footer>
+  </div>
+  <div class="current-section">
+    <a href="#top">Scroll to top</a>
+    <a href="https://github.com/jhhung/Tailor/tarball/master" class="tar">tar</a><a href="https://github.com/jhhung/Tailor/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
+    <p class="name"></p>
+  </div>
+
+  
+</body>
 </html>
