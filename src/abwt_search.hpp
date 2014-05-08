@@ -660,7 +660,8 @@ public:
 		}
 		/// substract an extra one when exiting the loop, so add it back
 		auto prefixMatchLen = _query.size() - 1 - (queryPosition + 1);
-		if (prefixMatchLen < minimalPrefixLength && allowMismatch::value )
+		//std::cout << "mismatch " << allowMismatch::value << " " << prefixMatchLen+1 << std::endl;
+		if (prefixMatchLen+1 < minimalPrefixLength && allowMismatch::value )
 		{
 			//std::cout << "do mismatch" << std::endl;
 			//return;

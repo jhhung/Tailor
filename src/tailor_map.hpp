@@ -37,7 +37,6 @@ and the sequences are reported under "TL:Z:" in the optional fields.
 	bool allow_mm;
 	std::size_t nthread {};
 	int minLen {};
-	int allow_mismatch {};
 	
 	boost::program_options::options_description opts {usage};
 	try {
@@ -96,7 +95,7 @@ and the sequences are reported under "TL:Z:" in the optional fields.
 		nthread = nCore;
 	}
 	/** execute mapping **/
-	tailing2 (indexPrefix, inputFastq, out, nthread, minLen, allow_mismatch);
+	tailing2 (indexPrefix, inputFastq, out, nthread, minLen, allow_mm);
 	/** close file handle **/
 	if (out != &std::cout) {
 		static_cast<std::ofstream*>(out)-> close ();
