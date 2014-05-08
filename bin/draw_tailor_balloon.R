@@ -26,30 +26,30 @@ draw_microRNA_tailing_balloon = function (t1, name, outDir) {
 		t1[,4] = 100*(t1[,4]/t1[,5])/normalized_signal ;
 
 		five_three = xtabs (as.integer (t1$V4) ~ t1$V2 + t1$V3)
-		balloonplot (five_three, main= paste (name, t1$V1[1], "perfect+tailed", sep=" "), xlab="5'",ylab="3'",sorted=T,label.size=1, label.color="white",text.color="black",text.size=1.5,rowmar=0.5,colmar=0.5,show.zeros=T, dotcolor="red",label.lines=T, )
+		balloonplot (five_three, main= paste (name, t1$V1[1], "perfect+tailed", sep=" "), xlab="5'",ylab="3'",sorted=T,label.size=1, label.color="darkgrey",text.color="black",text.size=1.5,rowmar=0.5,colmar=0.5,show.zeros=T, dotcolor="red",label.lines=T, )
 		five_tail = xtabs (as.integer (t1$V4) ~ t1$V2 + t1$V9)
-		balloonplot (five_tail, main= paste (name, t1$V1[1], "perfect+tailed", sep=" "), xlab="5'",ylab="3'",sorted=T,label.size=1, label.color="white",text.color="black",text.size=1.5,rowmar=0.5,colmar=0.5,show.zeros=T, dotcolor="blue",label.lines=T, )
+		balloonplot (five_tail, main= paste (name, t1$V1[1], "perfect+tailed", sep=" "), xlab="5'",ylab="tail len",sorted=T,label.size=1, label.color="darkgrey",text.color="black",text.size=1.5,rowmar=0.5,colmar=0.5,show.zeros=T, dotcolor="blue",label.lines=T, )
 		three_tail = xtabs (as.integer (t1$V4) ~ t1$V3 + t1$V9)
-		balloonplot (three_tail, main= paste (name, t1$V1[1], "perfect+tailed", sep=" "), xlab="5'",ylab="3'",sorted=T,label.size=1, label.color="white",text.color="black",text.size=1.5,rowmar=0.5,colmar=0.5,show.zeros=T, dotcolor="green",label.lines=T, )
+		balloonplot (three_tail, main= paste (name, t1$V1[1], "perfect+tailed", sep=" "), xlab="3'",ylab="tail len",sorted=T,label.size=1, label.color="darkgrey",text.color="black",text.size=1.5,rowmar=0.5,colmar=0.5,show.zeros=T, dotcolor="green",label.lines=T, )
 
 		t2 = t1[t1$V9==0,]
 		if (nrow (t2) > 0) {
 			five_three = xtabs (as.integer (t2$V4) ~ t2$V2 + t2$V3)
-			balloonplot (five_three, main= paste (name, t1$V1[1], "perfect", sep=" "), xlab="5'",ylab="3'",sorted=T,label.size=1, label.color="white",text.color="black",text.size=1.5,rowmar=0.5,colmar=0.5,show.zeros=T, dotcolor="red",label.lines=T, )
+			balloonplot (five_three, main= paste (name, t1$V1[1], "perfect", sep=" "), xlab="5'",ylab="3'",sorted=T,label.size=1, label.color="darkgrey",text.color="black",text.size=1.5,rowmar=0.5,colmar=0.5,show.zeros=T, dotcolor="red",label.lines=T, )
 			five_tail = xtabs (as.integer (t2$V4) ~ t2$V2 + t2$V9)
-			balloonplot (five_tail, main= paste (name, t1$V1[1], "perfect", sep=" "), xlab="5'",ylab="3'",sorted=T,label.size=1, label.color="white",text.color="black",text.size=1.5,rowmar=0.5,colmar=0.5,show.zeros=T, dotcolor="blue",label.lines=T, )
+			balloonplot (five_tail, main= paste (name, t1$V1[1], "perfect", sep=" "), xlab="5'",ylab="tail len",sorted=T,label.size=1, label.color="darkgrey",text.color="black",text.size=1.5,rowmar=0.5,colmar=0.5,show.zeros=T, dotcolor="blue",label.lines=T, )
 			three_tail = xtabs (as.integer (t2$V4) ~ t2$V3 + t2$V9)
-			balloonplot (three_tail, main= paste (name, t1$V1[1], "perfect", sep=" "), xlab="5'",ylab="3'",sorted=T,label.size=1, label.color="white",text.color="black",text.size=1.5,rowmar=0.5,colmar=0.5,show.zeros=T, dotcolor="green",label.lines=T, )
+			balloonplot (three_tail, main= paste (name, t1$V1[1], "perfect", sep=" "), xlab="3'",ylab="tail len",sorted=T,label.size=1, label.color="darkgrey",text.color="black",text.size=1.5,rowmar=0.5,colmar=0.5,show.zeros=T, dotcolor="green",label.lines=T, )
 		}
 
 		t3 = t1[t1$V9!=0,]
 		if (nrow (t3) > 0) {
 			five_three = xtabs (as.integer (t3$V4) ~ t3$V2 + t3$V3)
-			balloonplot (five_three, main= paste (name, t1$V1[1], "tailed", sep=" "), xlab="5'",ylab="3'",sorted=T,label.size=1, label.color="white",text.color="black",text.size=1.5,rowmar=0.5,colmar=0.5,show.zeros=T, dotcolor="red",label.lines=T, )
+			balloonplot (five_three, main= paste (name, t1$V1[1], "tailed", sep=" "), xlab="5'",ylab="3'",sorted=T,label.size=1, label.color="darkgrey",text.color="black",text.size=1.5,rowmar=0.5,colmar=0.5,show.zeros=T, dotcolor="red",label.lines=T, )
 			five_tail = xtabs (as.integer (t3$V4) ~ t3$V2 + t3$V9)
-			balloonplot (five_tail, main= paste (name, t1$V1[1], "tailed", sep=" "), xlab="5'",ylab="3'",sorted=T,label.size=1, label.color="white",text.color="black",text.size=1.5,rowmar=0.5,colmar=0.5,show.zeros=T, dotcolor="blue",label.lines=T, )
+			balloonplot (five_tail, main= paste (name, t1$V1[1], "tailed", sep=" "), xlab="5'",ylab="tail len",sorted=T,label.size=1, label.color="darkgrey",text.color="black",text.size=1.5,rowmar=0.5,colmar=0.5,show.zeros=T, dotcolor="blue",label.lines=T, )
 			three_tail = xtabs (as.integer (t3$V4) ~ t3$V3 + t3$V9)
-			balloonplot (three_tail, main= paste (name, t1$V1[1], "tailed", sep=" "), xlab="5'",ylab="3'",sorted=T,label.size=1, label.color="white",text.color="black",text.size=1.5,rowmar=0.5,colmar=0.5,show.zeros=T, dotcolor="green",label.lines=T, )
+			balloonplot (three_tail, main= paste (name, t1$V1[1], "tailed", sep=" "), xlab="3'",ylab="tail len",sorted=T,label.size=1, label.color="darkgrey",text.color="black",text.size=1.5,rowmar=0.5,colmar=0.5,show.zeros=T, dotcolor="green",label.lines=T, )
 		}
 	}
 	invisible(dev.off())
