@@ -33,5 +33,5 @@ if(Boost_FOUND AND Threads_FOUND AND ZLIB_FOUND)
 # add the executable
 	add_executable(bin/tailor src/main.cpp)
 	add_definitions(-DmyALPHABET)
-	target_link_libraries( bin/tailor ${Boost_LIBRARIES} ${ZLIB_LIBRARIES} ${CMAKE_SOURCE_DIR}/lib/libabwt_table_LINUX.a)
+	target_link_libraries( bin/tailor ${Boost_LIBRARIES} ${ZLIB_LIBRARIES} ${CMAKE_SOURCE_DIR}/lib/libabwt_table.a)
 endif()
