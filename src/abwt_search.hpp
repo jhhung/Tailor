@@ -647,6 +647,8 @@ public:
 		bool isRC = false;
 		/* the front c_functions_interval has to be exact match */
 		init_exact_match( query.substr (query.size() - c_functions_interval, c_functions_interval) );
+		
+		//std::cout << " GG " << start_end_pos_.second - start_end_pos_.first << " " << fq.getName() << std::endl;
 		/* if not found, exit */
 		if ( start_end_pos_.first >= start_end_pos_.second) {
 			return;
@@ -683,135 +685,16 @@ public:
 			
 			return;
 		}
-		
-		
-/// begin recording tailing
-		if (start_end_pos_.first >= start_end_pos_.second) {
-			++queryPosition; /// substract an extra one when exiting the loop, so add it back
-			
-			
-			
-			//測試是不是真的 tail，還是只是 mismatch
-			if(queryPosition != 0  && allowMismatch::value)
-			{
-				bool is_real_tail = true;
-				for(int cn(0); cn < all_char.size(); ++cn)
-				{
-					auto tmp_i = queryPosition;
-					
-					if( query[tmp_i] == all_char[cn])
-						continue;
-					
-					start_end_pos_ = last_start_end_pos_;
-					auto test_start_end_pos_ = this->exec_exact_match2(all_char[cn]);
-					--tmp_i;
-					for (; tmp_i >= 0 && test_start_end_pos_.first < test_start_end_pos_.second; --tmp_i)
-					{
-						test_start_end_pos_ = this->exec_exact_match2(query[tmp_i]);
-					}
-					if(tmp_i == -1)
-					{
-						is_real_tail = false;
-						std::vector< std::tuple<INTTYPE, int, char, int> > results2;
-						// 只是 mismatch
-						for (INTTYPE i = start_end_pos_.first; i < start_end_pos_.second; i++)
-						{
-							auto position = this->find_nearest_mark(i);
-							results2.push_back( std::make_tuple(position, queryPosition, all_char[cn], 0) );
-						}
-						this->position_to_sam(out, results2, fq, query, prefixMatchLen);
-					}
-				}
-				if(is_real_tail == false)
-					return;
-			}
-			
-			auto NH_tag = last_start_end_pos_.second - last_start_end_pos_.first; // record the theoretically hits
-			// tail後還有 mismatches，判定為真 tail
-			for (INTTYPE i = last_start_end_pos_.first; i < last_start_end_pos_.second; i++) {
-				auto position = this->find_nearest_mark(i);
-				
-				if (position >= this->abwt_table_._realSize && position < (abwt_table_._realSize<<1)) { /// the second comparsion is to suppress weird bug of TTTTTTTTTTTT mapping to position == 2*abwt_table_._realSize
-					isRC = true;
-					position = this->abwt_table_._realSize*2 - position - prefixMatchLen;
-				} else if (position < this->abwt_table_._realSize) {
-					isRC = false;
-				} else {
-					continue;
-				}
-				if (!isRC) { /// same as start_tailing_match_AS
-					auto tailSeq = _query.substr(prefixMatchLen);
-					auto lowerIter = this->abwt_table_.chr_start_pos.upper_bound (position);
-					std::advance (lowerIter, -1);
-					auto chr = lowerIter->second;
-
-					auto lowerIter3 = this->abwt_table_.chr_start_pos.upper_bound (position + prefixMatchLen -1);
-					std::advance (lowerIter3, -1);
-					auto chr3 = lowerIter3->second;
-					if (chr != chr3) continue;
-
-					auto NLowerIter = this->abwt_table_.chr_umbiguous_starting_length.upper_bound (position);
-					std::advance (NLowerIter, -1);
-					auto NLowerIter3 = this->abwt_table_.chr_umbiguous_starting_length.upper_bound (position + prefixMatchLen -1);
-					std::advance (NLowerIter3, -1);
-					if (NLowerIter != NLowerIter3) continue;
-					
-					position = position - lowerIter->first + NLowerIter->second;
-					
-					//std::cout << " B position " << position+1 << " queryPosition "<< queryPosition << std::endl;	
-					//TODO: redefine MAPQ
-					*out << Sam { fq.getName (),
-						Sam::SAM_FLAG::REVERSE_COMPLEMENTED,
-						std::move (chr),
-						position + 1,
-						255 - queryPosition - 1,
-						std::to_string (queryPosition+1) + 'S' + std::to_string (prefixMatchLen) + 'M',
-						"*",
-						0,
-						0,
-						query,
-						fq.getRevQuality (),
-						NH_tag,
-						std::move(tailSeq)};
-				} else { /// same as start_tailing_match_S
-					auto tailSeq = _query.substr(prefixMatchLen);
-
-					auto lowerIter = this->abwt_table_.chr_start_pos.upper_bound (position);
-					std::advance (lowerIter, -1);
-					auto chr = lowerIter->second;
-					auto lowerIter3 = this->abwt_table_.chr_start_pos.upper_bound (position + prefixMatchLen -1);
-					std::advance (lowerIter3, -1);
-					auto chr3 = lowerIter3->second;
-					if (chr != chr3) continue;
-
-					auto NLowerIter = this->abwt_table_.chr_umbiguous_starting_length.upper_bound (position);
-					std::advance (NLowerIter, -1);
-					auto NLowerIter3 = this->abwt_table_.chr_umbiguous_starting_length.upper_bound (position + prefixMatchLen -1);
-					std::advance (NLowerIter3, -1);
-					if (NLowerIter != NLowerIter3) continue;
-
-					position = position - lowerIter->first + NLowerIter->second;
-					//TODO: redefine MAPQ
-					*out << Sam {fq.getName (),
-						Sam::SAM_FLAG::MAPPED,
-						std::move (chr),
-						position+1,
-						255 - queryPosition - 1,
-						std::to_string (prefixMatchLen) + 'M' + std::to_string (queryPosition+1) + 'S',
-						"*",
-						0,
-						0,
-						_query,
-						fq.getQuality (),
-						NH_tag,
-						std::move(tailSeq)};
-				}
-			}
-			
+		if (prefixMatchLen+1 < minimalPrefixLength)
 			return;
-		}
-/// found perfect match
-		if (queryPosition == -1) {
+		
+		
+		//std::cout << start_end_pos_.second - start_end_pos_.first << " " << fq.getName() << " queryPosition "<< queryPosition << " prefixMatchLen "<< prefixMatchLen << std::endl;
+
+		bool is_any_perfect = false;
+		/// found perfect match
+		//if (queryPosition == -1) {
+		if(start_end_pos_.first < start_end_pos_.second) {
 			auto NH_tag = start_end_pos_.second - start_end_pos_.first;
 			for (INTTYPE i = start_end_pos_.first; i < start_end_pos_.second; i++) {
 				auto position = this->find_nearest_mark(i);
@@ -821,6 +704,7 @@ public:
 				} else {
 					isRC = false;
 				}
+				
 				if (!isRC) {
 					auto lowerIter = this->abwt_table_.chr_start_pos.upper_bound (position);
 					std::advance (lowerIter, -1);
@@ -852,23 +736,21 @@ public:
 						fq.getRevQuality (),
 						NH_tag
 					};
+					is_any_perfect = true;
 				} else {
 					auto lowerIter = this->abwt_table_.chr_start_pos.upper_bound (position);
 					std::advance (lowerIter, -1);
 					auto chr = lowerIter->second;
-
 					auto lowerIter3 = this->abwt_table_.chr_start_pos.upper_bound (position + _query.size () - 1);
 					std::advance (lowerIter3, -1);
 					auto chr3 = lowerIter3->second;
 					if (chr != chr3) continue;
-
 					auto NLowerIter = this->abwt_table_.chr_umbiguous_starting_length.upper_bound (position);
 					std::advance (NLowerIter, -1);
-
 					auto NLowerIter3 = this->abwt_table_.chr_umbiguous_starting_length.upper_bound (position + _query.size () - 1);
 					std::advance (NLowerIter3, -1);
+					
 					if (NLowerIter != NLowerIter3) continue;
-
 					position = position - lowerIter->first + NLowerIter->second;
 
 					*out << Sam {fq.getName (),
@@ -884,10 +766,143 @@ public:
 						fq.getQuality (),
 						NH_tag
 					};
+					is_any_perfect = true;
 				}
 			}
-			return ;
+			//return ;
 		}
+
+
+/// begin recording tailing
+		if (start_end_pos_.first >= start_end_pos_.second || !is_any_perfect) {
+			++queryPosition; /// substract an extra one when exiting the loop, so add it back
+			//std::cout << "tail queryPosition " << queryPosition << std::endl;
+			//測試是不是真的 tail，還是只是 mismatch
+			if(queryPosition != 0  && allowMismatch::value)
+			{
+				int result_size = 0;
+				for(int cn(0); cn < all_char.size(); ++cn)
+				{
+					auto tmp_i = queryPosition;
+					//
+					if( query[tmp_i] == all_char[cn])
+						continue;
+					//std::cout << "A " << tmp_i << std::endl;
+					start_end_pos_ = last_start_end_pos_;
+					auto test_start_end_pos_ = this->exec_exact_match2(all_char[cn]);
+					//std::cout << "A " << tmp_i << " "<<test_start_end_pos_.first <<" "<< test_start_end_pos_.second << std::endl;
+					--tmp_i;
+					for (; tmp_i >= 0 && test_start_end_pos_.first < test_start_end_pos_.second; --tmp_i)
+					{
+						test_start_end_pos_ = this->exec_exact_match2(query[tmp_i]);
+						//std::cout << "B " << tmp_i << std::endl;
+					}
+					//std::cout << "B " << tmp_i << std::endl;
+					if(tmp_i == -1)
+					{
+						std::vector< std::tuple<INTTYPE, int, char, int> > results2;
+						// 只是 mismatch
+						for (INTTYPE i = start_end_pos_.first; i < start_end_pos_.second; i++)
+						{
+							auto position = this->find_nearest_mark(i);
+							results2.push_back( std::make_tuple(position, queryPosition, all_char[cn], 0) );
+						}
+						this->position_to_sam(out, results2, fq, query, prefixMatchLen);
+						result_size += results2.size();
+					}
+				}
+				if(result_size != 0)
+					return;
+			}
+			
+			auto NH_tag = last_start_end_pos_.second - last_start_end_pos_.first; // record the theoretically hits
+			// tail後還有 mismatches，判定為真 tail
+			
+			for (INTTYPE i = last_start_end_pos_.first; i < last_start_end_pos_.second; i++) {
+				auto position = this->find_nearest_mark(i);
+				
+				if (position >= this->abwt_table_._realSize && position < (abwt_table_._realSize<<1)) { /// the second comparsion is to suppress weird bug of TTTTTTTTTTTT mapping to position == 2*abwt_table_._realSize
+					isRC = true;
+					position = this->abwt_table_._realSize*2 - position - prefixMatchLen;
+				} else if (position < this->abwt_table_._realSize) {
+					isRC = false;
+				} else {
+					continue;
+				}
+				if (!isRC) { /// same as start_tailing_match_AS
+					auto tailSeq = _query.substr(prefixMatchLen);
+					
+					auto lowerIter = this->abwt_table_.chr_start_pos.upper_bound (position);
+					std::advance (lowerIter, -1);
+					auto chr = lowerIter->second;
+					auto lowerIter3 = this->abwt_table_.chr_start_pos.upper_bound (position + prefixMatchLen -1);
+					std::advance (lowerIter3, -1);
+					auto chr3 = lowerIter3->second;
+					if (chr != chr3) continue;
+
+					auto NLowerIter = this->abwt_table_.chr_umbiguous_starting_length.upper_bound (position);
+					std::advance (NLowerIter, -1);
+					auto NLowerIter3 = this->abwt_table_.chr_umbiguous_starting_length.upper_bound (position + prefixMatchLen -1);
+					std::advance (NLowerIter3, -1);
+					if (NLowerIter != NLowerIter3) continue;
+					
+					position = position - lowerIter->first + NLowerIter->second;
+					
+					//std::cout << " B position " << position+1 << " queryPosition "<< queryPosition << std::endl;	
+					//TODO: redefine MAPQ
+					*out << Sam { fq.getName (),
+						Sam::SAM_FLAG::REVERSE_COMPLEMENTED,
+						std::move (chr),
+						position + 1,
+						255 - queryPosition - 1,
+						std::to_string (queryPosition+1) + 'S' + std::to_string (prefixMatchLen) + 'M',
+						"*",
+						0,
+						0,
+						query,
+						fq.getRevQuality (),
+						NH_tag,
+						std::move(tailSeq)};
+				} else { /// same as start_tailing_match_S
+					auto tailSeq = _query.substr(prefixMatchLen);
+					
+					auto lowerIter = this->abwt_table_.chr_start_pos.upper_bound (position);
+					std::advance (lowerIter, -1);
+					auto chr = lowerIter->second;
+					auto lowerIter3 = this->abwt_table_.chr_start_pos.upper_bound (position + prefixMatchLen -1);
+					std::advance (lowerIter3, -1);
+					auto chr3 = lowerIter3->second;
+					if (chr != chr3) continue;
+
+					auto NLowerIter = this->abwt_table_.chr_umbiguous_starting_length.upper_bound (position);
+					std::advance (NLowerIter, -1);
+					auto NLowerIter3 = this->abwt_table_.chr_umbiguous_starting_length.upper_bound (position + prefixMatchLen -1);
+					std::advance (NLowerIter3, -1);
+					
+					if (NLowerIter != NLowerIter3)
+						continue;
+					
+					position = position - lowerIter->first + NLowerIter->second;
+					
+					//TODO: redefine MAPQ
+					*out << Sam {fq.getName (),
+						Sam::SAM_FLAG::MAPPED,
+						std::move (chr),
+						position+1,
+						255 - queryPosition - 1,
+						std::to_string (prefixMatchLen) + 'M' + std::to_string (queryPosition+1) + 'S',
+						"*",
+						0,
+						0,
+						_query,
+						fq.getQuality (),
+						NH_tag,
+						std::move(tailSeq)};
+				}
+			}
+			return;
+		}
+
 	}
 };
 
