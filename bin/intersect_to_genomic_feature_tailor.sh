@@ -1,3 +1,19 @@
+# Tailor, a BWT-based aligner for non-templated RNA tailing
+# Copyright (C) 2014 Min-Te Chou, Bo W Han, Jui-Hung Hung
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 TOTAL_BED=$1
 UNIQ_BED=${TOTAL_BED%bed2}uniq.bed2
@@ -31,7 +47,7 @@ parafly_file="intersect1".para && \
 rm -rf $parafly_file
 for t in ${TARGETS[@]}
 do \
-	echo "bedtools intersect -f 0.99 -wa -u -a ${TOTAL_BED} -b ${!t} > ${TOTAL_BED%bed2}${t}.bed2" >> $parafly_file
+	echo "bedtools_tailor intersect -f 0.99 -wa -u -a ${TOTAL_BED} -b ${!t} > ${TOTAL_BED%bed2}${t}.bed2" >> $parafly_file
 done
 if [[ ! -f ${parafly_file}.completed ]] || [[ -f $parafly_file.failed_commands ]]
 then

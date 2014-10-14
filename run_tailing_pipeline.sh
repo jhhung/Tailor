@@ -1,4 +1,21 @@
-#!/bin/bash -x
+#!/bin/bash
+
+# Tailor, a BWT-based aligner for non-templated RNA tailing
+# Copyright (C) 2014 Min-Te Chou, Bo W Han, Jui-Hung Hung
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 ##########
 # Config #
@@ -6,7 +23,7 @@
 export PIPELINE_DIRECTORY=$(dirname `readlink -f $0`)
 export PATH=${PIPELINE_DIRECTORY}/bin:$PATH
 export TAILOR_INDEX=$PIPELINE_DIRECTORY/indexes
-export VERSION=1.0.0
+export VERSION=1.0.1
 
 #########
 # USAGE #
@@ -24,8 +41,8 @@ It requires
 1. the input reads in FastQ format;
 2. genome fasta sequence in FastA format; it will generate Tailor index in Tailor directory;
 3. genomic_feature_file; this file stores information on the name of different genomic structures. please refer to the annotation/dm3.genomic_features for the format
-4. [ optional ] microRNA hairpin sequence in FastA file, from miRBase
-5. [ optional ] microRNA mature sequence in FastA format, from miRBase
+4. [ optional ] microRNA hairpin sequence in FastA file; We provide a script to obtain mature and hairpin sequence from miRbase: obtain_miRNA.sh
+5. [ optional ] microRNA mature sequence in FastA format; We provide a script to obtain mature and hairpin sequence from miRbase: obtain_miRNA.sh
 6. [ optional ] output directory
 7. [ optional ] number of threads to use
 
@@ -205,7 +222,7 @@ STEP=$((STEP+1))
 # microRNA tailing analysis #
 #############################
 if [ ! -z $HAIRPIN_INDEX_FA ]; then
-	
+
 	[ -z $MATURE_FA ]	&& echo2 "missing -M for mirBase mature miRNA in fasta format" "error"
 	[ ! -s $MATURE_FA ]	&& echo2 "cannot find file $MATURE_FA" "error"
 	[ ! -s $HAIRPIN_INDEX_FA ] && echo2 "cannot fine file $HAIRPIN_INDEX_FA" "error"
@@ -225,7 +242,7 @@ if [ ! -z $HAIRPIN_INDEX_FA ]; then
 			-p $HAIRPIN_INDEX \
 			-n $CPU | \
 		samtools view -bS - | \
-		bedtools bamtobed -i - > \
+		bedtools_tailor bamtobed -i - > \
 		$ANNOTATION_DIR/mature.annotate_coordinates.bed && \
 		rm -rf $ANNOTATION_DIR/mature.fq && \
 		touch .${JOBUID}.status.${STEP}.find_annotated_coordinates
@@ -259,7 +276,7 @@ if [ ! -z $HAIRPIN_INDEX_FA ]; then
 
 	echo2 "Adjust the coordinate according to the annotated mature miRNA"
 	[ ! -f .${JOBUID}.status.${STEP}.reannotate ] && \
-		bedtools intersect -wo -s -a $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.hairpin.bed2 -b $ANNOTATION_DIR/mature.annotate_coordinates.bed -f 0.75 | \
+		bedtools_tailor intersect -wo -s -a $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.hairpin.bed2 -b $ANNOTATION_DIR/mature.annotate_coordinates.bed -f 0.75 | \
 		tee $MAPPING_DIR/${PREFIX}.relative.bed.wo | \
 		awk 'BEGIN{FS="\t";OFS="\t"}{print $13,$11-$2,$3-$12,$4,$5,$6,$7,$8,$9}' \
 		> $MAPPING_DIR/${PREFIX}.relative.bed && \
