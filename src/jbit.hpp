@@ -1,4 +1,23 @@
-#ifndef JBIT_HPP_                                                                                                                                                           
+/*
+# Tailor, a BWT-based aligner for non-templated RNA tailing
+# Copyright (C) 2014 Min-Te Chou, Bo W Han, Jui-Hung Hung
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
+
+#ifndef JBIT_HPP_
 #define JBIT_HPP_
 #include <map>
 #include <unordered_map>
@@ -38,7 +57,7 @@ public:
 		std::ofstream out ("src/three_byte_to_char.hpp");
 		char asci = 0x21;
 		out<<"{"<<std::endl<<"\t";
-		for (int i = 0; i < 4; i++)//first nt  
+		for (int i = 0; i < 4; i++)//first nt
 			{
 				words = std::string("{{ '")+all_char[i] + "', '$'" + ", '$'}}" ;
 //				std::cerr<<words<<" "<< ++asci<<std::endl;
@@ -46,7 +65,7 @@ public:
 			}
 			out<<std::endl<<"\t";
 		asci = 0x25;
-		for (int i = 0; i < 4; i++)//first nt 
+		for (int i = 0; i < 4; i++)//first nt
 		{
 		  for (int j = 0; j < 4; j++)//second nt
 			{
@@ -58,7 +77,7 @@ public:
 			out<<std::endl<<"\t";
 		}
 		asci = 0x3A;
-		for (int i = 0; i < 4; i++)//first nt  
+		for (int i = 0; i < 4; i++)//first nt
 		  for (int j = 0; j < 4; j++)//second nt
 		  {
 			for (int k = 0; k < 4; k++)//third nt
@@ -71,8 +90,8 @@ public:
 		  }
 		out<<"{ '"<<(char)0x20<<"', {{ '$', '$', '$'}}"<<"}"<<std::endl;
 		out<<"}"<<std::endl;
-	}	  
-  
+	}
+
 };
 
 class Word2byte
@@ -96,7 +115,7 @@ public:
 		std::ofstream out ("src/three_char_to_byte.hpp");
 		char asci = 0x21;
 		out<<"{"<<std::endl<<"\t";
-		for (int i = 0; i < 4; i++)//first nt  
+		for (int i = 0; i < 4; i++)//first nt
 			{
 				words = std::string("{{ '")+all_char[i] + "', '$'" + ", '$'}}" ;
 //				std::cerr<<words<<" "<< ++asci<<std::endl;
@@ -104,7 +123,7 @@ public:
 			}
 			out<<std::endl<<"\t";
 		asci = 0x25;
-		for (int i = 0; i < 4; i++)//first nt 
+		for (int i = 0; i < 4; i++)//first nt
 		{
 		  for (int j = 0; j < 4; j++)//second nt
 			{
@@ -116,7 +135,7 @@ public:
 			out<<std::endl<<"\t";
 		}
 		asci = 0x3A;
-		for (int i = 0; i < 4; i++)//first nt  
+		for (int i = 0; i < 4; i++)//first nt
 		  for (int j = 0; j < 4; j++)//second nt
 		  {
 			for (int k = 0; k < 4; k++)//third nt
@@ -129,8 +148,8 @@ public:
 	      }
 		out<<"{ "<<"{{ '$', '$', '$'}}"<<", '"<< (char)0x20 <<"'}"<<std::endl;
 		out<<"}"<<std::endl;
-	}	  
-  
+	}
+
 };
 
 
@@ -148,25 +167,25 @@ public:
 	{
 		make_table();
 		seq_.reserve(ori_seq_size/4 +1);
-		
+
 	}
 	JBit( std::string& original_seq )
 	{
 		make_table();
-		
+
 		uint32_t tmp_i = 4 - ( (original_seq.length() & 3 ));
-		
+
 		//std::cerr << "tmp_i " << tmp_i << std::endl;
 		for(int i=0; i < tmp_i; i++)
 		{
 			original_seq+="A";
 		}
 		seq_.reserve(original_seq.length()/4 +1);
-		
+
 		char* seq ( (char*)original_seq.c_str() );
 		for ( int i = 0; i<original_seq.length(); i+=4)
 		{
-			seq_.push_back( word2byte[  std::array<char, 4>{ *(seq+i), *(seq+i+1), *(seq+i+2), *(seq+i+3) } ]); 
+			seq_.push_back( word2byte[  std::array<char, 4>{ *(seq+i), *(seq+i+1), *(seq+i+2), *(seq+i+3) } ]);
 		}
 	}
 	inline void push_back(char c)
@@ -189,7 +208,7 @@ public:
 		}
 		seq_.push_back( word2byte[ tmp_4char ]);
 	}
-	
+
 	void make_table()
 	{
 		std::string all_char("ACGT");
@@ -209,9 +228,9 @@ public:
 
 
 /*
-//std::unordered_map<std::string, char> JBit::word2byte                                                                                                                    
+//std::unordered_map<std::string, char> JBit::word2byte
 boost::unordered_map< char, std::array<char, 3> > JBit::byte2word
-{                                                                                                                                                              
+{
     { '\"',{{ 'A', '$', '$'}}}, { '#', {{ 'C', '$', '$'}}}, { '$', {{ 'G', '$', '$'}}}, { '%', {{ 'T', '$', '$'}}},
 	{ '&', {{ 'A', 'A', '$'}}}, { '\'',{{ 'A', 'C', '$'}}}, { '(', {{ 'A', 'G', '$'}}}, { ')', {{ 'A', 'T', '$'}}},
 	{ '*', {{ 'C', 'A', '$'}}}, { '+', {{ 'C', 'C', '$'}}}, { ',', {{ 'C', 'G', '$'}}}, { '-', {{ 'C', 'T', '$'}}},
@@ -241,7 +260,7 @@ boost::unordered_map< char, std::array<char, 3> > JBit::byte2word
 boost::unordered_map<std::array<char, 3>, char> JBit::word2byte
 {
    { {{ 'A', '$', '$'}}, '\"'},{ {{ 'C', '$', '$'}}, '#'}, { {{ 'G', '$', '$'}}, '$'}, { {{ 'T', '$', '$'}}, '%'},
-   { {{ 'A', 'A', '$'}}, '&'}, { {{ 'A', 'C', '$'}}, '\''},{ {{ 'A', 'G', '$'}}, '('}, { {{ 'A', 'T', '$'}}, ')'},                                            
+   { {{ 'A', 'A', '$'}}, '&'}, { {{ 'A', 'C', '$'}}, '\''},{ {{ 'A', 'G', '$'}}, '('}, { {{ 'A', 'T', '$'}}, ')'},
    { {{ 'C', 'A', '$'}}, '*'}, { {{ 'C', 'C', '$'}}, '+'}, { {{ 'C', 'G', '$'}}, ','}, { {{ 'C', 'T', '$'}}, '-'},
    { {{ 'G', 'A', '$'}}, '.'}, { {{ 'G', 'C', '$'}}, '/'}, { {{ 'G', 'G', '$'}}, '0'}, { {{ 'G', 'T', '$'}}, '1'},
    { {{ 'T', 'A', '$'}}, '2'}, { {{ 'T', 'C', '$'}}, '3'}, { {{ 'T', 'G', '$'}}, '4'}, { {{ 'T', 'T', '$'}}, '5'},
@@ -265,7 +284,7 @@ boost::unordered_map<std::array<char, 3>, char> JBit::word2byte
 };
 */
 /*
-boost::unordered_map<std::string, char> JBit::word2byte                                                                                                                    
+boost::unordered_map<std::string, char> JBit::word2byte
 {
     {"A$$", '\"'},{"C$$", '#'},{"G$$", '$'},{"T$$", '%'},
 	{"AA$", '&'},{"AC$", '\''},{"AG$", '('},{"AT$", ')'},
@@ -291,4 +310,4 @@ boost::unordered_map<std::string, char> JBit::word2byte
 	{"$$$", ' '}
 };
 */
-#endif   
+#endif

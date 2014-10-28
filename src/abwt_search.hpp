@@ -1,3 +1,22 @@
+/*
+# Tailor, a BWT-based aligner for non-templated RNA tailing
+# Copyright (C) 2014 Min-Te Chou, Bo W Han, Jui-Hung Hung
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
+
 #ifndef ABWT_SEARCH_HPP_
 #define ABWT_SEARCH_HPP_
 
@@ -99,10 +118,10 @@ public:
 			trace_point = abwt_table_.back_tracking_using_jbwt(trace_point);
 			++traceback_count;
 		}
-		auto pp = std::lower_bound( 
-			abwt_table_.location_table.begin(), 
-			abwt_table_.location_table.end(), 
-			std::pair<INTTYPE, INTTYPE>{trace_point, 0}, 
+		auto pp = std::lower_bound(
+			abwt_table_.location_table.begin(),
+			abwt_table_.location_table.end(),
+			std::pair<INTTYPE, INTTYPE>{trace_point, 0},
 				[]( const std::pair<INTTYPE, INTTYPE>& a, const std::pair<INTTYPE, INTTYPE>& b)
 				{
 					return a.first < b.first;
@@ -125,30 +144,30 @@ public:
 			++traceback_count;
 		}
 
-		auto pp = std::lower_bound( 
-			abwt_table_.location_table.begin(), 
-			abwt_table_.location_table.end(), 
-			std::pair<INTTYPE, INTTYPE>{trace_point, 0}, 
+		auto pp = std::lower_bound(
+			abwt_table_.location_table.begin(),
+			abwt_table_.location_table.end(),
+			std::pair<INTTYPE, INTTYPE>{trace_point, 0},
 				[]( const std::pair<INTTYPE, INTTYPE>& a, const std::pair<INTTYPE, INTTYPE>& b)
 				{
 					return a.first < b.first;
-				} 
+				}
 		);
 		traceback_count += pp->second;
 		return traceback_count;
 
 		while(1)//trace to the nearest upstream location_table
 		{
-			auto pp = std::lower_bound( 
-				abwt_table_.location_table.begin(), 
-				abwt_table_.location_table.end(), 
-				std::pair<INTTYPE, INTTYPE>{trace_point, 0}, 
+			auto pp = std::lower_bound(
+				abwt_table_.location_table.begin(),
+				abwt_table_.location_table.end(),
+				std::pair<INTTYPE, INTTYPE>{trace_point, 0},
 					[]( const std::pair<INTTYPE, INTTYPE>& a, const std::pair<INTTYPE, INTTYPE>& b)
 					{
 						return a.first < b.first;
-					} 
+					}
 			);
-			
+
 			if ( pp->first == trace_point )
 			{
 				traceback_count += pp->second;
@@ -162,17 +181,17 @@ public:
 		}
 		return traceback_count;
 	}
-	
+
 	inline void start_all_possible(std::string& query, std::vector<INTTYPE>& result)
-	{	
-			
+	{
+
 		init_exact_match( query.substr(query.size()-c_functions_interval,c_functions_interval) );
 
 		INTTYPE first_pos_f(start_end_pos_.first);
 		INTTYPE first_pos_e(start_end_pos_.second);
 		all_possible(result, query, query.length()-1-c_functions_interval, first_pos_f, first_pos_e, 0);
 	}
-	
+
 	inline void all_possible(std::vector<INTTYPE>& result, std::string &query, int i, INTTYPE pos_f, INTTYPE pos_e, INTTYPE mn)
 	{
 		char c(query[i]);
@@ -216,7 +235,7 @@ public:
 			exec_exact_match(query[i]);
 		}
 		//std::cout << "Aresult.size()" << result.size() << " " << start_end_pos_.second - start_end_pos_.first << std::endl;}
-		
+
 		push_result(result, start_end_pos_.first, start_end_pos_.second);
 		//std::cout << "Bresult.size()" << result.size() << std::endl;
 		if(result.size() != 0)
@@ -225,15 +244,15 @@ public:
 		exact_match_rec(result, query, query.length()-1-c_functions_interval, first_pos_f, first_pos_e, 0);
 
 	}
-		
+
 	inline void start_one_mismatch2(std::string& query, std::vector<INTTYPE>& result)
-	{	
-			
+	{
+
 		init_exact_match( query.substr(query.size()-c_functions_interval,c_functions_interval) );
 
 		INTTYPE first_pos_f(start_end_pos_.first);
 		INTTYPE first_pos_e(start_end_pos_.second);
-		
+
 		INTTYPE kk(0);
 		for (int i=query.length()-1-c_functions_interval; i>=0 && start_end_pos_.first < start_end_pos_.second; i--)
 		{
@@ -251,7 +270,7 @@ public:
 		char c(query[i]);
 		INTTYPE n_pos_f = abwt_table_.c_function[ c ] + abwt_table_.get_occ_using_jbwt( pos_f, c );
 		INTTYPE n_pos_e = abwt_table_.c_function[ c ] + abwt_table_.get_occ_using_jbwt( pos_e, c );
-		
+
 		if(i == 0)//tail 也沒中，表示seed後都沒有中，可以略過 seed 之後
 		{
 			push_result(result, n_pos_f, n_pos_e);
@@ -279,9 +298,9 @@ public:
 			query[i] = all_char[cn];
 			exact_match_rec(result, query, i, pos_f, pos_e, mn+1);
 			query[i] = c;
-		}	
+		}
 	}
-	
+
 	//(results, fq, query_, query.length()-1-1, pos_f, pos_e, 0, prefixMatchLen);
 	//result:: pos, mismatch_pos_i, char, tail_pos
 	inline void tailor_mismatch_rec
@@ -300,12 +319,12 @@ public:
 		char c(query[i]);
 		INTTYPE n_pos_f = abwt_table_.c_function[ c ] + abwt_table_.get_occ_using_jbwt( pos_f, c );
 		INTTYPE n_pos_e = abwt_table_.c_function[ c ] + abwt_table_.get_occ_using_jbwt( pos_e, c );
-		
+
 		//之前已經做過perfact match，所以可以省略沒有 mismatch還是會全部做完，只要超過prefixMatchLen 就略過
 		//tail 也沒中，表示seed後都沒有中，可以略過 seed 之後
 		if(mn == 0 && i < query.size()-minimalPrefixLength)
 			return;
-		
+
 		//不管有沒有mismatch，i==0就是已經結束，0 mismatch or 1 mismatch
 		if(i == 0)
 		{
@@ -338,7 +357,7 @@ public:
 					auto real_pos = find_nearest_mark(pos_idx);
 					result.push_back(std::make_tuple(real_pos, mismatch_pos_i, mismatch_char, i));
 				}
-				
+
 			}
 			return;
 		}
@@ -360,16 +379,16 @@ public:
 			auto mismatch_pos_i = std::get <1>(result);
 			auto mismatch_char = std::get <2>(result);
 			auto tail_pos = std::get <3>(result);
-			
+
 			int queryPosition = tail_pos;
 			int prefixMatchLen = query.size() - queryPosition;
 			INTTYPE NH_tag = results.size();
 			std::string _query = fq.getSeq();
-			
+
 			bool isRC = false;
 			/// the second comparsion is to suppress weird bug of TTTTTTTTTTTT mapping to position == 2*abwt_table_._realSize
 			if (position >= this->abwt_table_._realSize && position < (abwt_table_._realSize<<1))
-			{ 					
+			{
 				isRC = true;
 				position = this->abwt_table_._realSize*2 - position - prefixMatchLen;
 			} else if (position < this->abwt_table_._realSize) {
@@ -391,10 +410,10 @@ public:
 			std::advance (NLowerIter3, -1);
 			if (NLowerIter != NLowerIter3) continue;
 			position = position - lowerIter->first + NLowerIter->second;
-			
+
 			std::string MD_tag("");
 			std::string CIGAR_tag("");
-			
+
 			//反
 			if (!isRC)
 			{ /// same as start_tailing_match_AS
@@ -403,18 +422,18 @@ public:
 					CIGAR_tag = std::to_string (prefixMatchLen) + 'M';
 				else
 					CIGAR_tag = std::to_string (queryPosition) + 'S' + std::to_string (prefixMatchLen) + 'M';
-				
+
 				// 有 mismatch 也有 tail
 				int pre = query.size() - mismatch_pos_i - 1;
 				int pro = mismatch_pos_i - tail_pos;
-				
+
 				//if(pro!=0)
 				MD_tag += std::to_string(pro);
 				MD_tag += mismatch_char;
 				//if(pre!=0)
 				MD_tag += std::to_string(pre);
 				//MD_tag += tailSeq;
-				
+
 				//if(pre == 0)
 				//{
 					//mismatch 在最後一個字，屬於 tail
@@ -422,7 +441,7 @@ public:
 					//tailSeq = mismatch_char;
 					//CIGAR_tag = std::string("1S") + std::to_string (prefixMatchLen-1) + 'M';
 				//}
-				//std::cout << " A position " << position+1 << " MD_tag " << MD_tag << std::endl;	
+				//std::cout << " A position " << position+1 << " MD_tag " << MD_tag << std::endl;
 				*out << Sam { fq.getName (),
 					Sam::SAM_FLAG::REVERSE_COMPLEMENTED,
 					std::move (chr),
@@ -441,7 +460,7 @@ public:
 			else
 			{ /// same as start_tailing_match_S
 				//TODO: redefine MAPQ
-				switch (mismatch_char) 
+				switch (mismatch_char)
 				{
 					case 'A': mismatch_char = 'T'; break;
 					case 'T': mismatch_char = 'A'; break;
@@ -452,7 +471,7 @@ public:
 					CIGAR_tag = std::to_string (prefixMatchLen) + 'M';
 				else
 					CIGAR_tag = std::to_string (prefixMatchLen) + 'M' + std::to_string (queryPosition) + 'S';
-				
+
 				int pre = query.size() - mismatch_pos_i - 1;
 				int pro = mismatch_pos_i - tail_pos;
 				//if(pre!=0)
@@ -461,7 +480,7 @@ public:
 				//if(pro!=0)
 				MD_tag += std::to_string(pro);
 				//MD_tag += tailSeq;
-				
+
 				*out << Sam {fq.getName (),
 					Sam::SAM_FLAG::MAPPED,
 					std::move (chr),
@@ -478,9 +497,9 @@ public:
 					std::move(MD_tag)};
 			}
 		}
-		
+
 	}
-	
+
 	inline void exact_match_rec(std::vector<INTTYPE>& result, std::string &query, int i, INTTYPE pos_f, INTTYPE pos_e, INTTYPE b_pos_f, INTTYPE b_pos_e, INTTYPE mn)
 	{
 		char c(query[i]);
@@ -492,7 +511,7 @@ public:
 		{
 			push_result(result, n_pos_f, n_pos_e);
 			return;
-		}		
+		}
 		if(pos_f < pos_e)
 		{
 			exact_match_rec(result, query, i-1, n_pos_f, n_pos_e, pos_f, pos_e, mn);
@@ -506,30 +525,30 @@ public:
 			result.push_back( find_nearest_mark(i) );
 		}
 	}
-	
+
 	inline void start_sbwt_match( std::string& query, std::vector<INTTYPE>& result )
 	{
 		init_exact_match( query.substr(query.size()-c_functions_interval,c_functions_interval) );
-		
+
 		for (int i=query.length()-1-c_functions_interval; i>=0 && start_end_pos_.first < start_end_pos_.second; i--)
 		{
-			exec_exact_match(query[i]);	
+			exec_exact_match(query[i]);
 		}
 		if (start_end_pos_.second - start_end_pos_.first > 100)
 			return;
-		
+
 		for(INTTYPE i = start_end_pos_.first; i < start_end_pos_.second; ++i)
 		{
 			if(abwt_table_.fbwt[i] != 0)
 				continue;
-			auto pp = std::lower_bound( 
+			auto pp = std::lower_bound(
 				abwt_table_.location_table.begin(),
-				abwt_table_.location_table.end(), 
-				std::pair<INTTYPE, INTTYPE>{ i, 0}, 
+				abwt_table_.location_table.end(),
+				std::pair<INTTYPE, INTTYPE>{ i, 0},
 					[]( const std::pair<INTTYPE, INTTYPE>& a, const std::pair<INTTYPE, INTTYPE>& b)
 					{
 						return a.first < b.first;
-					} 
+					}
 			);
 			if(pp->first == i)
 			{
@@ -537,23 +556,23 @@ public:
 				if(start_end_pos_.second - start_end_pos_.first == 1)
 					return;
 			}
-			
+
 		}
 
 		for(int cn(0); cn < all_char.size(); ++cn)
-		{		
+		{
 			find_possible(result, 1, all_char[cn], start_end_pos_.first, start_end_pos_.second);
-		}	
-		
+		}
+
 	}
-		
+
 	inline void find_possible(std::vector<INTTYPE>& result, int len, char c, INTTYPE pos_f, INTTYPE pos_e)
 	{
 		if(len >= abwt_table_.interval)
 			return;
 		if (result.size() == start_end_pos_.second - start_end_pos_.first)
 			return;
-		
+
 		INTTYPE n_pos_f = abwt_table_.c_function[ c ] + abwt_table_.get_occ_using_jbwt( pos_f, c );
 		INTTYPE n_pos_e = abwt_table_.c_function[ c ] + abwt_table_.get_occ_using_jbwt( pos_e, c );
 		if(n_pos_f >= n_pos_e) // no result
@@ -561,19 +580,19 @@ public:
 			// no result
 			return;
 		}
-		
+
 		for(INTTYPE i = n_pos_f; i < n_pos_e; ++i)
 		{
 			if(abwt_table_.fbwt[i] != 0)
 				continue;
-			auto pp = std::lower_bound( 
-				abwt_table_.location_table.begin(), 
-				abwt_table_.location_table.end(), 
-				std::pair<INTTYPE, INTTYPE>{ i, 0}, 
+			auto pp = std::lower_bound(
+				abwt_table_.location_table.begin(),
+				abwt_table_.location_table.end(),
+				std::pair<INTTYPE, INTTYPE>{ i, 0},
 					[]( const std::pair<INTTYPE, INTTYPE>& a, const std::pair<INTTYPE, INTTYPE>& b)
 					{
 						return a.first < b.first;
-					} 
+					}
 			);
 			if(pp->first == i)
 			{
@@ -581,7 +600,7 @@ public:
 				if(n_pos_e - n_pos_f == 1 )
 					return;
 			}
-		
+
 			if(len == abwt_table_.interval-1)
 				return;
 
@@ -628,11 +647,11 @@ public:
 	void start_tailing_match_Dual (const Fastq& fq, std::stringstream* out, int minimalPrefixLen)//, int maximumTailLen=3)
 	{
 		std::string _query = fq.getSeq ();
-		
+
 		int minimalPrefixLength = minimalPrefixLen;
 		//int maximumTailLength = maximumTailLen;
 		//minimalPrefixLength = std::max( (int)(_query.size() - maximumTailLength), minimalPrefixLength);
-		
+
 		/* reverse complement query string */
 		std::string query {_query.crbegin(), _query.crend()};
 		for (auto & c : query) {
@@ -674,23 +693,23 @@ public:
 			INTTYPE pos_f(start_end_pos_.first);
 			init_exact_match( 'T' );
 			INTTYPE pos_e(start_end_pos_.second);
-			
+
 			//std::vector<INTTYPE>& result, std::string &query, INTTYPE i, INTTYPE pos_limit, INTTYPE pos_f, INTTYPE pos_e, INTTYPE mn
 			this->tailor_mismatch_rec(results, query, query.length()-1, pos_f, pos_e, 0, minimalPrefixLength, query.length(), 'A');
 			//this->tailor_mismatch_rec(results, query, query.length()-1-1, pos_f, pos_e, 0, minimalPrefixLength, query.length(), 'A');
 			//position_to_sam(std::vector< std::tuple<INTTYPE, int, char, int> >& results, const Fastq& fq, std::string &query, int prefixMatch)
 			this->position_to_sam(out, results, fq, query, prefixMatchLen);
-			
+
 			return;
 		}
-		
-		
+
+
 /// begin recording tailing
 		if (start_end_pos_.first >= start_end_pos_.second) {
 			++queryPosition; /// substract an extra one when exiting the loop, so add it back
-			
-			
-			
+
+
+
 			//測試是不是真的 tail，還是只是 mismatch
 			if(queryPosition != 0  && allowMismatch::value)
 			{
@@ -698,10 +717,10 @@ public:
 				for(int cn(0); cn < all_char.size(); ++cn)
 				{
 					auto tmp_i = queryPosition;
-					
+
 					if( query[tmp_i] == all_char[cn])
 						continue;
-					
+
 					start_end_pos_ = last_start_end_pos_;
 					auto test_start_end_pos_ = this->exec_exact_match2(all_char[cn]);
 					--tmp_i;
@@ -725,12 +744,12 @@ public:
 				if(is_real_tail == false)
 					return;
 			}
-			
+
 			auto NH_tag = last_start_end_pos_.second - last_start_end_pos_.first; // record the theoretically hits
 			// tail後還有 mismatches，判定為真 tail
 			for (INTTYPE i = last_start_end_pos_.first; i < last_start_end_pos_.second; i++) {
 				auto position = this->find_nearest_mark(i);
-				
+
 				if (position >= this->abwt_table_._realSize && position < (abwt_table_._realSize<<1)) { /// the second comparsion is to suppress weird bug of TTTTTTTTTTTT mapping to position == 2*abwt_table_._realSize
 					isRC = true;
 					position = this->abwt_table_._realSize*2 - position - prefixMatchLen;
@@ -755,10 +774,10 @@ public:
 					auto NLowerIter3 = this->abwt_table_.chr_umbiguous_starting_length.upper_bound (position + prefixMatchLen -1);
 					std::advance (NLowerIter3, -1);
 					if (NLowerIter != NLowerIter3) continue;
-					
+
 					position = position - lowerIter->first + NLowerIter->second;
-					
-					//std::cout << " B position " << position+1 << " queryPosition "<< queryPosition << std::endl;	
+
+					//std::cout << " B position " << position+1 << " queryPosition "<< queryPosition << std::endl;
 					//TODO: redefine MAPQ
 					*out << Sam { fq.getName (),
 						Sam::SAM_FLAG::REVERSE_COMPLEMENTED,
@@ -807,7 +826,7 @@ public:
 						std::move(tailSeq)};
 				}
 			}
-			
+
 			return;
 		}
 /// found perfect match
@@ -893,4 +912,3 @@ public:
 
 
 #endif
-

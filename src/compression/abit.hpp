@@ -1,3 +1,22 @@
+/*
+# Tailor, a BWT-based aligner for non-templated RNA tailing
+# Copyright (C) 2014 Min-Te Chou, Bo W Han, Jui-Hung Hung
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
+
 #ifndef ABIT_HPP_
 #define ABIT_HPP_
 #include <map>
@@ -17,7 +36,7 @@ template<typename IndexType, typename ContainerType >
 class QSeqTable
 {
 public:
-	
+
 	mutable IndexType Qseq_s, Qseq_e, max;
 	//typedef typename std::deque < std::pair < IndexType, ContainerType > >::iterator DequeIterType;
 	typedef typename std::map < IndexType, ContainerType	>::iterator DequeIterType;
@@ -49,7 +68,7 @@ public:
 			resetValue();
 		}
 	}
-	
+
 	inline void lower_bound_search(const IndexType &pos)
 	{
 		if( !(pos >= Qseq_s && pos < Qseq_e))
@@ -58,14 +77,14 @@ public:
 			Qseq_i = Container.lower_bound(pos);
 			if( !isBegin() && Qseq_i->first != pos)
 				--Qseq_i;
-			
+
 			/*
-			Qseq_i = std::lower_bound(Container.begin(), Container.end(), pos, 
+			Qseq_i = std::lower_bound(Container.begin(), Container.end(), pos,
 				[](const std::pair< IndexType, ContainerType >&pr, uint32_t oprnd)
 				{ return pr.first < oprnd;}
 			);
 			*/
-			
+
 			resetValue();
 		}
 	}
@@ -109,10 +128,10 @@ public:
 			{
 				lower_bound_search(pos);
 			}
-			
+
 		}
 	}
-	
+
 	inline void Qfsearch(const IndexType &pos)
 	{
 		if( !(pos >= Qseq_s && pos < Qseq_e) )
@@ -123,7 +142,7 @@ public:
 			}
 		}
 	}
-	
+
 	inline	bool isBegin() const {return (Container.begin() == Qseq_i);}
 	inline bool isEnd() const {return (Container.end() == Qseq_i);}
 	inline void setMax(IndexType m){max = m;}
@@ -133,12 +152,12 @@ public:
 	inline DequeIterType find(IndexType v){return Container.find(v);}
 	inline bool empty(){return Container.empty();}
 	inline IndexType size(){return Container.size();}
-	
-	
+
+
 private:
 	//std::deque < std::pair < IndexType, ContainerType > > Container;
 	std::map < IndexType, ContainerType > Container;
-	
+
 	inline void resetValue()
 	{
 		if(Container.empty())
@@ -147,7 +166,7 @@ private:
 			Qseq_e = max;
 		}
 		else
-		{	
+		{
 			Qseq_s = (*Qseq_i).first;
 			++Qseq_i;
 			if( (Qseq_i) == Container.end() )
@@ -161,7 +180,7 @@ private:
 			--Qseq_i;
 		}
 	}
-	
+
 };
 
 
@@ -169,30 +188,30 @@ class ABmpl
 {
 protected:
 	std::string CharExcept;
-	
+
 	uint32_t len_seq;
 	boost::dynamic_bitset<> sequence;
-	
+
 	//uint32_t Qseq_s, Qseq_e;
 	//std::deque < std::pair < uint32_t, std::tuple <uint64_t, char, uint32_t> > >::iterator Qseq_i;
 	//std::deque < std::pair < uint32_t, std::tuple <uint64_t, char, uint32_t> > > ExceptDeq;
-	
+
 	QSeqTable < uint32_t, uint32_t > LowerChar;
 	//QSeqTable < uint32_t, uint32_t > LowerPos;
 	bool ignore_lower;
-	
+
 public:
 	//std::vector<uint32_t> LowerPos;
 	QSeqTable < uint32_t, std::tuple<uint64_t, char, uint32_t> > EscapeChar;
 	ABmpl () 	/// default constructor
 		: CharExcept (""), sequence (0), len_seq(0), ignore_lower(false), EscapeChar(), LowerChar()
 	{}//std::cerr<<"\ndefault constructing"<<std::endl;}
-	
-	
+
+
 	std::string MakeSeqString () const
 	{
 		std::string buffer;
-		buffer.reserve (sequence.size()); 
+		buffer.reserve (sequence.size());
 		boost::to_string (sequence, buffer);
 		return buffer;
 	}
@@ -215,10 +234,10 @@ public:
 
 	void Printer (void)
 	{
-		
+
 		std::cout<<"EscapeChar info"<<std::endl;
 		std::cout << EscapeChar.size() << std::endl;
-		std::for_each ( EscapeChar.begin(), 
+		std::for_each ( EscapeChar.begin(),
 			EscapeChar.end(),
 			[] (const std::pair< uint32_t, std::tuple <uint64_t, char, uint32_t> > Q)
 			{
@@ -229,11 +248,11 @@ public:
 				<<std::endl;
 			}
 		);
-		
+
 		/*
 		std::cout<<"LowerChar info"<<std::endl;
 		std::cout << LowerChar.size() << std::endl;
-		std::for_each ( LowerChar.begin(), 
+		std::for_each ( LowerChar.begin(),
 			LowerChar.end(),
 			[this] (const std::pair< uint32_t, uint32_t > Q)
 			{
@@ -248,7 +267,7 @@ public:
 			}
 		);
 		*/
-		
+
 	}
 	inline uint32_t size()
 	{
@@ -258,7 +277,7 @@ public:
 	{
 		return sequence.size();
 	}
-	
+
 	boost::dynamic_bitset<> &bitSequence()
 	{
 		return sequence;
@@ -267,7 +286,7 @@ public:
 	{
 		return sequence[p];
 	}
-	
+
 };
 
 
@@ -296,7 +315,7 @@ public:
 	inline char compare( uint32_t a, uint32_t b, uint32_t len)
 	{
 		//if(len == 0) len = this->size();
-		
+
 		for(auto i(0); i< len; ++i)
 		{
 			if( a+i >= this->size() )
@@ -321,7 +340,7 @@ public:
 				return true;
 			else if( b+i >= this->size() )
 				return false;
-			
+
 			if( (*this)[(a+i)] > (*this)[(b+i)] )
 				return false;
 			else if( (*this)[(a+i)] < (*this)[(b+i)] )
@@ -387,36 +406,36 @@ private:
 public:
 	uint32_t bt;
 	uint32_t ft;
-	
+
 	ABSequence ()
 	{}
 	ABSequence (const std::string& str_seq, bool ignlow = false) /// default constructor
 		: ABmpl (), bt(0), ft(0)
 	{
-		
+
 		uint32_t len_record = 1;
 		len_seq = str_seq.size();
 		uint64_t pos(0);
 		sequence.resize (len_seq << 1);
 		uint32_t i (1);
-		
+
 		char tmp_repeat_char (str_seq[0]);
 		uint32_t tmp_repeat_length (1);
 		uint32_t tmp_repeat_limit (100); // > 20 will be record
-		
+
 		std::string lower_pattern ("atcgu");
 		uint32_t tmp_lower_length (0);
 		ignore_lower = ignlow;
-		
+
 		EscapeChar.setMax(len_seq);
 		LowerChar.setMax(len_seq);
-		
+
 		if( lower_pattern.find (str_seq[0]) != std::string::npos )
 			++tmp_lower_length;
 
 		for (; i <= len_seq ; ++ i)
 		{
-		
+
 			if(str_seq[i] == tmp_repeat_char && i != (len_seq) )
 			{
 				++tmp_repeat_length;
@@ -445,12 +464,12 @@ public:
 					//effect lower
 					if( !ignore_lower && islower(tmp_repeat_char))	tmp_lower_length -= tmp_repeat_length;
 				}//else (tmp_repeat_times <= tmp_repeat_limit)
-				
+
 				tmp_repeat_char = str_seq[i];
 				tmp_repeat_length = 1;
-				
+
 			}// else (str_seq[i] == tmp_repeat_char)
-			
+
 			if( ! ignore_lower)
 			{
 				//if( lower_pattern.find ( str_seq[i] ) != std::string::npos)
@@ -477,34 +496,34 @@ public:
 
 		sequence.resize (pos);
 	}// ABSequence (const std::string& str_seq)
-	
+
 	inline char getSeqChar (const uint32_t &pos)	//Implement detail for operator[]
-	{	
+	{
 		bool islower(false);
-		
-		if( ! ignore_lower) 
+
+		if( ! ignore_lower)
 		{
 			const uint32_t &start = LowerChar.Qseq_s;
 			const uint32_t &end = LowerChar.Qseq_e;
-			
+
 			LowerChar.lower_bound_search(pos);
-			
+
 			if(pos >= start && pos < (start + (*LowerChar.Qseq_i).second ) )
 				islower = true;
-		}	
+		}
 		return index_impl(pos, islower);
 	}
 	inline char mt_at (const uint32_t &pos)
 	{
 		QSeqTable < uint32_t, std::tuple<uint64_t, char, uint32_t> > EscapeCharTmp(EscapeChar);
 		if(EscapeCharTmp.empty())	return getSeqChar(pos);
-		
+
 		uint32_t &start = EscapeCharTmp.Qseq_s;
 		uint32_t &end = EscapeCharTmp.Qseq_e;
-		
+
 		EscapeCharTmp.lower_bound_search(pos);
 		if(EscapeCharTmp.isBegin() && pos < start)	return getSeqChar(pos);
-		
+
 		uint32_t repeat_end_pos(	(*EscapeCharTmp.Qseq_i).first + std::get<2>( (*EscapeCharTmp.Qseq_i).second ) - 1	);
 		if(pos <= repeat_end_pos )
 		{
@@ -518,13 +537,13 @@ public:
 	inline char operator[] (const uint32_t &pos)
 	{
 		if(EscapeChar.empty())	return getSeqChar(pos);
-		
+
 		uint32_t &start = EscapeChar.Qseq_s;
 		uint32_t &end = EscapeChar.Qseq_e;
-		
+
 		EscapeChar.lower_bound_search(pos);
 		if(EscapeChar.isBegin() && pos < start)	return getSeqChar(pos);
-		
+
 		uint32_t repeat_end_pos(	(*EscapeChar.Qseq_i).first + std::get<2>( (*EscapeChar.Qseq_i).second ) - 1	);
 		if(pos <= repeat_end_pos )
 		{
@@ -539,15 +558,15 @@ public:
 	{
 		buffer.clear();
 		buffer.reserve(len_seq);
-		
+
 		uint32_t pos(0);
 		uint64_t p(0);
 		EscapeChar.toBegin();
 		LowerChar.toBegin();
-		
-		
+
+
 		bool islower(false);
-		
+
 		while(pos < len_seq)
 		{
 			//Escape
@@ -559,7 +578,7 @@ public:
 			}
 			else
 			{
-				if( p == LowerChar.Qseq_s + (*LowerChar.Qseq_i).second )	
+				if( p == LowerChar.Qseq_s + (*LowerChar.Qseq_i).second )
 					LowerChar.next();
 				//if(p >= LowerChar.Qseq_s )
 				if(p >= LowerChar.Qseq_s && p < LowerChar.Qseq_s + (*LowerChar.Qseq_i).second )
@@ -573,8 +592,8 @@ public:
 			}
 		}
 	}
-	
-	
+
+
 	/* comapre const length, return '>'(a>b), '<'(a<b), '='(==) */
 	inline char compare(uint32_t a, uint32_t b, uint32_t len,
 		QSeqTable < uint32_t, std::tuple<uint64_t, char, uint32_t> > &quick_table_A,
@@ -584,21 +603,21 @@ public:
 		// two EscapeChar iterator
 		//static QSeqTable < uint32_t, std::tuple<uint64_t, char, uint32_t> > quick_table_A(EscapeChar);
 		//static QSeqTable < uint32_t, std::tuple<uint64_t, char, uint32_t> > quick_table_B(EscapeChar);
-		
+
 		// repeat_end_pos is the last position of escape chars
 		uint32_t repeat_end_pos_A(0), repeat_end_pos_B(0), min(0), ori_a(a), ori_b(b);
 		char returnValue('=');
 		// the value of the position
 		char value_A('\0'), value_B('\0');
-		
+
 		//move iterator to right position
 		quick_table_A.lower_bound_search(a);
 		quick_table_B.lower_bound_search(b);
-		
+
 
 		while( a < (ori_a+len) && b < (ori_b+len) && a < len_seq && b < len_seq)
 		{
-			//std::cout << a << ":" << ":"<< ":" << b << std::endl;	
+			//std::cout << a << ":" << ":"<< ":" << b << std::endl;
 			// If A_position is less then the last position of escape chars,
 			// it can escape to read a char until a position is bigger then the pos of repeat end.
 			// And A special method is '=', because it needs to read a char to initial the system.
@@ -608,25 +627,25 @@ public:
 				// if A_position >= Qseq_e, move to next iterator.
 				if( a >= quick_table_A.Qseq_e)
 					quick_table_A.next();
-					
+
 				// the least Qseq_s of escape table might is not 0, so it need to exam the A_position
 				// smaller than quick_table_A.Qseq_s. A_position maybe smaller than Qseq start.
 				if(a < quick_table_A.Qseq_s || quick_table_A.size() ==0)
-				{	
+				{
 					value_A = index_impl(a);
-					
+
 				}
 				else
 				// In normal escaper table block, between Qseq start and Qseq end.
 				// In detail, you can see function operator[]
 				{
 					repeat_end_pos_A = (*quick_table_A.Qseq_i).first + std::get<2>( (*quick_table_A.Qseq_i).second ) - 1;
-					
+
 					// In escaper chars block.
 					if(a <= repeat_end_pos_A)
 						value_A = toupper(std::get<1>( (*quick_table_A.Qseq_i).second ));
 					else
-						value_A = index_impl(	a - repeat_end_pos_A + ((std::get<0>( (*quick_table_A.Qseq_i).second )) >> 1) -1	);					
+						value_A = index_impl(	a - repeat_end_pos_A + ((std::get<0>( (*quick_table_A.Qseq_i).second )) >> 1) -1	);
 				}
 			}
 			// The same with A_position
@@ -634,7 +653,7 @@ public:
 			{
 				if( b >= quick_table_B.Qseq_e)
 					quick_table_B.next();
-				
+
 				if(b < quick_table_B.Qseq_s || quick_table_B.size() ==0)
 				{
 					value_B = index_impl(b);
@@ -672,9 +691,9 @@ public:
 			++a;
 			++b;
 		}
-	
+
 		if(returnValue != '=') return returnValue;
-		
+
 		if( ( a >= (ori_a+len) || b >=(ori_b+len) ) && (ori_a+len) != len_seq && (ori_b+len) != len_seq )
 		{
 			returnValue = '=';
@@ -686,15 +705,15 @@ public:
 			else if(a < b)
 				returnValue = '>';
 		}
-		
+
 		//std::cout << a << ":" << ori_a << std::endl;
-		
-		
+
+
 		return returnValue;
 	}
-	
-	
-	
+
+
+
 	/* input 2 sequence location to compare string value */
 	inline bool compare(uint32_t a, uint32_t b,
 		QSeqTable < uint32_t, std::tuple<uint64_t, char, uint32_t> > &quick_table_A,
@@ -704,13 +723,13 @@ public:
 		// two EscapeChar iterator
 		//static QSeqTable < uint32_t, std::tuple<uint64_t, char, uint32_t> > quick_table_A(EscapeChar);
 		//static QSeqTable < uint32_t, std::tuple<uint64_t, char, uint32_t> > quick_table_B(EscapeChar);
-		
+
 		// repeat_end_pos is the last position of escape chars
 		uint32_t repeat_end_pos_A(0), repeat_end_pos_B(0), min(0);
 		bool returnValue(false);
 		// the value of the position
 		char value_A('\0'), value_B('\0');
-		
+
 		//move iterator to right position
 		quick_table_A.lower_bound_search(a);
 		quick_table_B.lower_bound_search(b);
@@ -726,11 +745,11 @@ public:
 				// if A_position >= Qseq_e, move to next iterator.
 				if( a >= quick_table_A.Qseq_e)
 					quick_table_A.next();
-					
+
 				// the least Qseq_s of escape table might is not 0, so it need to exam the A_position
 				// smaller than quick_table_A.Qseq_s. A_position maybe smaller than Qseq start.
 				if(a < quick_table_A.Qseq_s )
-				{	
+				{
 					value_A = index_impl(a);
 				}
 				else
@@ -742,7 +761,7 @@ public:
 					if(a <= repeat_end_pos_A)
 						value_A = toupper(std::get<1>( (*quick_table_A.Qseq_i).second ));
 					else
-						value_A = index_impl(	a - repeat_end_pos_A + ((std::get<0>( (*quick_table_A.Qseq_i).second )) >> 1) -1	);					
+						value_A = index_impl(	a - repeat_end_pos_A + ((std::get<0>( (*quick_table_A.Qseq_i).second )) >> 1) -1	);
 				}
 			}
 			// The same with A_position
@@ -750,7 +769,7 @@ public:
 			{
 				if( b >= quick_table_B.Qseq_e)
 					quick_table_B.next();
-				
+
 				if(b < quick_table_B.Qseq_s )
 				{
 					value_B = index_impl(b);
@@ -786,7 +805,7 @@ public:
 			++a;
 			++b;
 		}
-		
+
 		if(a == len_seq || b == len_seq)
 		{
 			if( b > a )
@@ -796,7 +815,7 @@ public:
 		}
 		return returnValue;
 	}
-	
+
 	// the same as before, but using static QseqTables
 	inline bool compare(uint32_t a, uint32_t b)
 	{
@@ -804,8 +823,8 @@ public:
 		static QSeqTable < uint32_t, std::tuple<uint64_t, char, uint32_t> > quick_table_B(EscapeChar);
 		return compare(a, b, quick_table_A, quick_table_B);
 	}
-	
-	
+
+
 	// for run time jump and fix length
 	inline char compare(uint32_t a, uint32_t b, uint32_t len,
 		QSeqTable < uint32_t, std::map<uint32_t, uint32_t> > &RunTimeJumpTable,
@@ -816,25 +835,25 @@ public:
 		// two EscapeChar iterator
 		//static QSeqTable < uint32_t, std::tuple<uint64_t, char, uint32_t> > quick_table_A(EscapeChar);
 		//static QSeqTable < uint32_t, std::tuple<uint64_t, char, uint32_t> > quick_table_B(EscapeChar);
-		
+
 		// repeat_end_pos is the last position of escape chars
 		uint32_t repeat_end_pos_A(0), repeat_end_pos_B(0), min(0), jumpCount(0), jumpCountWithoutN(0), ori_a(a), ori_b(b);
-		
+
 		// the value of the position
 		char value_A('\0'), value_B('\0'), returnValue('=');
-		
+
 		//move iterator to right position
 		quick_table_A.lower_bound_search(a);
 		quick_table_B.lower_bound_search(b);
-		
+
 		std::map<uint32_t, uint32_t>::iterator sub_jumpIt(0);
 		bool flag(false), jump(false), find(false);
 		uint32_t jumpInfo_start(0), jumpInfo_distance(0), jumpInfo_length(0),min_ab(0),distance_ab(0);
-		
+
 		min_ab = std::min(a,b);
 		distance_ab = abs(a-b);
 		//distance_ab = b-a;
-		
+
 		//search for jump table to jump
 		//RunTimeJumpTable.lower_bound(std::min(a,b));
 		//pos, distance, length
@@ -842,8 +861,8 @@ public:
 		//jumpInfo_distance = ((*RunTimeJumpTable.Qseq_i).second).first;
 		//auto tmpIt = (RunTimeJumpTable.Qseq_i);
 		//if(a==214530711 && b==155157145)	jump=true;
-		
-		
+
+
 		if(RunTimeJumpTable.size() != 0)
 		{
 			RunTimeJumpTable.jump_lower_bound(min_ab);
@@ -864,11 +883,11 @@ public:
 				}
 			}
 		}
-		
-		
+
+
 		int32_t run_min_ab(0), run_jump_distance(0);
 		run_min_ab = std::min(a,b);
-		
+
 		while( a < (ori_a+len) && b < (ori_b+len) && a < len_seq && b < len_seq)
 		//while(a < len_seq && b < len_seq)
 		{
@@ -876,7 +895,7 @@ public:
 			if(RunTimeJumpTable.size() != 0)
 			{
 				RunTimeJumpTable.lower_bound_search(run_min_ab);
-				
+
 				if(run_min_ab >= RunTimeJumpTable.Qseq_s )
 				{
 					jumpInfo_start = RunTimeJumpTable.Qseq_s;
@@ -899,8 +918,8 @@ public:
 					}
 				}
 			}
-			
-		
+
+
 			// If A_position is less then the last position of escape chars,
 			// it can escape to read a char until a position is bigger then the pos of repeat end.
 			// And A special method is '=', because it needs to read a char to initial the system.
@@ -911,11 +930,11 @@ public:
 				quick_table_A.lower_bound_search(a);
 				//if( a >= quick_table_A.Qseq_e)
 				//	quick_table_A.next();
-					
+
 				// the least Qseq_s of escape table might is not 0, so it need to exam the A_position
 				// smaller than quick_table_A.Qseq_s. A_position maybe smaller than Qseq start.
 				if(a < quick_table_A.Qseq_s || quick_table_A.size()==0)
-				{	
+				{
 					value_A = index_impl(a);
 				}
 				else
@@ -927,7 +946,7 @@ public:
 					if(a <= repeat_end_pos_A)
 						value_A = toupper(std::get<1>( (*quick_table_A.Qseq_i).second ));
 					else
-						value_A = index_impl(	a - repeat_end_pos_A + ((std::get<0>( (*quick_table_A.Qseq_i).second )) >> 1) -1	);					
+						value_A = index_impl(	a - repeat_end_pos_A + ((std::get<0>( (*quick_table_A.Qseq_i).second )) >> 1) -1	);
 				}
 			}
 			// The same with A_position
@@ -936,7 +955,7 @@ public:
 				quick_table_B.lower_bound_search(b);
 				//if( b >= quick_table_B.Qseq_e)
 				//	quick_table_B.next();
-				
+
 				if(b < quick_table_B.Qseq_s || quick_table_B.size()==0)
 				{
 					value_B = index_impl(b);
@@ -961,7 +980,7 @@ public:
 				returnValue = '>';
 				break;
 			}
-			
+
 			// From now, it means two value is euqal. value_A == value_B
 			// If two value is euqal and both in escape chars block, Jump!
 			if(a < repeat_end_pos_A && b < repeat_end_pos_B)
@@ -981,12 +1000,12 @@ public:
 			{
 				flag = true;
 			}
-				
+
 		}
-		
-		
+
+
 		if(returnValue != '=') return returnValue;
-		
+
 		if( ( a >= (ori_a+len) || b >=(ori_b+len) ) && (ori_a+len) != len_seq && (ori_b+len) != len_seq )
 		{
 			returnValue = '=';
@@ -998,16 +1017,16 @@ public:
 			else if(a < b)
 				returnValue = '>';
 		}
-		
+
 		//pos, distance, length
-		
+
 		if(flag)
 		{
 			//if(RunTimeJumpTable.Qseq_s != min_ab	|| (RunTimeJumpTable.Qseq_s==0 && min_ab ==0))
 			//if(RunTimeJumpTable.find(min_ab) == RunTimeJumpTable.end() )
 			if(RunTimeJumpTable.Qseq_s != min_ab)
 			{
-				
+
 				//new
 				//std::cerr << min_ab << ":" << jumpInfo_start << std::endl;
 				RunTimeJumpTable.insert( min_ab, {{distance_ab, jumpCount}} );
@@ -1015,23 +1034,23 @@ public:
 			}
 			else
 			{
-				
+
 				//std::cerr << min_ab << ":" << jumpInfo_start << std::endl;
 				//have been insert
 				((*RunTimeJumpTable.Qseq_i).second).insert( {distance_ab, jumpCount} );
 				//if(ori_a == 156337867)	std::cout << "Y6" << std::endl;
 			}
-			//if(ori_a == 156337867)	
+			//if(ori_a == 156337867)
 			//std::cout << (*this)[min_ab] << "->" << (*this)[a] << ":" << ori_a << ":" << ori_b << ":" <<	min_ab << ":" << distance_ab << ":" << jumpCount << std::endl;
 			//RunTimeJumpTable.insert( std::min(ori_a,ori_b), std::make_pair( abs(ori_b - ori_a), jumpCount+1 ));
 			//std::cout << "insert:"<< jumpCount << "\n";
 		}
-		
+
 		return returnValue;
 	}
-	
-	
-	
+
+
+
 	// for run time jump
 	inline bool compare(uint32_t a, uint32_t b,
 		//QSeqTable < uint32_t, std::pair<uint32_t, uint32_t> > &RunTimeJumpTable,
@@ -1043,25 +1062,25 @@ public:
 		// two EscapeChar iterator
 		//static QSeqTable < uint32_t, std::tuple<uint64_t, char, uint32_t> > quick_table_A(EscapeChar);
 		//static QSeqTable < uint32_t, std::tuple<uint64_t, char, uint32_t> > quick_table_B(EscapeChar);
-		
+
 		// repeat_end_pos is the last position of escape chars
 		uint32_t repeat_end_pos_A(0), repeat_end_pos_B(0), min(0), jumpCount(0), jumpCountWithoutN(0), ori_a(a), ori_b(b);
-		
+
 		// the value of the position
 		char value_A('\0'), value_B('\0');
-		
+
 		//move iterator to right position
 		quick_table_A.lower_bound_search(a);
 		quick_table_B.lower_bound_search(b);
-		
+
 		std::map<uint32_t, uint32_t>::iterator sub_jumpIt(0);
 		bool returnValue(false), flag(false), jump(false), find(false);
 		uint32_t jumpInfo_start(0), jumpInfo_distance(0), jumpInfo_length(0),min_ab(0),distance_ab(0);
-		
+
 		min_ab = std::min(a,b);
 		distance_ab = abs(a-b);
 		//distance_ab = b-a;
-		
+
 		//search for jump table to jump
 		//RunTimeJumpTable.lower_bound(std::min(a,b));
 		//pos, distance, length
@@ -1069,7 +1088,7 @@ public:
 		//jumpInfo_distance = ((*RunTimeJumpTable.Qseq_i).second).first;
 		//auto tmpIt = (RunTimeJumpTable.Qseq_i);
 		//if(a==214530711 && b==155157145)	jump=true;
-		
+
 		if(RunTimeJumpTable.size() != 0)
 		{
 			RunTimeJumpTable.jump_lower_bound(min_ab);
@@ -1090,7 +1109,7 @@ public:
 				}
 			}
 		}
-		
+
 		int32_t run_min_ab(0), run_jump_distance(0);
 		run_min_ab = std::min(a,b);
 		while(a < len_seq && b < len_seq)
@@ -1099,7 +1118,7 @@ public:
 			if(RunTimeJumpTable.size() != 0)
 			{
 				RunTimeJumpTable.lower_bound_search(run_min_ab);
-				
+
 				if(run_min_ab >= RunTimeJumpTable.Qseq_s )
 				{
 					jumpInfo_start = RunTimeJumpTable.Qseq_s;
@@ -1122,8 +1141,8 @@ public:
 					}
 				}
 			}
-			
-		
+
+
 			// If A_position is less then the last position of escape chars,
 			// it can escape to read a char until a position is bigger then the pos of repeat end.
 			// And A special method is '=', because it needs to read a char to initial the system.
@@ -1134,11 +1153,11 @@ public:
 				quick_table_A.lower_bound_search(a);
 				//if( a >= quick_table_A.Qseq_e)
 				//	quick_table_A.next();
-					
+
 				// the least Qseq_s of escape table might is not 0, so it need to exam the A_position
 				// smaller than quick_table_A.Qseq_s. A_position maybe smaller than Qseq start.
 				if(a < quick_table_A.Qseq_s || quick_table_A.size()==0)
-				{	
+				{
 					value_A = index_impl(a);
 				}
 				else
@@ -1150,7 +1169,7 @@ public:
 					if(a <= repeat_end_pos_A)
 						value_A = toupper(std::get<1>( (*quick_table_A.Qseq_i).second ));
 					else
-						value_A = index_impl(	a - repeat_end_pos_A + ((std::get<0>( (*quick_table_A.Qseq_i).second )) >> 1) -1	);					
+						value_A = index_impl(	a - repeat_end_pos_A + ((std::get<0>( (*quick_table_A.Qseq_i).second )) >> 1) -1	);
 				}
 			}
 			// The same with A_position
@@ -1159,7 +1178,7 @@ public:
 				quick_table_B.lower_bound_search(b);
 				//if( b >= quick_table_B.Qseq_e)
 				//	quick_table_B.next();
-				
+
 				if(b < quick_table_B.Qseq_s || quick_table_B.size()==0)
 				{
 					value_B = index_impl(b);
@@ -1184,7 +1203,7 @@ public:
 				returnValue = false;
 				break;
 			}
-			
+
 			// From now, it means two value is euqal. value_A == value_B
 			// If two value is euqal and both in escape chars block, Jump!
 			if(a < repeat_end_pos_A && b < repeat_end_pos_B)
@@ -1204,9 +1223,9 @@ public:
 			{
 				flag = true;
 			}
-				
+
 		}
-		
+
 		if(a == len_seq || b == len_seq)
 		{
 			if( b > a )
@@ -1214,16 +1233,16 @@ public:
 			else if ( b < a)
 				returnValue = true;
 		}
-		
+
 		//pos, distance, length
-		
+
 		if(flag)
 		{
 			//if(RunTimeJumpTable.Qseq_s != min_ab	|| (RunTimeJumpTable.Qseq_s==0 && min_ab ==0))
 			//if(RunTimeJumpTable.find(min_ab) == RunTimeJumpTable.end() )
 			if(RunTimeJumpTable.Qseq_s != min_ab)
 			{
-				
+
 				//new
 				//std::cerr << min_ab << ":" << jumpInfo_start << std::endl;
 				RunTimeJumpTable.insert( min_ab, {{distance_ab, jumpCount}} );
@@ -1231,13 +1250,13 @@ public:
 			}
 			else
 			{
-				
+
 				//std::cerr << min_ab << ":" << jumpInfo_start << std::endl;
 				//have been insert
 				((*RunTimeJumpTable.Qseq_i).second).insert( {distance_ab, jumpCount} );
 				//if(ori_a == 156337867)	std::cout << "Y6" << std::endl;
 			}
-			//if(ori_a == 156337867)	
+			//if(ori_a == 156337867)
 			//std::cout << (*this)[min_ab] << "->" << (*this)[a] << ":" << ori_a << ":" << ori_b << ":" <<	min_ab << ":" << distance_ab << ":" << jumpCount << std::endl;
 			//RunTimeJumpTable.insert( std::min(ori_a,ori_b), std::make_pair( abs(ori_b - ori_a), jumpCount+1 ));
 			//std::cout << "insert:"<< jumpCount << "\n";
@@ -1246,9 +1265,9 @@ public:
 		return returnValue;
 	}
 	// A stupid method (very slow) to compare string, but it is the true answer.
-	
-	
-	
+
+
+
 	//for limit length
 	inline bool compare(uint32_t a, std::string &comapre_string, bool sameValue,
 		QSeqTable < uint32_t, std::tuple<uint64_t, char, uint32_t> > &quick_table_A
@@ -1268,7 +1287,7 @@ public:
 					quick_table_A.next();
 				}
 				if(a < quick_table_A.Qseq_s )
-				{	
+				{
 					value_A = index_impl(a);
 				}
 				else
@@ -1282,27 +1301,27 @@ public:
 					else
 					{
 						value_A = index_impl(	a - repeat_end_pos_A + ((std::get<0>( (*quick_table_A.Qseq_i).second )) >> 1) -1	);
-					}		
+					}
 				}
 			}
-				
+
 			value_B = comapre_string[b];
 			// compare finish
 			if( value_B > value_A )
 			{
 				return true;
 			}
-				
+
 			else if ( value_A > value_B)
 			{
 				return false;
 			}
-				
+
 			if(b == comapre_string.length()-1)
 			{
 				return sameValue;
 			}
-				
+
 			++a;
 			++b;
 		}
@@ -1311,8 +1330,8 @@ public:
 		//	return true;
 		return true;
 	}
-	
-	
+
+
 	inline bool compareRT2(uint32_t a, uint32_t b)
 	{
 		char A,B;
@@ -1334,13 +1353,13 @@ public:
 		if(b > a)	return false;
 		return true;
 	}
-	
+
 	void test()
 	{
-		std::cout << "EscapeChar: b:" << EscapeChar.b << " f: " << EscapeChar.f << std::endl; 
-		std::cout << "LowerChar: b:" << LowerChar.b << " f: " << LowerChar.f << std::endl; 
+		std::cout << "EscapeChar: b:" << EscapeChar.b << " f: " << EscapeChar.f << std::endl;
+		std::cout << "LowerChar: b:" << LowerChar.b << " f: " << LowerChar.f << std::endl;
 	}
-	
+
 };
 
 

@@ -1,3 +1,21 @@
+/*
+# Tailor, a BWT-based aligner for non-templated RNA tailing
+# Copyright (C) 2014 Min-Te Chou, Bo W Han, Jui-Hung Hung
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
 #include<iostream>
 #include<fstream>
 #include<string>
@@ -48,17 +66,17 @@ int main(int argc, char** argv)
 	int is_rc = std::stoi(argv[3]); // is reverse complement
 	std::string infn (argv[4]); //input file name
 	std::string outfn (argv[5]); //output file name
-	
+
 	std::cout << "trim5_len: " << trim5_len << " trim3_len: " << trim3_len << " is_rc: " << is_rc << std::endl;
 	std::ifstream in(infn);
 	std::ofstream out(outfn);
-	
+
 	std::string fastq("");
 	bool is_N(false);
 	std::string line;
-	
+
 	int fastq_count = 0;
-	
+
 	while(!in.eof())
 	{
 		//fastq 1st line
@@ -69,7 +87,7 @@ int main(int argc, char** argv)
 			fastq += line;
 		else
 			fastq += "\n"+line;
-		
+
 		//fastq 2st line
 		std::getline(in, line);
 		line = line.substr(trim5_len, line.size() - trim5_len - trim3_len);
@@ -79,11 +97,11 @@ int main(int argc, char** argv)
 			std::reverse(line.begin(), line.end());
 		}
 		fastq += "\n"+line;
-		
+
 		//fastq 3st line
 		std::getline(in, line);
 		fastq += "\n"+line;
-		
+
 		//fastq 4st line
 		std::getline(in, line);
 		line = line.substr(trim5_len, line.size() - trim5_len - trim3_len);
@@ -92,7 +110,7 @@ int main(int argc, char** argv)
 			std::reverse(line.begin(), line.end());
 		}
 		fastq += "\n"+line;
-		
+
 		if(!is_N)
 		{
 			out << fastq;

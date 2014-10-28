@@ -1,3 +1,22 @@
+/*
+# Tailor, a BWT-based aligner for non-templated RNA tailing
+# Copyright (C) 2014 Min-Te Chou, Bo W Han, Jui-Hung Hung
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
+
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -19,7 +38,7 @@ The number of reads is writting in the header of the fastq.
 	std::string	input_fastq_file {};
 	std::string	output_fastq_file {};
 	int minimal_phred {};
-	int	offset {}; 
+	int	offset {};
 	boost::program_options::options_description opts {usage};
 	boost::program_options::variables_map vm;
 	try {
@@ -86,7 +105,7 @@ The number of reads is writting in the header of the fastq.
 	}
 	/** reporting **/
 	for (const auto& s : counter) {
-		*out << '@' << s.second << '\n' 
+		*out << '@' << s.second << '\n'
 			<< s.first << '\n'
 			<< "+\n";
 		for (int i = 0 ; i < s.first.size () ; ++ i)  {
@@ -94,7 +113,7 @@ The number of reads is writting in the header of the fastq.
 		}
 		*out << '\n';
 	}
-	
+
 _the_end:
 	if (in != &std::cin) {
 		static_cast<std::ifstream*> (in)->close ();
@@ -106,5 +125,3 @@ _the_end:
 	}
 	return 0;
 }
-
-

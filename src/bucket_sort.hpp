@@ -1,3 +1,22 @@
+/*
+# Tailor, a BWT-based aligner for non-templated RNA tailing
+# Copyright (C) 2014 Min-Te Chou, Bo W Han, Jui-Hung Hung
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
+
 #ifndef BUCKET_SORT_HPP_
 #define BUCKET_SORT_HPP_
 #include <fstream>
@@ -45,9 +64,9 @@ struct Bucket
 			else
 				bucket.push_back( std::vector<INTTYPE>() );
 		}
-				
+
 	}
-	
+
 
 };
 
@@ -57,7 +76,7 @@ struct Bucket
 
 //Bucket_sort2
 
-template	<	typename SEQTYPE, 
+template	<	typename SEQTYPE,
 						typename VECTORTYPE,
 						typename RECORD_RANK,
 						template < typename T> class COMPARE,
@@ -73,11 +92,11 @@ private:
 	VECTORTYPE &vec;
 	std::function<bool(INTTYPE,INTTYPE)> dcs_compare;
 	INTTYPE limit_depth, max_depth;
-	
+
 public:
 	std::function<INTTYPE(typename VECTORTYPE::value_type&)> getTableV;
 	std::vector<std::pair<INTTYPE,INTTYPE>> &iD_same_rank, tmp_same_rank;;
-	
+
 	Sort_big_n_disable(SEQTYPE &sequence, VECTORTYPE &d, INTTYPE limit, std::vector<std::pair<INTTYPE,INTTYPE>> &id_same_rank)
 		:	vec(d),
 			seq(sequence),
@@ -87,7 +106,7 @@ public:
 			SORT_SMALL_N<SEQTYPE, VECTORTYPE>(sequence, getTableV, limit, dcs_compare),
 			iD_same_rank(id_same_rank)
 	{}
-	
+
 	Sort_big_n_disable(SEQTYPE &sequence, VECTORTYPE &d, INTTYPE limit, std::function<bool(INTTYPE,INTTYPE)> &compare_func)
 		:	vec(d),
 			seq(sequence),
@@ -117,7 +136,7 @@ public:
 //
 
 
-template	<	typename SEQTYPE, 
+template	<	typename SEQTYPE,
 						typename VECTORTYPE,
 						typename RECORD_RANK,
 						template < typename T> class COMPARE,
@@ -136,15 +155,15 @@ private:
 	std::function<bool(INTTYPE,INTTYPE)> dcs_compare;
 	INTTYPE limit_depth, max_depth;
 	//BUCKET bucket_data;
-	
+
 	std::vector<char> bucket_char;
 	std::vector< std::vector<INTTYPE> > bucket;
-	//INTTYPE** bucket; 
+	//INTTYPE** bucket;
 
 public:
 	std::function<INTTYPE(typename VECTORTYPE::value_type&)> getTableV;
 	std::vector<std::pair<INTTYPE,INTTYPE>> &iD_same_rank, tmp_same_rank;
-	
+
 	Bucket_sort(SEQTYPE &sequence, VECTORTYPE &d, INTTYPE limit, std::vector<std::pair<INTTYPE,INTTYPE>> &id_same_rank)
 		:	vec(d),
 			seq(sequence),
@@ -158,10 +177,10 @@ public:
 		getTableV = [](typename VECTORTYPE::value_type& a){
 			return a;
 		};
-		
+
 		init();
 	}
-	
+
 	Bucket_sort(SEQTYPE &sequence, VECTORTYPE &d, INTTYPE limit, std::function<bool(INTTYPE,INTTYPE)> compare_func)
 		:	vec(d),
 			seq(sequence),
@@ -178,14 +197,14 @@ public:
 		};
 		init();
 	}
-	
+
 	void init()
 	{
 		bucket_char = {'$','A','C','G','N','T'};
-		bucket = 
-		{ 
+		bucket =
+		{
 			{std::vector<INTTYPE>(1)}, //$
-			{std::vector<INTTYPE>(4 * 1024 * 1024)}, 
+			{std::vector<INTTYPE>(4 * 1024 * 1024)},
 			{std::vector<INTTYPE>(4 * 1024 * 1024)},
 			{std::vector<INTTYPE>(4 * 1024 * 1024)},
 			{std::vector<INTTYPE>(4 * 1024 * 1024)},
@@ -239,7 +258,7 @@ public:
 		std::cerr << "release bucket finish" << std::endl;
 		//free(bucket_data.bucket);
 	}
-	
+
 	inline bool sort(INTTYPE start, INTTYPE size, INTTYPE depth)
 	{
 		//if( size > bucket_data.size )
@@ -250,15 +269,15 @@ public:
 		bucket_sort(start,start+size,depth);
 		return true;
 	}
-	
-	
+
+
 	inline void bucket_sort(INTTYPE begin, INTTYPE end, INTTYPE depth)
 	{
 			INTTYPE n(end - begin);
-			
+
 			if (n <= 1)
 			 return;
-			
+
 			if(depth == limit_depth)
 			{
 				this->record_rank(begin,end-1);
@@ -267,15 +286,15 @@ public:
 			}
 			if(this->sort_small_n(vec.begin()+begin, vec.begin()+end, depth, n))
 				return;
-			
+
 			INTTYPE vec_value;
 			char seq_char;
 			//std::unordered_map< char,INTTYPE > bucket_count = {{'$',0},{'A',0},{'C',0},{'G',0},{'N',0},{'T',0}};
-			
+
 			INTTYPE count_$(0), count_A(0), count_C(0), count_G(0), count_N(0), count_T(0);
 
 			/*
-			std::vector<INTTYPE> bucket_count (256, 0);		
+			std::vector<INTTYPE> bucket_count (256, 0);
 			for(INTTYPE i(begin); i < end; ++i)
 			{
 				vec_value = vec[i];
@@ -294,14 +313,14 @@ public:
 			vec_count = begin;
 			for (char c : bucket_data.bucket_char)
 			{
-				//std::cerr << "IN:" << vec_count << ":" << bucket_count[c] << ":" << c << ":" << begin << std::endl; 
+				//std::cerr << "IN:" << vec_count << ":" << bucket_count[c] << ":" << c << ":" << begin << std::endl;
 				bucket_sort(vec_count, vec_count + bucket_count[c], depth+1);
 				vec_count += bucket_count[c];
 			}
 			*/
 
 
-			
+
 			for(INTTYPE i(begin); i < end; ++i)
 			{
 				vec_value = vec[i];
@@ -322,7 +341,7 @@ public:
 				//else
 				//	std::cerr << "FFFUCK: "<<seq_char << std::endl;
 			}
-			
+
 			/*
 			INTTYPE vec_count(begin);
 			INTTYPE* ptr = &vec[0];
@@ -350,8 +369,8 @@ public:
 			//vec_count += count_T;
 			//}
 			*/
-			
-			
+
+
 			INTTYPE vec_count(begin);
 			if(count_$ != 0)	std::swap_ranges(bucket[0].begin(), bucket[0].begin() + count_$, vec.begin()+vec_count );
 			vec_count += count_$;
@@ -365,8 +384,8 @@ public:
 			vec_count += count_N;
 			if(count_T != 0)	std::swap_ranges(bucket[5].begin(), bucket[5].begin() + count_T, vec.begin()+vec_count );
 			vec_count += count_T;
-			
-			
+
+
 			vec_count = begin;
 			if(count_$ != 0)	{bucket_sort(vec_count, vec_count + count_$, depth+1);
 			vec_count += count_$;}
@@ -380,13 +399,13 @@ public:
 			vec_count += count_N;}
 			if(count_T != 0)	{bucket_sort(vec_count, vec_count + count_T, depth+1);
 			vec_count += count_T;}
-			
+
 	}
-	
-	
+
+
 
 private:
-	
+
 	typename VECTORTYPE::iterator tx;
 
 	inline INTTYPE real_idx(INTTYPE i, INTTYPE depth)
@@ -405,7 +424,7 @@ private:
 	{
 		std::swap_ranges(tx+i, tx+i+n, tx+j);
 	}
-	
+
 };
 
 
