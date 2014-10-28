@@ -57,15 +57,17 @@ Please do not use it for other purpose.
         exit (1);
     }
 
-		samFile* in1 = sam_open(input_sam_file.c_str(), "r");
+	samFile* in1 = sam_open(input_sam_file.c_str(), "r");
     if (in1 == NULL) {
-				cerr << "error openning " << input_sam_file << endl;
+		cerr << "error openning " << input_sam_file << endl;
         return EXIT_FAILURE;
     }
     bam_hdr_t* header = sam_hdr_read(in1);
     bam1_t* aln = bam_init1();
     int exit_code = 0;
-    uint8_t* NH_s;
+    int i;
+	char seq[10240]; 
+	uint8_t* NH_s;
     uint8_t* TL_s;
     uint8_t* MD_s;
     while (sam_read1(in1, header, aln) >= 0) {
@@ -76,16 +78,27 @@ Please do not use it for other purpose.
 //        for (int i = 0; i < aln->core.n_cigar; ++i) {
 //            cout << bam_cigar_oplen(cigar[i]) << bam_cigar_opchr(cigar[i]);
 //        }
-        fprintf(stdout, "%s\t%d\t%d\t%s\t%d\t%c\t%s\t%s\n",
-            header->target_name[aln->core.tid], // query name
-            aln->core.pos , // position
-            bam_endpos(aln), // aln->core.pos + aln->core.l_qseq + aln->core.qual - 255
-            bam_get_qname(aln),
-            NH_s == NULL ? 0 : bam_aux2i(NH_s),
-            aln->core.flag & 16 ? '-' : '+',
-            TL_s == NULL ? "*" : bam_aux2Z(TL_s),
-            MD_s == NULL ? "*" : bam_aux2Z(MD_s)
-        );
+		if (255 - aln->core.qual <= max_tail_len) {
+	        uint8_t *s = bam_get_seq(aln);
+			if (aln->core.flag & 16) {
+				for (i = 0; i < aln->core.l_qseq; ++i) seq[aln->core.l_qseq-i-1] = "=TGMCRSVAWYHKDBN"[bam_seqi(s, i)]; // not supporting non-ACGTN char...
+			} else {
+				for (i = 0; i < aln->core.l_qseq; ++i) seq[i] = "=ACMGRSVTWYHKDBN"[bam_seqi(s, i)];
+			}
+			seq[aln->core.l_qseq] = '\0';
+			fprintf(stdout, "%s\t%d\t%d\t%s\t%d\t%c\t%s\t%s\t%d\t%s\n",
+	            header->target_name[aln->core.tid], // query name
+	            aln->core.pos , // position
+	            bam_endpos(aln), // aln->core.pos + aln->core.l_qseq + aln->core.qual - 255
+	            bam_get_qname(aln),
+	            NH_s == NULL ? 0 : bam_aux2i(NH_s),
+	            aln->core.flag & 16 ? '-' : '+',
+				seq ,
+	            TL_s == NULL ? "*" : bam_aux2Z(TL_s),
+				TL_s == NULL ?  0  : strlen(bam_aux2Z(TL_s)), // length of tail
+	            MD_s == NULL ? "*" : bam_aux2Z(MD_s)
+	        );
+		}
     }
     bam_destroy1(aln);
     bam_hdr_destroy(header);
