@@ -6,12 +6,12 @@
  # it under the terms of the GNU General Public License as published by
  # the Free Software Foundation; either version 3 of the License, or
  # (at your option) any later version.
-
+ 
  # This program is distributed in the hope that it will be useful,
  # but WITHOUT ANY WARRANTY; without even the implied warranty of
  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  # GNU General Public License for more details.
-
+ 
  # You should have received a copy of the GNU General Public License along
  # with this program; if not, write to the Free Software Foundation, Inc.,
  # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
@@ -28,10 +28,10 @@ using namespace std;
 int main(int argc, char** argv)
 {
     const string usage = R"(
-This program convert sam/bam output of tailor to bed2 format.
-Please do not use it for other purpose.
-    )";
-    string input_sam_file;
+    This program convert sam/bam output of tailor to bed2 format.
+    Please do not use it for other purpose.
+        )";
+        string input_sam_file;
     string output_bed_file;
     int max_tail_len;
     boost::program_options::variables_map vm;
@@ -56,49 +56,49 @@ Please do not use it for other purpose.
         std::cerr << opts << std::endl;
         exit (1);
     }
-
-	samFile* in1 = sam_open(input_sam_file.c_str(), "r");
+    
+    samFile* in1 = sam_open(input_sam_file.c_str(), "r");
     if (in1 == NULL) {
-		cerr << "error openning " << input_sam_file << endl;
+        cerr << "error openning " << input_sam_file << endl;
         return EXIT_FAILURE;
     }
     bam_hdr_t* header = sam_hdr_read(in1);
     bam1_t* aln = bam_init1();
     int exit_code = 0;
     int i;
-	char seq[10240]; 
-	uint8_t* NH_s;
+    char seq[10240];
+    uint8_t* NH_s;
     uint8_t* TL_s;
     uint8_t* MD_s;
     while (sam_read1(in1, header, aln) >= 0) {
         NH_s = bam_aux_get(aln, "NH");
         TL_s = bam_aux_get(aln, "TL");
         MD_s = bam_aux_get(aln, "MD");
-//        uint32_t *cigar = bam_get_cigar(aln);
-//        for (int i = 0; i < aln->core.n_cigar; ++i) {
-//            cout << bam_cigar_oplen(cigar[i]) << bam_cigar_opchr(cigar[i]);
-//        }
-		if (255 - aln->core.qual <= max_tail_len) {
-	        uint8_t *s = bam_get_seq(aln);
-			if (aln->core.flag & 16) {
-				for (i = 0; i < aln->core.l_qseq; ++i) seq[aln->core.l_qseq-i-1] = "=TGMCRSVAWYHKDBN"[bam_seqi(s, i)]; // not supporting non-ACGTN char...
-			} else {
-				for (i = 0; i < aln->core.l_qseq; ++i) seq[i] = "=ACMGRSVTWYHKDBN"[bam_seqi(s, i)];
-			}
-			seq[aln->core.l_qseq] = '\0';
-			fprintf(stdout, "%s\t%d\t%d\t%s\t%d\t%c\t%s\t%s\t%d\t%s\n",
-	            header->target_name[aln->core.tid], // query name
-	            aln->core.pos , // position
-	            bam_endpos(aln), // aln->core.pos + aln->core.l_qseq + aln->core.qual - 255
-	            bam_get_qname(aln),
-	            NH_s == NULL ? 0 : bam_aux2i(NH_s),
-	            aln->core.flag & 16 ? '-' : '+',
-				seq ,
-	            TL_s == NULL ? "*" : bam_aux2Z(TL_s),
-				TL_s == NULL ?  0  : strlen(bam_aux2Z(TL_s)), // length of tail
-	            MD_s == NULL ? "*" : bam_aux2Z(MD_s)
-	        );
-		}
+        //        uint32_t *cigar = bam_get_cigar(aln);
+        //        for (int i = 0; i < aln->core.n_cigar; ++i) {
+        //            cout << bam_cigar_oplen(cigar[i]) << bam_cigar_opchr(cigar[i]);
+        //        }
+        if (255 - aln->core.qual <= max_tail_len) {
+            uint8_t *s = bam_get_seq(aln);
+            if (aln->core.flag & 16) {
+                for (i = 0; i < aln->core.l_qseq; ++i) seq[aln->core.l_qseq-i-1] = "=TGMCRSVAWYHKDBN"[bam_seqi(s, i)]; // not supporting non-ACGTN char...
+            } else {
+                for (i = 0; i < aln->core.l_qseq; ++i) seq[i] = "=ACMGRSVTWYHKDBN"[bam_seqi(s, i)];
+            }
+            seq[aln->core.l_qseq] = '\0';
+            fprintf(stdout, "%s\t%d\t%d\t%s\t%d\t%c\t%s\t%s\t%lu\t%s\n",
+                    header->target_name[aln->core.tid], // query name
+                    aln->core.pos , // position
+                    bam_endpos(aln), // aln->core.pos + aln->core.l_qseq + aln->core.qual - 255
+                    bam_get_qname(aln),
+                    NH_s == NULL ? 0 : bam_aux2i(NH_s),
+                    aln->core.flag & 16 ? '-' : '+',
+                    seq ,
+                    TL_s == NULL ? "*" : bam_aux2Z(TL_s),
+                    TL_s == NULL ?  0  : strlen(bam_aux2Z(TL_s)), // length of tail
+                    MD_s == NULL ? "*" : bam_aux2Z(MD_s)
+                    );
+        }
     }
     bam_destroy1(aln);
     bam_hdr_destroy(header);
