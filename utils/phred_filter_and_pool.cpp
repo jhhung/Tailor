@@ -20,8 +20,12 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <memory>
 #include <unordered_map>
 #include <boost/program_options.hpp>
+#include <boost/iostreams/filtering_stream.hpp>
+#include <boost/iostreams/filter/gzip.hpp>
+
 using namespace std;
 int main (int argc, char** argv) {
 	std::string usage = R"(
@@ -66,32 +70,38 @@ The number of reads is writting in the header of the fastq.
 		cerr << "error: phred score is too hight, please use 0 - 40" << endl;
 		exit (1);
 	}
-	std::istream* in {&std::cin};
+	// unique_ptr<istream> in {&std::cin};
+	istream* p_ist_in {&std::cin};
 	if (input_fastq_file != "stdin" && input_fastq_file != "-" ) {
-		in = new std::ifstream {input_fastq_file};
+		p_ist_in = new std::ifstream {input_fastq_file};
 	}
+	boost::iostreams::filtering_istream in;
+	if (p_ist_in->peek() == 0x1f ) {
+		in.push(boost::iostreams::gzip_decompressor());
+	}
+	in.push(*p_ist_in);
 	std::ostream* out {&std::cout};
 	if (output_fastq_file!="stdout" && output_fastq_file!="-") {
 		out = new std::ofstream {output_fastq_file};
 	}
-	char c { in->peek () };
+	char c = in.peek ();
 	string sequence, quality;
 	unordered_map<string, uint64_t> counter;
-	while (in->good ()) {
+	while (in.good ()) {
 		/** testing header **/
 		if (c!='@') {
 			cerr << "illega char " << c << "\nthe input might not be fastq. please check again" << endl;
 			goto _the_end;
 		}
 		/** reading header **/
-		in->ignore (numeric_limits<streamsize>::max(), '\n');
+		in.ignore (numeric_limits<streamsize>::max(), '\n');
 		/** reading sequence **/
-		getline (*in, sequence);
+		getline (in, sequence);
 		/** reading third line **/
-		in->ignore (numeric_limits<streamsize>::max(), '\n');
+		in.ignore (numeric_limits<streamsize>::max(), '\n');
 		/** reading and filtering quality **/
 		bool passed = true;
-		for ( in->get(c); c!='\n'; in->get(c) ) {
+		for ( in.get(c); c!='\n'; in.get(c) ) {
 			if (c < minimal_phred + offset) {
 				passed = false;
 			}
@@ -101,7 +111,7 @@ The number of reads is writting in the header of the fastq.
 			counter[sequence] += 1;
 		}
 		/** peeking next char, invoke eof **/
-		c = in->peek ();
+		c = in.peek ();
 	}
 	/** reporting **/
 	for (const auto& s : counter) {
@@ -115,13 +125,5 @@ The number of reads is writting in the header of the fastq.
 	}
 
 _the_end:
-	if (in != &std::cin) {
-		static_cast<std::ifstream*> (in)->close ();
-		delete in;
-	}
-	if (out != &std::cout) {
-		static_cast<std::ofstream*>(out)->close ();
-		delete out;
-	}
 	return 0;
 }
