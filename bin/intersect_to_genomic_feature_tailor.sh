@@ -15,6 +15,13 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+# bed2 format specification:
+	# f1-6: same as ordinary bed
+	# f7: original sequence as in input
+	# f8: sequence of the tail (* if no tail)
+	# f9: length of tail 
+	# f10: MAPQ string for mismatches (* if not mismatch)
+
 TOTAL_BED=$1
 UNIQ_BED=${TOTAL_BED%bed2}uniq.bed2
 awk '$5==1' $TOTAL_BED > $UNIQ_BED

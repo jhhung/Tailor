@@ -23,7 +23,7 @@
 export PIPELINE_DIRECTORY=$(dirname `readlink -f $0`)
 export PATH=${PIPELINE_DIRECTORY}/bin:$PATH
 export TAILOR_INDEX=$PIPELINE_DIRECTORY/indexes
-export VERSION=1.0.1
+export VERSION=1.1.0
 
 #########
 # USAGE #
@@ -32,15 +32,19 @@ export VERSION=1.0.1
 usage() {
 cat << EOF
 
-+++++++++++++++++
-+Tailor pipeline+
-+++++++++++++++++
++++++++++++++++++++
++ Tailor pipeline +
++++++++++++++++++++
 
 Tailor pipeline to analyze tailing events from Next Generation Sequencing.
 It requires 
 1. the input reads in FastQ format;
-2. genome fasta sequence in FastA format; it will generate Tailor index in Tailor directory;
-3. genomic_feature_file; this file stores information on the name of different genomic structures. please refer to the annotation/dm3.genomic_features for the format
+2. genome fasta sequence in FastA format; it will generate Tailor index in a sub-directory of this pipeline;
+   The index will be named as the md5 value of the ABSOLUTE path of the fasta file; 
+   Once the index for a specific Fasta file has been built, it will not be built next time you use it (unless you rename the file or move it);
+   To avoid collision, for a new genome, only run one job at a time.
+3. genomic_feature_file; this file stores information on the name of different genomic structures. please refer to the annotation/dm3.genomic_features for the format;
+   We have included the feature files for several genomes in the annotation directory.
 4. [ optional ] microRNA hairpin sequence in FastA file; We provide a script to obtain mature and hairpin sequence from miRbase: obtain_miRNA.sh
 5. [ optional ] microRNA mature sequence in FastA format; We provide a script to obtain mature and hairpin sequence from miRbase: obtain_miRNA.sh
 6. [ optional ] output directory
@@ -67,19 +71,20 @@ OPTIONS:
 	-o      Output directory, default <current working directory>
 	-c      Number of CPUs to use, default <8>
 	-q      The Phred score used to filter the reads. One read needs to have all its bases no less than this value to pass, default <20>
-	
+	-v      Allow mismatches in mapping
 EOF
 }
 
-while getopts "hi:g:o:c:q:t:H:M:" OPTION
+while getopts "hi:g:o:c:q:t:H:M:v" OPTION
 do
 	case $OPTION in
 		h)	usage && exit 0 ;;
-		i)	export	INPUT_FQ=`readlink -f $OPTARG` ;;
-		g)	INDEX_FA=`readlink -f $OPTARG` 
+		i)	export INPUT_FQ=`readlink -f $OPTARG` ;;
+		g)	INDEX_FA=`readlink -f $OPTARG`
+			INDEX_UID=`echo ${INDEX_FA} | md5sum | cut -d" " -f1`
 			INDEX_FA_NAME=`basename $INDEX_FA`
 			INDEX_PREFIX=${INDEX_FA_NAME%.fa*}
-			INDEX=$TAILOR_INDEX/$INDEX_PREFIX
+			INDEX=$TAILOR_INDEX/$INDEX_UID
 		;;
 		t)	export GENOMIC_FEATURE_FILE=$OPTARG ;;
 		H)	HAIRPIN_INDEX_FA=`readlink -f $OPTARG` 
@@ -88,8 +93,9 @@ do
 			HAIRPIN_INDEX=$TAILOR_INDEX/$HAIRPIN_INDEX_PREFIX
 		;;
 		M)	MATURE_FA=`readlink -f $OPTARG` ;;
-		o)	export	OUTDIR=`readlink -f $OPTARG` ;;
-		c)	export	CPU=$OPTARG ;;
+		o)	export OUTDIR=`readlink -f $OPTARG` ;;
+		c)	export CPU=$OPTARG ;;
+		v)	ALLOW_MISMATCH="-v 1" ;;
 		q)	MIN_PHRED=$OPTARG ;;
 		?)	usage && exit 1 ;;
 	esac
@@ -183,7 +189,7 @@ touch .${JOBUID}.status.${STEP}.phred_filter_and_pool
 STEP=$((STEP+1))
 
 echo2 "Building the index if not exist"
-tailor build -i $INDEX_FA -p $INDEX
+tailor build -i $INDEX_FA -p $INDEX # will raise warning if the index exists
 
 echo2 "Mapping the input fastq to the genome reference" 
 [ ! -f .${JOBUID}.status.${STEP}.tailor_mapping ] && \
@@ -191,12 +197,20 @@ echo2 "Mapping the input fastq to the genome reference"
 		-i ${PREFIX}.p${MIN_PHRED}.fq \
 		-p $INDEX \
 		-n $CPU \
+		$ALLOW_MISMATCH \
 		2> $MAPPING_DIR/${PREFIX}.tailor.log | \
 	tailor_sam_to_bed \
 	> $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.bed2 && \
 touch .${JOBUID}.status.${STEP}.tailor_mapping
 STEP=$((STEP+1))
 
+# bed2 format specification:
+# f1-6: same as ordinary bed
+# f7: original sequence as in input
+# f8: sequence of the tail (* if no tail)
+# f9: length of tail 
+# f10: MAPQ string for mismatches (* if not mismatch)
+# tailor_bed2_counter.py does not consider f10 (mismatches)
 echo2 "Draw overall length distribution with tailing information"
 [ ! -f .${JOBUID}.status.${STEP}.draw_overall_lendis ] && \
 	python $PIPELINE_DIRECTORY/bin/tailor_bed2_counter.py \
@@ -254,6 +268,7 @@ if [ ! -z $HAIRPIN_INDEX_FA ]; then
 			-i ${PREFIX}.p${MIN_PHRED}.fq \
 			-p $HAIRPIN_INDEX \
 			-n $CPU \
+			$ALLOW_MISMATCH \
 			2> $MAPPING_DIR/${PREFIX}.hairpin.tailor.log | \
 		tailor_sam_to_bed \
 		> $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.hairpin.bed2 && \
@@ -295,7 +310,3 @@ if [ ! -z $HAIRPIN_INDEX_FA ]; then
 	STEP=$((STEP+1))
 
 fi
-
-
-
-
