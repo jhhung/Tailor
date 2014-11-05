@@ -146,6 +146,6 @@ int main (int argc, char** argv) {
         }
         *out << '\n';
     }
-    if (out != &std::cerr) static_cast<ofstream*>(out)->close();
+    if (out != &std::cout) static_cast<ofstream*>(out)->close();
     return 0;
 }
