@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 # Tailor, a BWT-based aligner for non-templated RNA tailing
 # Copyright (C) 2014 Min-Te Chou, Bo W Han, Jui-Hung Hung
@@ -41,9 +41,9 @@ usage: $0 -g dme
 OPTIONS:
 <required>
 	-g      three letter string to indicate the organism; for example: 
-			dme for fly
-			mmu for mouse
-			hsa for human
+	          dme for fly
+	          mmu for mouse
+	          hsa for human
 
 EOF
 }
@@ -57,11 +57,11 @@ do
 	esac
 done
 
-[[ ! -n $ORGANISM_STR ]] && echo "[Error]: please provide -i option" && exit 1
+[[ ! -n $ORGANISM_STR ]] && echo "[Error]: please provide -g option" && exit 1
 ############
 # Download #
 ############
-which wget && \
+which wget 1>/dev/null && \
 	wget -q -O - $MATURE_URL  | gunzip | faUtoT.py > $TAILOR_INDEX/mature.fa && \
 	wget -q -O - $HAIRPIN_URL | gunzip | faUtoT.py > $TAILOR_INDEX/hairpin.fa
 [[ $? != 0 ]] && \

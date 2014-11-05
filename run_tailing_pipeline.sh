@@ -199,6 +199,7 @@ echo2 "Mapping the input fastq to the genome reference"
 		-n $CPU \
 		$ALLOW_MISMATCH \
 		2> $MAPPING_DIR/${PREFIX}.tailor.log | \
+	tee $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.sam | \
 	tailor_sam_to_bed \
 	> $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.bed2 && \
 touch .${JOBUID}.status.${STEP}.tailor_mapping
