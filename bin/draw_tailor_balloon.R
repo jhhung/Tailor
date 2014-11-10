@@ -15,7 +15,6 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-# this function is modified from http://stackoverflow.com/questions/9341635/how-can-i-check-for-installed-r-packages-before-running-install-packages
 source (paste (Sys.getenv ("PIPELINE_DIRECTORY"),"/bin/Tailor.R",sep=""))
 pkgTest("gplots")
 pkgTest("parallel")
@@ -63,7 +62,8 @@ draw_microRNA_tailing_balloon = function (t1, name, outDir) {
 argv = commandArgs (TRUE)
 mirRelativePos = read.table (argv[1], F, sep="\t", stringsAsFactors=F)
 numOfCore = argv[2]
-name = argv[3]
+# name = argv[3]
+name = ""
 outDir = argv[4]
 mirRelativePosSplitted = split (mirRelativePos, mirRelativePos$V1)
 mclapply (mirRelativePosSplitted, draw_microRNA_tailing_balloon, mc.cores=numOfCore, name = name, outDir = outDir)

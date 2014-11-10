@@ -71,11 +71,10 @@ OPTIONS:
 	-o      Output directory, default <current working directory>
 	-c      Number of CPUs to use, default <8>
 	-q      The Phred score used to filter the reads. One read needs to have all its bases no less than this value to pass, default <20>
-	-v      Allow mismatches in mapping
 EOF
 }
 
-while getopts "hi:g:o:c:q:t:H:M:v" OPTION
+while getopts "hi:g:o:c:q:t:H:M:" OPTION
 do
 	case $OPTION in
 		h)	usage && exit 0 ;;
@@ -95,7 +94,6 @@ do
 		M)	MATURE_FA=`readlink -f $OPTARG` ;;
 		o)	export OUTDIR=`readlink -f $OPTARG` ;;
 		c)	export CPU=$OPTARG ;;
-		v)	ALLOW_MISMATCH="-v 1" ;;
 		q)	MIN_PHRED=$OPTARG ;;
 		?)	usage && exit 1 ;;
 	esac
@@ -131,9 +129,8 @@ export -f bed2lendis
 ##################
 # File/Dir check #
 ##################
-[ -z $INPUT_FQ ] && echo2 "missing -i for input fastq file" "error"
-[ -z $INDEX_FA ] && echo2 "missing -g for reference fasta file" "error"
-[ ! -s $INPUT_FQ ] && echo2 "cannot file file $INPUT_FQ" "error"
+[ -z $INPUT_FQ ] && echo2 "missing -i for input fastq file; or the file does not exist" "error"
+[ -z $INDEX_FA ] && echo2 "missing -g for reference fasta file; or the file does not exist" "error"
 [ -z "${CPU##*[!0-9]*}" ] && export CPU=8 && echo2 "using 8 CPUs" "warning"
 [ -z "${MIN_PHRED}" ] && export MIN_PHRED=20 && echo2 "using 20 as minimal phred score allowed" "warning"
 [ -z "$GENOMIC_FEATURE_FILE" ] && \
@@ -154,6 +151,7 @@ FQ=`basename $INPUT_FQ`
 export PREFIX=${FQ%.f[aq]*}
 JOBUID=`echo ${FQ##*/} | md5sum | cut -d" " -f1`
 INSERT=${FQ%.f[qa]*}.insert
+ALLOW_MISMATCH="-v 1" # always allow mismatch
 
 ##########
 # folder #
@@ -237,11 +235,9 @@ STEP=$((STEP+1))
 # microRNA tailing analysis #
 #############################
 if [ ! -z $HAIRPIN_INDEX_FA ]; then
-
 	[ -z $MATURE_FA ]	&& echo2 "missing -M for mirBase mature miRNA in fasta format" "error"
 	[ ! -s $MATURE_FA ]	&& echo2 "cannot find file $MATURE_FA" "error"
 	[ ! -s $HAIRPIN_INDEX_FA ] && echo2 "cannot fine file $HAIRPIN_INDEX_FA" "error"
-	
 	ANNOTATION_DIR=annotate_mature_miRNA && mkdir -p $ANNOTATION_DIR
 	MAPPING_DIR=hairpin_mapping && mkdir -p $MAPPING_DIR
 	BALLOON_DIR=balloon_plot_individual && mkdir -p $BALLOON_DIR
@@ -264,7 +260,7 @@ if [ ! -z $HAIRPIN_INDEX_FA ]; then
 	STEP=$((STEP+1))
 	
 	echo2 "Mapping the input fastq to the hairpin reference" 
-	[ ! -f .${JOBUID}.status.${STEP}.tailor_mapping ] && \
+	[ ! -f .${JOBUID}.status.${STEP}.tailor_hairpin_mapping ] && \
 		tailor map \
 			-i ${PREFIX}.p${MIN_PHRED}.fq \
 			-p $HAIRPIN_INDEX \
@@ -273,9 +269,9 @@ if [ ! -z $HAIRPIN_INDEX_FA ]; then
 			2> $MAPPING_DIR/${PREFIX}.hairpin.tailor.log | \
 		tailor_sam_to_bed \
 		> $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.hairpin.bed2 && \
-	touch .${JOBUID}.status.${STEP}.tailor_mapping
+	touch .${JOBUID}.status.${STEP}.tailor_hairpin_mapping
 	STEP=$((STEP+1))
-	
+
 	echo2 "Draw overall length distribution with tailing information"
 	[ ! -f .${JOBUID}.status.${STEP}.draw_overall_lendis ] && \
 		python $PIPELINE_DIRECTORY/bin/tailor_bed2_counter.py \
@@ -294,7 +290,7 @@ if [ ! -z $HAIRPIN_INDEX_FA ]; then
 	[ ! -f .${JOBUID}.status.${STEP}.reannotate ] && \
 		bedtools_tailor intersect -wo -s -a $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.hairpin.bed2 -b $ANNOTATION_DIR/mature.annotate_coordinates.bed -f 0.75 | \
 		tee $MAPPING_DIR/${PREFIX}.relative.bed.wo | \
-		awk 'BEGIN{FS="\t";OFS="\t"}{print $13,$11-$2,$3-$12,$4,$5,$6,$7,$8,$9}' \
+		awk 'BEGIN{FS=OFS="\t"}{print $14,$12-$2,$3-$13,$4,$5,$6,$7,$8,$9}' \
 		> $MAPPING_DIR/${PREFIX}.relative.bed && \
 		touch .${JOBUID}.status.${STEP}.reannotate
 	STEP=$((STEP+1))
@@ -307,7 +303,22 @@ if [ ! -z $HAIRPIN_INDEX_FA ]; then
 			$PREFIX \
 			$BALLOON_DIR && \
 		gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=$PDF_DIR/${PREFIX}.p${MIN_PHRED}.balloon.pdf $BALLOON_DIR/*miRNATailingBalloonPlot.pdf && \
+		rm -rf $BALLOON_DIR/*miRNATailingBalloonPlot.pdf && \
 		touch .${JOBUID}.status.${STEP}.draw_balloon
 	STEP=$((STEP+1))
+	
+	echo2 "performing analysis with editing events"
+	if [ -n "$ALLOW_MISMATCH" ]; then
+		bedtools_tailor intersect -wo -s -a $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.hairpin.bed2 -b $ANNOTATION_DIR/mature.annotate_coordinates.bed -f 0.75 | \
+		awk 'BEGIN{FS=OFS="\t"}{if ($10!="*") $14=$14"."$10; print $14,$12-$2,$3-$13,$4,$5,$6,$7,$8,$9}' \
+			> $MAPPING_DIR/${PREFIX}.with_mm.relative.bed && \
+		Rscript --slave $PIPELINE_DIRECTORY/bin/draw_tailor_balloon.R  \
+			$MAPPING_DIR/${PREFIX}.with_mm.relative.bed \
+			$CPU \
+			$PREFIX \
+			$BALLOON_DIR && \
+		gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=$PDF_DIR/${PREFIX}.p${MIN_PHRED}.with_mm.balloon.pdf $BALLOON_DIR/*miRNATailingBalloonPlot.pdf && \
+		rm -rf $BALLOON_DIR/*miRNATailingBalloonPlot.pdf
+	fi
 
 fi
