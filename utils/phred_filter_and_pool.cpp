@@ -82,31 +82,26 @@ int main (int argc, char** argv) {
     if (
            magic_number[0] == '\037'
         && magic_number[1] == (char)'\213'
-        && magic_number[2] == '\0'
         ) {
         in.push(boost::iostreams::gzip_decompressor());
-    } else
-    if (
+    } else if (
            magic_number[0] == 'B'
            && magic_number[1] == 'Z'
        )
     {
         in.push(boost::iostreams::bzip2_decompressor());
-    } else
-    if (magic_number[0] == '@')
-    {
-//        plain text
-    } else {
+    } else if (magic_number[0] == '@')
+    { } else {
         cerr << "unknown format" << endl;
         return 1;
     }
-    p_ist_in->seekg(0, ios::beg);
+    p_ist_in->seekg(0, p_ist_in->beg);
     in.push(*p_ist_in);
     std::ostream* out {&std::cout};
     if (output_fastq_file!="stdout" && output_fastq_file!="-") {
         out = new std::ofstream {output_fastq_file};
     }
-    char c = in.peek ();
+    char c = in.get ();
     string sequence, quality;
     unordered_map<string, uint64_t> counter;
     while (in.good ()) {
@@ -126,15 +121,13 @@ int main (int argc, char** argv) {
         for ( in.get(c); c!='\n'; in.get(c) ) {
             if (c < minimal_phred + offset) {
                 passed = false;
-                break;
             }
         }
         /** incrementing the counter **/
         if (passed) {
             counter[sequence] += 1;
         }
-        /** peeking next char, invoke eof **/
-        c = in.peek ();
+        c = in.get ();
     }
     /** reporting **/
     for (const auto& s : counter) {
