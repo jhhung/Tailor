@@ -63,8 +63,8 @@ int main(int argc, char** argv)
 			while(*begin1 <= '9' && *begin1 >= '0') ++begin1;
 			cout << tokens[0] << '.' << string {tokens[MD_string_col].begin(), ++begin1};
 		}
-		cout << '\t' << stoi(tokens[11]) - stoi(tokens[1]) << '\t' << stoi(tokens[2]) - stoi(tokens[12]);
-		for (int i = 3; i < MD_string_col; ++i) cout << '\t' << tokens[i];
+		// cout << '\t' << stoi(tokens[11]) - stoi(tokens[1]) << '\t' << stoi(tokens[2]) - stoi(tokens[12]);
+		for (int i = 1; i < MD_string_col; ++i) cout << '\t' << tokens[i];
 		cout << '\n';
 	}
 	if (in1 != &std::cin) static_cast<ifstream*>(in1)->close();

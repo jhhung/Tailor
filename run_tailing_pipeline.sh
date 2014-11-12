@@ -328,13 +328,13 @@ if [ ! -z $HAIRPIN_INDEX_FA ]; then
 		[ ! -f .${JOBUID}.status.${STEP}.parse_MM_$PPM_THRESHOLD ] && \
 		bedtools_tailor intersect -wo -s -a $MAPPING_DIR/${PREFIX}.p${MIN_PHRED}.hairpin.bed2 -b $ANNOTATION_DIR/mature.annotate_coordinates.bed -f 0.75 | \
 		tailor_bedwo_MM \
-			> $MAPPING_DIR/${PREFIX}.with_mm.relative.bed && \
+			> $MAPPING_DIR/${PREFIX}.with_mm.bed && \
 		awk -v depth=$TOTAL_DEPTH -v threshold=$PPM_THRESHOLD 'BEGIN{OFS="\t"; reads_thres=threshold*depth/1000000;}{if (ARGIND==1) c[$1]+=$4/$5; else {if (c[$1]>=reads_thres) print ;}}' \
-			$MAPPING_DIR/${PREFIX}.with_mm.relative.bed \
-			$MAPPING_DIR/${PREFIX}.with_mm.relative.bed \
-			> $MAPPING_DIR/${PREFIX}.with_mm.relative.ppm$PPM_THRESHOLD.bed && \
+			$MAPPING_DIR/${PREFIX}.with_mm.bed \
+			$MAPPING_DIR/${PREFIX}.with_mm.bed \
+			> $MAPPING_DIR/${PREFIX}.with_mm.ppm$PPM_THRESHOLD.bed && \
 		Rscript --slave $PIPELINE_DIRECTORY/bin/draw_tailor_balloon.R  \
-			$MAPPING_DIR/${PREFIX}.with_mm.relative.ppm$PPM_THRESHOLD.bed \
+			$MAPPING_DIR/${PREFIX}.with_mm.ppm$PPM_THRESHOLD.bed \
 			$CPU \
 			$PREFIX \
 			$BALLOON_DIR && \
@@ -344,7 +344,7 @@ if [ ! -z $HAIRPIN_INDEX_FA ]; then
 
 		[ ! -f .${JOBUID}.status.${STEP}.MM_figure_$PPM_THRESHOLD ] && \
 		ParaFile=${RANDOM}.para && \
-		awk 'BEGIN{OFS="\t"}{print $0 >> $1".individual_miRNA"}' $MAPPING_DIR/${PREFIX}.with_mm.relative.ppm$PPM_THRESHOLD.bed && \
+		awk 'BEGIN{OFS="\t"}{print $0 >> $1".individual_miRNA"}' $MAPPING_DIR/${PREFIX}.with_mm.ppm$PPM_THRESHOLD.bed && \
 		for f in *individual_miRNA; do
 			echo "python $PIPELINE_DIRECTORY/bin/tailor_bed2_counter.py $f 1>/dev/null 2> ${f}.single_nt_sum && Rscript --slave $PIPELINE_DIRECTORY/bin/draw_tailor_lendis.R ${f}.single_nt_sum ${f}.single_nt_sum.pdf $f \"MM\" && rm -f $f ${f}.single_nt_sum" >> $ParaFile
 		done
