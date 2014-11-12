@@ -38,11 +38,11 @@ def main (filename):
 	counter2 = defaultdict (lambda: defaultdict (float) )
 	for line in open (filename):
 		vector = line.strip().split()
-		counter[int (vector[2])- int(vector[1])][vector[7]] += float(vector[3])/float(vector[4])
+		counter[int (vector[2]) - int(vector[1])][vector[7]] += float(vector[3])/float(vector[4])
 		if (len (vector[7]) == 1):
-			counter2[int (vector[2])- int(vector[1])][vector[7]] += float(vector[3])/float(vector[4])
+			counter2[int (vector[2]) - int(vector[1])][vector[7]] += float(vector[3])/float(vector[4])
 		else:
-			counter2[int (vector[2])- int(vector[1])]["the_others"] += float(vector[3])/float(vector[4])
+			counter2[int (vector[2]) - int(vector[1])]["the_others"] += float(vector[3])/float(vector[4])
 	for length in counter:
 		for tails in counter[length]:
 			print (length, tails, counter[length][tails], sep='\t', end='\n', file=sys.stdout)
