@@ -1,3 +1,22 @@
+/*
+# Tailor, a BWT-based aligner for non-templated RNA tailing
+# Copyright (C) 2014 Min-Te Chou, Bo W Han, Jui-Hung Hung
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
+
 #ifndef MKQ_SORT2_HPP_
 #define MKQ_SORT2_HPP_
 #include <fstream>
@@ -56,32 +75,32 @@ public:
 	SEQTYPE &_seq;
 	std::function<bool(INTTYPE,INTTYPE)> &_dcs_compare;
 	INTTYPE _limit_depth;
-	
+
 	Compare_DCS(SEQTYPE &s, std::function<bool(INTTYPE,INTTYPE)> &dp, INTTYPE ld)
 		:_seq(s), _dcs_compare(dp), _limit_depth(ld)
 	{};
-	
-	inline long default_compare(INTTYPE a,INTTYPE b, INTTYPE depth){		
+
+	inline long default_compare(INTTYPE a,INTTYPE b, INTTYPE depth){
 		if( depth >= _limit_depth)
 		{
 			if( _dcs_compare(a-depth, b-depth) )
 				return -1;
-			else 
+			else
 				return +1;
 		}
 		return _seq[ a ] - _seq[ b ];
 	};
-	
+
 	template<class Iter>
 	inline bool final_sort(Iter begin, Iter end)
 	{
-		std::sort( begin, end, 
+		std::sort( begin, end,
 			[this](typename Iter::value_type a, typename Iter::value_type b){
 				return this->_dcs_compare(a,b);
 			}
 		);
 	}
-	
+
 };
 
 template <typename SEQTYPE>
@@ -91,25 +110,25 @@ public:
 	SEQTYPE &_seq;
 	std::function<bool(INTTYPE,INTTYPE)> &_dcs_compare;
 	INTTYPE _limit_depth;
-	
+
 	Compare_default(SEQTYPE &s, std::function<bool(INTTYPE,INTTYPE)> &dp, INTTYPE ld)
 		:_seq(s), _dcs_compare(dp), _limit_depth(ld)
 	{};
 	//sadfasdf
-	inline long default_compare(INTTYPE a,INTTYPE b, INTTYPE depth){		
+	inline long default_compare(INTTYPE a,INTTYPE b, INTTYPE depth){
 		if( depth >= _limit_depth)
 		{
 			return 0;
 		}
 		return _seq[ a ] - _seq[ b ];
 	};
-	
+
 	template<class Iter>
 	inline bool final_sort(Iter begin, Iter end)
 	{
 		return true;
 	}
-	
+
 };
 
 // SORT_SMALL_N
@@ -121,14 +140,14 @@ public:
 	std::function<INTTYPE(typename VECTORTYPE::value_type&)> &_getTableV;
 	std::function<bool(INTTYPE,INTTYPE)> &_dcs_compare;
 	INTTYPE _limit_depth;
-	
+
 	Sort_small_n_enable(SEQTYPE &s, std::function<INTTYPE(typename VECTORTYPE::value_type&)> &gtv, INTTYPE ld, std::function<bool(INTTYPE,INTTYPE)> &dp)
 		:_seq(s), _getTableV(gtv), _limit_depth(ld), _dcs_compare(dp)
 	{}
-	
+
 	inline bool sort_small_n(typename VECTORTYPE::iterator begin,typename VECTORTYPE::iterator end, INTTYPE depth, INTTYPE n){
 		if(n>6)	return false;
-		
+
 		std::sort(begin, end,
 			[&]( typename VECTORTYPE::value_type A, typename VECTORTYPE::value_type B){
 				INTTYPE a(_getTableV(A)), b(_getTableV(B));
@@ -138,7 +157,7 @@ public:
 					//	return true;
 					//else if( b+i >= _seq.size() )
 					//	return false;
-					
+
 					if( _seq[(a+i)] > _seq[(b+i)] )
 						return false;
 					else if( _seq[(a+i)] < _seq[(b+i)] )
@@ -151,7 +170,7 @@ public:
 	};
 	inline bool sort_small_n2(typename VECTORTYPE::iterator begin, typename VECTORTYPE::iterator end, INTTYPE depth, INTTYPE n){
 		if(n>6)	return false;
-		
+
 		std::sort(begin, end,
 			[&]( typename VECTORTYPE::value_type A, typename VECTORTYPE::value_type B){
 				INTTYPE a(A), b(B);
@@ -167,8 +186,8 @@ public:
 		);
 		return true;
 	};
-	
-	
+
+
 };
 
 template <typename SEQTYPE, typename VECTORTYPE>
@@ -179,7 +198,7 @@ public:
 	std::function<INTTYPE(typename VECTORTYPE::value_type&)> &_getTableV;
 	std::function<bool(INTTYPE,INTTYPE)> &_dcs_compare;
 	INTTYPE _limit_depth;
-	
+
 	Sort_small_n_disable(SEQTYPE &s, std::function<INTTYPE(typename VECTORTYPE::value_type&)> &gtv, INTTYPE ld, std::function<bool(INTTYPE,INTTYPE)> &dp)
 		:_seq(s), _getTableV(gtv), _limit_depth(ld), _dcs_compare(dp)
 	{}
@@ -194,14 +213,14 @@ public:
 
 
 
-template	<	typename SEQTYPE, 
+template	<	typename SEQTYPE,
 						typename VECTORTYPE,
 						typename RECORD_RANK,
 						template	<	typename > class COMPARE,
 						template	<	typename, typename > class SORT_SMALL_N,
 						template	<	typename,
-												typename, 
-												typename, 
+												typename,
+												typename,
 												template <typename> class,
 												template <typename, typename> class,
 												class ...
@@ -223,8 +242,8 @@ public:
 	std::vector<std::pair<INTTYPE,INTTYPE>> &iD_same_rank, tmp_same_rank;
 	std::function<INTTYPE(typename VECTORTYPE::value_type& )> getTableV;
 	std::function<long(INTTYPE,INTTYPE,INTTYPE)> default_compare2;
-	
-	
+
+
 	Multikey_quicksort(SEQTYPE &sequence, VECTORTYPE &d, INTTYPE limit)
 		:	vec(d),
 			seq(sequence),
@@ -235,7 +254,7 @@ public:
 			bucket_sort(sequence, vec, limit, iD_same_rank),
 			iD_same_rank(tmp_same_rank)
 	{}
-	
+
 	Multikey_quicksort(SEQTYPE &sequence, VECTORTYPE &d, INTTYPE limit, std::vector<std::pair<INTTYPE,INTTYPE>> &id_same_rank)
 		:	vec(d),
 			seq(sequence),
@@ -250,7 +269,7 @@ public:
 			return a;
 		};
 	}
-	
+
 	Multikey_quicksort(SEQTYPE &sequence, VECTORTYPE &d, INTTYPE limit, std::function<bool(INTTYPE,INTTYPE)> &compare_func)
 		:	vec(d),
 			seq(sequence),
@@ -266,39 +285,39 @@ public:
 			return a;
 		};
 	}
-	
-	
-	
+
+
+
 	inline void sort(INTTYPE start, INTTYPE size, INTTYPE depth)
 	{
 		mkq_sort(vec.begin()-start,size,depth);
 		bucket_sort.release();
 	}
-	
+
 	inline void mkq_sort(typename VECTORTYPE::iterator x, INTTYPE n, INTTYPE depth)
 	{
-			
+
 			if (n <= 1)
 				return;
-			
+
 			if(bucket_sort.sort(x-vec.begin(), n, depth) )
 				return;
-			
+
 			if(depth == (limit_depth+1))
 			{
 				this->record_rank(x-vec.begin(), x-vec.begin()+n-1 );
 				this->final_sort(x, x+n);
 				return;
 			}
-				
+
 			if(this->sort_small_n(x, x+n, depth, n))
 				return;
-			
+
 			INTTYPE a, b, c, d, r;
 			long r2;
 			INTTYPE v_idx(0);
 			tx = x;
-			
+
 			INTTYPE pa, pb, pc, pd, pl, pm, pn, t;
 			pl = 0;
 			pm = 0 + (n/2);
@@ -311,25 +330,25 @@ public:
 			}
 			pm = med3(pl, pm, pn, depth);
 			mswap(pl, pm);
-			
-			
+
+
 			v_idx = real_idx(0,depth);
 			a = b = 1;
 			c = d = n-1;
-			
+
 			while(true)
 			{
 					while (b <= c && ( r2 = this->default_compare( real_idx(b,depth) , v_idx, depth) ) <= 0) {
-							if (r2 == 0) { 
-								mswap(a, b); 
-								a++; 
+							if (r2 == 0) {
+								mswap(a, b);
+								a++;
 							}
 							b++;
 					}
 					while (b <= c && ( r2 = this->default_compare( real_idx(c,depth), v_idx, depth) ) >= 0) {
 							if (r2 == 0) {
-								mswap(c, d); 
-								d--; 
+								mswap(c, d);
+								d--;
 							}
 							c--;
 					}
@@ -338,43 +357,43 @@ public:
 					b++;
 					c--;
 			}
-			r = std::min(a, b-a);		 
+			r = std::min(a, b-a);
 			vecmswap(0, b-r, r);
-			
-			r = std::min(d-c, n-d-1); 
+
+			r = std::min(d-c, n-d-1);
 			vecmswap(b, n-r, r);
 
 			r = b-a;
 			mkq_sort(x, r, depth);
-			
+
 			//if(depth == limit_depth && (a + n-d-1) > 1){
 			//	this->record_rank(x+r-vec.begin(), x+r-vec.begin()+(a + n-d-1)-1 );
 			//}
 			mkq_sort(x + r, a + n-d-1, depth+1);
-			
+
 			r = d-c;
 			mkq_sort(x + n-r, r, depth);
-			
+
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
 
 private:
 	typename VECTORTYPE::iterator tx;
 	inline INTTYPE med3(INTTYPE a, INTTYPE b, INTTYPE c, INTTYPE depth)
-	{	 
+	{
 			int va, vb, vc;
 			if ((va=i2c(a,depth)) == (vb=i2c(b,depth)))
 					return a;
 			if ((vc=i2c(c,depth)) == va || vc == vb)
-					return c;			 
+					return c;
 			return va < vb ?
 						(vb < vc ? b : (va < vc ? c : a ) )
 					: (vb > vc ? b : (va < vc ? a : c ) );
@@ -396,7 +415,7 @@ private:
 	{
 		std::swap_ranges(tx+i, tx+i+n, tx+j);
 	}
-	
+
 };
 
 

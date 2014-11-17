@@ -1,3 +1,22 @@
+/*
+# Tailor, a BWT-based aligner for non-templated RNA tailing
+# Copyright (C) 2014 Min-Te Chou, Bo W Han, Jui-Hung Hung
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
+
 #ifndef ABWT_TABLE_HPP_
 #define ABWT_TABLE_HPP_
 #include <algorithm>
@@ -56,23 +75,23 @@ public:
 	std::vector<INTTYPE> c_function;
 	std::vector<INTTYPE> c_functions;
 	//std::vector<INTTYPE> c_function_sp;
-	
+
 	std::vector< std::vector<INTTYPE> > occ_function;
 	std::vector< std::pair<INTTYPE, INTTYPE> > location_table;
-	
+
 	std::vector<int> occ_char;
-	
+
 	//boost::unordered_map<char, INTTYPE> mtable;
 	std::vector<INTTYPE> mtable;
 	std::vector< std::vector< std::vector<INTTYPE> > > occ_jbwt;
-	
+
 	std::string jbwt_idx_char;
-	
+
 	std::vector<uint8_t> fbwt;
 	std::vector<uint8_t> jbwt_seq;
-	
+
 	std::shared_ptr<JBit> jbwt;
-	
+
 	// FIXME: this is just temperarily storing the real size of the genome
 	INTTYPE _realSize = 0;
 	// starting site -> chromosome
@@ -84,11 +103,11 @@ public:
 
 	double get_c_time;
 	double get_occ_time;
-	
+
 	//
 	ABWT_table(INTTYPE iv)
 		: interval(iv)
-		, char_size(256) 
+		, char_size(256)
 		, c_function(char_size, 0)//, occ_function(bwt_size/interval+1, std::vector<INTTYPE>(char_size, 0))//, location_table(bwt_size/interval+1,0)
 		, c_functions()
 		, get_c_time()
@@ -98,7 +117,7 @@ public:
 		, mtable(256)
 		, occ_jbwt(256, std::vector< std::vector<INTTYPE> >(5,std::vector<INTTYPE>(256,0) ) )
 		, occ_char({'A','C','G','T'})
-		
+
 	{
 		interval_set(interval);
 		mtable['A']=0;
@@ -108,7 +127,7 @@ public:
 	}
 	ABWT_table()
 		: interval(0)
-		, char_size(256) 
+		, char_size(256)
 		, c_function(char_size, 0)//, occ_function(bwt_size/interval+1, std::vector<INTTYPE>(char_size, 0))//, location_table(bwt_size/interval+1,0)
 		, c_functions()
 		, get_c_time()
@@ -131,10 +150,10 @@ public:
 	void readNPosLen (const std::string& fileName);
 	void interval_set(INTTYPE iv);
 	void using_jbwt();
-	
+
 //	template< class SEQTYPE>
 	void saveSEQ(std::string filename, SEQTYPE &seq);
-	
+
 //	template< class SEQTYPE>
 	void readSEQ(std::string filename, SEQTYPE &seq);
 	void saveBWT(std::string filename);
@@ -142,29 +161,29 @@ public:
 
 	void saveTable(std::string filename);
 	void readTable(std::string filename);
-	
-	
+
+
 //	template<class SEQTYPE>
 	void createAllTable(SEQTYPE &seq, std::vector<std::string>& filenames);
-	
-	
+
+
 //	template<class SEQTYPE>
 	void createAllTable(SEQTYPE &seq, std::vector<INTTYPE> &seq_table);
-	
-	
+
+
 //	template<class SEQTYPE>
 	inline bool str_idx_compare(SEQTYPE &seq, INTTYPE a, INTTYPE b, INTTYPE len);
-	
+
 	inline INTTYPE get_c(INTTYPE i) const;
-	
+
 	inline INTTYPE get_c(char c) const;
-	
+
 	inline char get_jbwt_char(INTTYPE i) const;
-	
+
 	INTTYPE get_occ_using_jbwt(INTTYPE i, char c='\0', int show_error=0) const;
-	
+
 	inline INTTYPE get_occ(INTTYPE i, char c='\0') const;
-	
+
 	INTTYPE back_tracking_using_jbwt(INTTYPE i) const;
 	inline INTTYPE back_tracking(INTTYPE i) const;
 };

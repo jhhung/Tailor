@@ -1,3 +1,22 @@
+/*
+# Tailor, a BWT-based aligner for non-templated RNA tailing
+# Copyright (C) 2014 Min-Te Chou, Bo W Han, Jui-Hung Hung
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
+
 #ifndef DIFFERENCE_COVER_HPP_
 #define DIFFERENCE_COVER_HPP_
 #include <fstream>
@@ -39,24 +58,24 @@ public:
 	std::vector<int> dcs_D;
 	std::vector<int> dcs_Di;
 	std::vector<int> dcs_dh;
-	
+
 	std::vector< INTTYPE > iD;
 	std::vector< INTTYPE > iDs;
 	std::vector< int > sp;
 	std::vector< INTTYPE > ISAp;
-	
+
 	clock_t Tstart,start, stop;
-	
+
 	INTTYPE m_k, m_q;
-	
-	
+
+
 	std::set<std::pair<INTTYPE,INTTYPE>> iD_same_rank;
-	
-	
+
+
 	INTTYPE const_V, const_powerV;
-	
+
 	INTTYPE	limit_repeat_length;
-	
+
 
 	DIFFERENCE_COVER_IMPL ()
 		:Tstart(clock())
@@ -103,9 +122,9 @@ public:
 			const_V = 1023;
 			const_powerV = 10;
 		}
-		
+
 		std::vector< std::vector<int> > dcs(1025);
-		
+
 		dcs[7] = {1, 2, 4};
 		dcs[8] = {1, 2, 3, 5};
 		dcs[16] = {1, 2, 3, 6, 9};
@@ -114,13 +133,13 @@ public:
 		dcs[128] = {1,2,4,8,18,41,56,65,76,86,105,110,118};
 		dcs[256] = {1,2,4,8,13,21,31,45,66,81,90,97,115,123,129,151,197,198,202,220};
 		dcs[512] = {1,2,3,4,5,10,19,28,37,46,65,84,103,122,141,160,179,198,217,227,237,247,257,267,268,269,270,271};
-		dcs[1024] = {1,2,3,4,5,6,7,14,27,40,53,66,79,92,119,146,173,200,227,254,281,308,335,362,389,416,443,457,471,485,499,513,527,541,542,543,544,545,546,547};		
-		
+		dcs[1024] = {1,2,3,4,5,6,7,14,27,40,53,66,79,92,119,146,173,200,227,254,281,308,335,362,389,416,443,457,471,485,499,513,527,541,542,543,544,545,546,547};
+
 		dcs_v = v;
 		dcs_D = dcs[v];
 		make_dcs_Di_table();
 		make_dcs_dh_table();
-		
+
 	}
 	inline void make_dcs_dh_table()
 	{
@@ -154,7 +173,7 @@ public:
 			{
 				dcs_Di[i] = j;
 				++j;
-			}		
+			}
 		}
 	}
 	inline bool compare(INTTYPE i, INTTYPE j)	{return compare_dcs_level_from_location(i,j);}
@@ -175,7 +194,7 @@ public:
 			if (temp == const_V+1)
 				return 0;
 			else
-				return temp;		
+				return temp;
 		}
 		else
 			return (value - value2) & const_V;
@@ -185,23 +204,23 @@ public:
 		INTTYPE lv_size = (seq_size / dcs_v)*dcs_D.size();
 		for( INTTYPE i : dcs_D)
 		{
-			if(seq_size > lv_size/dcs_D.size()*dcs_v+i) 
+			if(seq_size > lv_size/dcs_D.size()*dcs_v+i)
 				++lv_size;
 		}
-		return lv_size;	
+		return lv_size;
 	}
-	
+
 	inline bool compare_dcs_level_from_location	(INTTYPE i, INTTYPE j)
 	{
 		INTTYPE delta =	mod_v( dcs_dh[ mod_v( j, i ) ] , i ) ;
 		return iDs[changeIndex2iD( i + delta )]	<	iDs[changeIndex2iD( j + delta )] ;
 	}
-	
+
 	inline INTTYPE changeIndex2iD(INTTYPE i)
 	{
 		return dcs_Di[ (i & const_V) ]	+ (i >> const_powerV) * dcs_D.size();
 	}
-	
+
 	inline bool compare_iD_rank_from_sp(INTTYPE a, INTTYPE b)
 	{
 		INTTYPE aa, bb;
@@ -209,7 +228,7 @@ public:
 		{
 			aa=sp[a];
 			bb=sp[b];
-			
+
 			if(aa > bb )
 				return false;
 			else if(aa < bb)
@@ -217,21 +236,21 @@ public:
 			++a;
 			++b;
 		}
-		
+
 		if(a>b) return true;
 		else return false;
-	}	
+	}
 
 
 //old 1
 	inline void make_dcs_iD_table(INTTYPE seq_size)
 	{
 		lv_size = count_lv_size(seq_size);
-		
+
 		start = clock();
-		
+
 		iD.reserve( lv_size );
-		
+
 		INTTYPE ui(0);
 		for(size_t i=0; i< lv_size; ++i)
 		{
@@ -240,7 +259,7 @@ public:
 			//ui = except + mod*(lv_size/ dcs_D.size()) + std::min(lv_size%dcs_D.size(), mod) ;
 			iD.push_back( dcs_D[mod]+except*dcs_v );
 		}
-		
+
 		m_k = lv_size / dcs_D.size();
 		m_q = lv_size % dcs_D.size();
 	}
@@ -261,7 +280,7 @@ public:
 	INTTYPE len_seq, dcs_v;
 	INTTYPE tmp_v, tmp_min, tmp_max;
 	std::vector<std::pair<INTTYPE,INTTYPE>> iD_sames;
-	
+
 	DIFFERENCE_COVER (SEQTYPE &sequence, INTTYPE dcs_size=512)
 		:seq(sequence), len_seq(sequence.size()), tmp_v(0), dcs_v(dcs_size)
 	{
@@ -269,7 +288,7 @@ public:
 		def_dcs(dcs_v);
 		make_dcs_table_mkq();
 	}
-	
+
 	void release()
 	{
 		FreeAll(dcs_D);
@@ -279,7 +298,7 @@ public:
 		FreeAll(sp);
 		FreeAll(ISAp);
 	}
-	
+
 	void make_dcs_table_mkq()
 	{
 //old 1
@@ -291,24 +310,24 @@ public:
 //new 4
 		ls_sort(rank);
 //new 5
-		prepare_iDs();		
+		prepare_iDs();
 	}
-	
+
 //new2
 	void sort_pre_dcs_size()
 	{
 		start = clock();
-		
+
 		INTTYPE limit_sort_length(dcs_v);
 		SORTTYPE pre_sorter(seq, iD, limit_sort_length, iD_sames);
-		
+
 		// sort(start, length, depth)
 		pre_sorter.sort(0,iD.size(),0);
 		stop = clock();
 		std::clog << "Sort iD table End, time:" << double(stop - start) / CLOCKS_PER_SEC << "\n" << std::endl;
 	}
 
-//new3	
+//new3
 	INTTYPE make_sp_table()
 	{
 		//make sp table
@@ -318,14 +337,14 @@ public:
 		{
 			begin = iD_sames[0].first;
 			end = iD_sames[0].second;
-		
+
 			for( INTTYPE q = 0; q<iD.size(); ++q )
 			{
 				sp[ i2ui( iD[q] ) ] = rank;
-				
+
 				if(i == begin)
 					state = 1;
-				
+
 				if(i == end)
 				{
 					++j;
@@ -343,16 +362,16 @@ public:
 			{
 				sp[ i2ui( iD[q] ) ] = rank;
 			}
-			
+
 		}
 		//release iD
-		FreeAll(iD);	
+		FreeAll(iD);
 		FreeAll(iD_sames);
-		
+
 		return rank;
 	}
 
-//new 4	
+//new 4
 	void ls_sort(INTTYPE rank)
 	{
 		start = clock();
@@ -361,16 +380,16 @@ public:
 		sorted_sp.reserve(sp.size());
 		for (int i=0;i<sp.size(); ++i)
 			sorted_sp.push_back(i);
-		
+
 		suffixsort( sp.data(), sorted_sp.data(), sp.size()-1, rank+1, 0 );
 		stop = clock();
-		
+
 		//release sorted_sp
 		FreeAll(sorted_sp);
 		std::clog << "reSort iD table, fix sp rank, using sp table, End, time:" << double(stop - start) / CLOCKS_PER_SEC << "\n" << std::endl;
 	}
 
-//new 5	
+//new 5
 	void prepare_iDs()
 	{
 		size_t mk(lv_size/ dcs_D.size());
@@ -381,12 +400,12 @@ public:
 			size_t mod = i % dcs_D.size();
 			size_t except = i / dcs_D.size();
 			INTTYPE ui = except + mod * mk + std::min(mg, mod);
-			iDs[i] = sp[ui];	
+			iDs[i] = sp[ui];
 		}
 		//release sp
 		FreeAll(sp);
 	}
-	
+
 };
 
 
@@ -402,7 +421,7 @@ class DIFFERENCE_COVER< ABSequence<ABmpl>, SORTTYPE>
 public:
 	ABSequence<ABmpl> &seq;
 	INTTYPE len_seq;
-	
+
 	DIFFERENCE_COVER (ABSequence<ABmpl> &sequence, INTTYPE dcs_v=512)
 		:seq(sequence), len_seq(sequence.size())
 	{
@@ -412,7 +431,7 @@ public:
 			[&](){
 				QSeqTable < INTTYPE, std::tuple<uint64_t, char, INTTYPE> > quick_table_A(seq.EscapeChar);
 				QSeqTable < INTTYPE, std::tuple<uint64_t, char, INTTYPE> > quick_table_B(seq.EscapeChar);
-				std::sort (iD.begin(), iD.end(), 
+				std::sort (iD.begin(), iD.end(),
 					[&] (const INTTYPE &A, const INTTYPE &B)
 					{
 						INTTYPE a(A), b(B);
@@ -427,11 +446,11 @@ public:
 				);
 			}
 		);
-		
-		
+
+
 	}
-	
-	
+
+
 	template<typename SORTFUNTYPE>
 	void make_dcs_table_default(INTTYPE seq_size, SORTFUNTYPE sort_fun_with_length)
 	{
@@ -448,39 +467,39 @@ public:
 //old 6
 		fix_sp_rank();
 	}
-	
-	
-//old 2	
+
+
+//old 2
 	template<typename SORTFUNTYPE>
 	inline void sort_dcs_iD_table_using_iD(SORTFUNTYPE sort_fun_with_length)
 	{
 		std::clog << "Sort dcs iD table, using iD as key, Start" << std::endl;
 		start = clock();
-		
+
 		sort_fun_with_length();
-		
+
 		std::clog << std::endl;
-		
-		
+
+
 		stop = clock();
 		std::clog << "Sort dcs iD table, using iD as key, End, time:" << double(stop - start) / CLOCKS_PER_SEC << "\n" << std::endl;
-		
+
 	}
-	
+
 //old 3
 	inline void insert_sp2iD_table()
 	{
 		std::clog << "Insert sp to dcs iD table, sp, Start" << std::endl;
 		start = clock();
-		
+
 		//insert sp
 		sp.resize(iD.size(),0);
-		
+
 		INTTYPE rank(0), pre_value(0), now_value(0), i(0);
 		for( INTTYPE &K : iD)
 		{
 			now_value = K;
-			
+
 			if( iD_same_rank.find( {std::min(pre_value, now_value), std::max(pre_value, now_value)} ) == iD_same_rank.end() )
 			{
 				++rank;
@@ -494,7 +513,7 @@ public:
 		std::clog << std::endl;
 		stop = clock();
 		std::clog << "Insert sp to dcs iD table, sp, End, time:" << double(stop - start) / CLOCKS_PER_SEC << "\n" << std::endl;
-		
+
 	}
 
 //old 4
@@ -506,9 +525,9 @@ public:
 	{
 		std::clog << "reSort iD table, fix sp rank, using sp table, Start" << std::endl;
 		start = clock();
-		
+
 		//re sort iD-> sp
-		std::sort (iD.begin(), iD.end(), 
+		std::sort (iD.begin(), iD.end(),
 			[&] (const INTTYPE &a, const INTTYPE &b)
 			{
 				return compare_iD_rank_from_sp( a , b );
@@ -522,7 +541,7 @@ public:
 	{
 		std::clog << "fix sp rank in iD table, Start" << std::endl;
 		start = clock();
-		
+
 		iDs.resize(iD.size(),0);
 		//fix sp
 		INTTYPE index(0), pre_rnak(0), now_rank(0);
@@ -534,7 +553,7 @@ public:
 		stop = clock();
 		std::clog << "fix sp rank in iD table, End, time:" << double(stop - start) / CLOCKS_PER_SEC << "\n" << std::endl;
 	}
-	
+
 
 };
 
