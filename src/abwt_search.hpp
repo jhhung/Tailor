@@ -646,7 +646,8 @@ public:
 		} /* end of RC */
 		bool isRC = false;
 		/* the front c_functions_interval has to be exact match */
-		init_exact_match( query.substr (query.size() - c_functions_interval, c_functions_interval) );
+		//init_exact_match( query.substr (query.size() - c_functions_interval, c_functions_interval) );
+		init_exact_match(query.back());
 		
 		//std::cout << " GG " << start_end_pos_.second - start_end_pos_.first << " " << fq.getName() << std::endl;
 		/* if not found, exit */
@@ -654,7 +655,8 @@ public:
 			return;
 		}
 		/* queryPosition need to be tested again */
-		int queryPosition = query.length() -1 - c_functions_interval;
+		//int queryPosition = query.length() -1 - c_functions_interval;
+		int queryPosition = query.length() -1 - 1;
 		/* last step need to be recorded */
 		std::vector< std::pair<INTTYPE, INTTYPE> > last_start_end_pos_record;
 		

@@ -78,7 +78,8 @@ public:
 
 			{	/// writting
 				boost::mutex::scoped_lock lock(this->_io_mutex);
-				*_out << _resultBuffer.rdbuf ();
+				if(_resultBuffer.tellp() != 0)
+					*_out << _resultBuffer.rdbuf ();
 				_resultBuffer.str(std::string());
 			}
 			_queryBuffer.clear ();
