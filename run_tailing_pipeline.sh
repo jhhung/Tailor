@@ -23,7 +23,7 @@
 export PIPELINE_DIRECTORY=$(dirname `readlink -f $0`)
 export PATH=${PIPELINE_DIRECTORY}/bin:$PATH
 export TAILOR_INDEX=$PIPELINE_DIRECTORY/indexes
-export VERSION=1.1.0
+export VERSION=1.1.1
 
 #########
 # USAGE #
@@ -35,6 +35,7 @@ cat << EOF
 +++++++++++++++++++
 + Tailor pipeline +
 +++++++++++++++++++
+version: v$VERSION
 
 Tailor pipeline to analyze tailing events from Next Generation Sequencing.
 It requires 
@@ -51,11 +52,11 @@ It requires
 7. [ optional ] number of threads to use
 
 usage: $0 \ 
-	-i input_file.fq \ 
+	-i input_file.fq[.gz] \ 
 	-g dm3.fa \ 
 	-t genomic_feature_file [ annotation/dm3.genomic_features ] \ 
 	-H hairpin.fa [ optional ] \ 
-	-M mature.fa  [ optional ]  \ 
+	-M mature.fa  [ optional ] \ 
 	-o output_directory [ current directory ] \ 
 	-c cpu[ 8 ] 
 
@@ -67,17 +68,17 @@ OPTIONS:
 	-t      Files to store the genomic features. See annotation folder for examples.
 
 <optional>
-	-H      microRNA hairpin sequence in fasta format. The pipeline will automatically generate index.
-	-M      microRNA mature sequence in fasta format. It is used to annotation the 5' and 3' ends of miRNA.
-	-o      Output directory, default <current working directory>
+	-H      microRNA hairpin sequence in fasta format. The pipeline will automatically generate index. default <null>
+	-M      microRNA mature sequence in fasta format. It is used to annotation the 5' and 3' ends of miRNA. default <null>
+	-o      Output directory, default <$PWD>
 	-c      Number of CPUs to use, default <8>
 	-q      The Phred score used to filter the reads. One read needs to have all its bases no less than this value to pass, default <20>
-	-t      The PPM threshold used for reporting the miRNAs with editing, default 10
+	-T      The PPM threshold used for reporting the miRNAs with editing, default <10>
 
 EOF
 }
 
-while getopts "hi:g:o:c:q:t:H:M:t:" OPTION
+while getopts "hi:g:o:c:q:t:H:M:T:" OPTION
 do
 	case $OPTION in
 		h)	usage && exit 0 ;;
@@ -97,6 +98,7 @@ do
 		M)	MATURE_FA=`readlink -f $OPTARG` ;;
 		o)	export OUTDIR=`readlink -f $OPTARG` ;;
 		c)	export CPU=$OPTARG ;;
+		T)  export PPM_THRESHOLD=$OPTARG ;;
 		q)	MIN_PHRED=$OPTARG ;;
 		?)	usage && exit 1 ;;
 	esac
@@ -111,7 +113,7 @@ COLOR_RED_BOLD="\e[31;1m";
 COLOR_MAGENTA="\e[35;40m"; 
 COLOR_END="\e[0m"; 	
 ISO_8601='%Y-%m-%d %H:%M:%S %Z'
-case $2 in 
+case $2 in
 	error)		echo -e $COLOR_RED_BOLD"[`date "+$ISO_8601"`] Error: $1${COLOR_END}" && exit 1 ;;
 	warning)	echo -e $COLOR_MAGENTA"[`date "+$ISO_8601"`] Warning: $1${COLOR_END}" ;;
 	*)			echo -e $COLOR_GREEN"[`date "+$ISO_8601"`] $1${COLOR_END}";;
@@ -155,7 +157,7 @@ FQ=`basename $INPUT_FQ`
 export PREFIX=${FQ%.f[aq]*}
 JOBUID=`echo ${FQ##*/} | md5sum | cut -d" " -f1`
 INSERT=${FQ%.f[qa]*}.insert
-ALLOW_MISMATCH="-v 1" # always allow mismatch
+ALLOW_MISMATCH="-v" # always allow mismatch
 
 ##########
 # folder #
@@ -193,8 +195,8 @@ STEP=$((STEP+1))
 echo2 "Building the index if not exist"
 tailor build \
 	-i $INDEX_FA \
-	-p $INDEX 
-# will raise warning if the index exists
+	-p $INDEX \
+	2> /dev/null
 
 echo2 "Mapping the input fastq to the genome reference" 
 [ ! -f .${JOBUID}.status.${STEP}.tailor_mapping ] && \
@@ -333,13 +335,6 @@ if [ ! -z $HAIRPIN_INDEX_FA ]; then
 			$MAPPING_DIR/${PREFIX}.with_mm.bed \
 			$MAPPING_DIR/${PREFIX}.with_mm.bed \
 			> $MAPPING_DIR/${PREFIX}.with_mm.ppm$PPM_THRESHOLD.bed && \
-		Rscript --slave $PIPELINE_DIRECTORY/bin/draw_tailor_balloon.R  \
-			$MAPPING_DIR/${PREFIX}.with_mm.ppm$PPM_THRESHOLD.bed \
-			$CPU \
-			$PREFIX \
-			$BALLOON_DIR && \
-		gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=$PDF_DIR/${PREFIX}.p${MIN_PHRED}.with_mm.ppm$PPM_THRESHOLD.balloon.pdf $BALLOON_DIR/*miRNATailingBalloonPlot.pdf && \
-		rm -rf $BALLOON_DIR/*miRNATailingBalloonPlot.pdf && \
 		touch .${JOBUID}.status.${STEP}.parse_MM_$PPM_THRESHOLD
 
 		[ ! -f .${JOBUID}.status.${STEP}.MM_figure_$PPM_THRESHOLD ] && \

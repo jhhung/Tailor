@@ -81,7 +81,7 @@ allowed, will be reported in the "MD" tag.
     }
 	/* test whether input file exist */
 	if (!boost::filesystem::exists (inputFasta)) {
-		std::cerr << "Error: Input fasta file " << inputFasta << " does not exist! Please double check. Existing..." << std::endl;
+		std::cerr << "Error: Input fasta file " << inputFasta << " does not exist! Please double check. tailor-build exiting..." << std::endl;
 		exit (1);
 	}
 
@@ -90,7 +90,7 @@ allowed, will be reported in the "MD" tag.
 	}
 	/* check whether index already exist */
 	if (checkIndexIntact (indexPrefix) && !overwrite) {
-		std::cerr << "Error: index files already exist. If you want to overwrite them, please run it again with option -f.\nExisting..." << std::endl;
+		std::cerr << "Warning: index files already exist. If you would like to overwrite them, please run it again with option -f.\ntailor-build exiting..." << std::endl;
 		exit (2);
 	}
 	/* executing buildBWT */
