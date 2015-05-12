@@ -23,7 +23,7 @@
 export PIPELINE_DIRECTORY=$(dirname `readlink -f $0`)
 export PATH=${PIPELINE_DIRECTORY}/bin:$PATH
 export TAILOR_INDEX=$PIPELINE_DIRECTORY/indexes
-export VERSION=1.1.1
+export VERSION=1.1.2
 
 #########
 # USAGE #
@@ -157,7 +157,7 @@ FQ=`basename $INPUT_FQ`
 export PREFIX=${FQ%.f[aq]*}
 JOBUID=`echo ${FQ##*/} | md5sum | cut -d" " -f1`
 INSERT=${FQ%.f[qa]*}.insert
-ALLOW_MISMATCH="-v" # always allow mismatch
+ALLOW_MISMATCH="" # NOT allow mismatch by default 
 
 ##########
 # folder #
