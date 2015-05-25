@@ -128,7 +128,7 @@ http://www.jhhlab.tw/Tailor/speed_test_samples/tailing.log3
 - All scripts for speed test can be found in the `utils` directory
 
 ##Citing Tailor
-* in preparation
+* Chou, M.-T., Han, B. W., Hsiao, C.-P., Zamore, P. D., Weng, Z., and Hung, J.-H. (2015). [Tailor: a computational framework for detecting non-templated tailing of small silencing RNAs.](http://nar.oxfordjournals.org/content/early/2015/05/24/nar.gkv537.abstract) *Nucleic Acids Res*. doi: 10.1093/nar/gkv537
 
 ##Contact
 ```bash
