@@ -108,7 +108,7 @@ allowed, will be reported in the "MD" tag.
 	} else {
 		out = new std::ofstream {outputSAM};
 		if (!*out) {
-			std::cerr << "Error: cannot creat output file " << outputSAM << ".\nPlease double check.\nExiting..." << std::endl;
+			std::cerr << "Error: cannot create output file " << outputSAM << ".\nPlease double check.\nExiting..." << std::endl;
 			exit (1);
 		}
 	}
