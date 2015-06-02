@@ -76,7 +76,7 @@ public:
 					break;
 				default:
 					std::cerr << "unexpected char: " << c << "; turning into N" << std::endl;
-					is.putback (c);
+					is.putback ('N');
 					finish = true;
 					break;
 			}
