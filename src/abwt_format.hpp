@@ -44,7 +44,7 @@ public:
 			c = is.get ();
 			switch (c) {
 				case 'A': case 'a': case 'C': case 'c':
-				case 'G': case 'g': case 'T': case 't': case 'U': case 'u':
+				case 'G': case 'g': case 'T': case 't': 
 					is.putback(c);
 					finish = true;
 					break;
@@ -64,7 +64,7 @@ public:
 			c = is.get ();
 			switch(c) {
 				case 'A': case 'a': case 'C': case 'c':
-				case 'G': case 'g': case 'T': case 't': case 'U': case 'u':
+				case 'G': case 'g': case 'T': case 't':
 					++ _len;
 					_seq += std::toupper (c);
 					break;
@@ -172,6 +172,7 @@ public:
 		while (seg != stopIter) {
 //			std::cerr << "(lastPos2.first)->first:\t" << (lastPos2.first)->first << '\n';
 //			std::cerr << "seg->_len:\t" << seg->_len << '\n';
+//			std::cerr << "seg->_offset:\t"<< seg->_offset<<'\n';
 			auto tmp = (lastPos2.first)->first + seg->_len;
 			lastPos2 = NposLen.insert (std::make_pair ( tmp , (lastPos2.first)->second + (++seg)->_offset  ));
 //			std::cerr << "Just inserted:\t" << (lastPos2.first)->first <<'\t' << (lastPos2.first)->second << '\n';
@@ -227,7 +228,7 @@ public:
 			switch (*iter) {
 			case 'A':
 				*iter = 'T'; break;
-			case 'T':
+			case 'T': 
 				*iter = 'A'; break;
 			case 'G':
 				*iter = 'C'; break;
