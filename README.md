@@ -12,10 +12,9 @@ A Shell based pipelines are provided using fastq as input and produce publicatio
 ### Run the binary directly without installation 
 Please try the precompiled binaries first, most of the linux systems should be able to run Tailor without any troubles.
 ```bash
-bin/tailor_linux 		# for linux
-bin/tailor_mac_x64		# for OSX
+bin/tailor_v.1.0_linux_static 		# for linux
 ```
-Or you can find them in the release tab in this page or at this [link](https://github.com/jhhung/Tailor/releases).
+Or you can find it in the release tab in this page or at this [link](https://github.com/jhhung/Tailor/releases).
 
 ### Compile from the source code
 #### Install the dependencies
@@ -53,7 +52,15 @@ make
 ### tailor
 
 #### Build genomic index (similar to bowtie-build)
+Options:
 ```bash
+-h [ --help ]         display this help message and exit
+-i [ --input ] arg    The input fasta file.
+-p [ --prefix ] arg   Prefix of index file to generate.
+-f [ --force ]        Overwrite the existing index files if they already exist.
+```
+
+```
 tailor build -i genome.fa -p genome
 ```
 
@@ -133,6 +140,6 @@ http://www.jhhlab.tw/Tailor/speed_test_samples/tailing.log3
 ##Contact
 ```bash
 	Jui-Hung Hung <juihunghung `at` gmail.com>
-	Chou Min-Te <poi5305 `at` gmail.com>
 	Bo W Han <bowhan `at` me.com>
+	Chiung-Po Hsiao <restart0216s `at` gmail.com>
 ```
