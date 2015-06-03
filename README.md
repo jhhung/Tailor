@@ -41,7 +41,7 @@ make
 
 #### troubleshooting
 - If you got linker error, it is possible that the default library in the lib/ is not suitable to your platform. 
- There are two libraries available, one is for Mac OSX one is for Linux, rename the one that fit the best to "libabwt_table.a",
+ There is one library available for Linux, rename the one that fit the best to "libabwt_table.a",
  and retype 
 ```bash
 make
@@ -59,14 +59,26 @@ Options:
 -p [ --prefix ] arg   Prefix of index file to generate.
 -f [ --force ]        Overwrite the existing index files if they already exist.
 ```
-
+Example:
 ```
 tailor build -i genome.fa -p genome
 ```
 
 #### Mapping 
 ```bash
-tailor map -p genome -n 8 -i smallRNA.fq
+
+-h [ --help ]                 display this help message and exit
+-i [ --input ] arg            Input fastq file
+-p [ --index ] arg            Prefix of the index
+-o [ --output ] arg (=stdout) Output SAM file, stdout by default 
+-n [ --thread ] arg (=1)      Number of thread to use; if the number is larger than the core available, it will be adjusted automatically
+-l [ --minLen ] arg (=18)     minimal length of exact match (prefix match) allowed
+-v [ --mismatch ]             to allow mismatch in the middle of the query
+```
+Examples:
+```
+tailor map -p genome -n 8 -i smallRNA.fq -o smallRNA.sam         # no mismatch
+tailor map -p genome -n 8 -i smallRNA.fq -o smallRNA.sam   -v    # allow one mismatch
 ```
 
 ***
