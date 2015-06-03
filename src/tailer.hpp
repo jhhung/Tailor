@@ -118,15 +118,8 @@ ABWT_table loadBWT2 (const std::string& prefixName, std::ostream* out) {
 
 
 // tailing searching with dual strand
-void searchBWT_tail2 (ABWT_table&& abwtt, std::string fileName, std::size_t nthreads, std::ostream* out, int minLen, int allow_mismatch) {
+void searchBWT_tail2 (ABWT_table&& abwtt, std::string fileName, std::size_t nthreads, std::ostream* out, int minLen, bool allow_mismatch) {
 	std::ifstream in {fileName};
-/*
-	boost::mt19937 rng;
-	rng.seed (static_cast<unsigned int>(std::time(0) + getpid ()));
-	boost::uniform_int<> uinInt (1,std::numeric_limits<int>::max());
-	boost::variate_generator<boost::mt19937&, boost::uniform_int<> > vg (rng, uinInt);
-	std::string randPrefix = std::to_string ( vg ());
-*/
 	boost::thread* threads [nthreads];
 	for (int i = 0 ; i < nthreads; ++i) {
 		threads[i] = new boost::thread {ABWT_threads<ABWT_table> {abwtt, &in, out, minLen, allow_mismatch}};
@@ -139,7 +132,7 @@ void searchBWT_tail2 (ABWT_table&& abwtt, std::string fileName, std::size_t nthr
 }
 
 // tailing version for dual BWT
-void tailing2 (const std::string prefixName, const std::string fastqName, std::ostream* out, std::size_t nthread, int minLen, int allow_mismatch) {
+void tailing2 (const std::string prefixName, const std::string fastqName, std::ostream* out, std::size_t nthread, int minLen, bool allow_mismatch) {
 	/* writting sam header */
 	*out << "@HD" << '\t' << "VN:1.0" << '\t' << "SO:unsorted\n";
 	searchBWT_tail2 (loadBWT2 (prefixName, out), fastqName, nthread, out, minLen, allow_mismatch);

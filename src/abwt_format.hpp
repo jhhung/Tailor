@@ -43,15 +43,18 @@ public:
 		while (is.peek() !='>' && is.good () && !finish) {
 			c = is.get ();
 			switch (c) {
-			case 'A': case 'a': case 'C': case 'c':
-			case 'G': case 'g': case 'T': case 't': case 'U': case 'u':
-				is.putback(c); finish = true; break;
-			case 'N': case 'n':
-				++ _offset; break;
-			case '\r': case '\n': case ' ':
-				break;
-			default:
-				std::cerr << "unexpected char: " << c << std::endl; break;
+				case 'A': case 'a': case 'C': case 'c':
+				case 'G': case 'g': case 'T': case 't': 
+					is.putback(c);
+					finish = true;
+					break;
+				case '\r': case '\n': case ' ':
+					break;
+				case 'N': case 'n':
+					++ _offset; break;
+				default:
+					std::cerr << "unexpected char: " << c << "; turning into N" << std::endl;
+					++ _offset; break;
 			}
 		}
 
@@ -60,19 +63,22 @@ public:
 		while (is.peek () != '>' && is.good() && !finish) {
 			c = is.get ();
 			switch(c) {
-			case 'A': case 'a': case 'C': case 'c':
-			case 'G': case 'g': case 'T': case 't': case 'U': case 'u':
-				++ _len;
-				_seq += std::toupper (c);
-				break;
-			case 'N': case 'n':
-				is.putback (c);
-				finish = true;
-				break;
-			case '\r': case '\n': case ' ':
-				break;
-			default:
-				std::cerr << "unexpected char: " << c << std::endl; break;
+				case 'A': case 'a': case 'C': case 'c':
+				case 'G': case 'g': case 'T': case 't':
+					++ _len;
+					_seq += std::toupper (c);
+					break;
+				case '\r': case '\n': case ' ':
+					break;
+				case 'N': case 'n':
+					is.putback (c);
+					finish = true;
+					break;
+				default:
+					std::cerr << "unexpected char: " << c << "; turning into N" << std::endl;
+					is.putback ('N');
+					finish = true;
+					break;
 			}
 		}
 		//std::cerr << "_len:\t" << _len << "\t_offset:\t" << _offset << std::endl;
@@ -166,6 +172,7 @@ public:
 		while (seg != stopIter) {
 //			std::cerr << "(lastPos2.first)->first:\t" << (lastPos2.first)->first << '\n';
 //			std::cerr << "seg->_len:\t" << seg->_len << '\n';
+//			std::cerr << "seg->_offset:\t"<< seg->_offset<<'\n';
 			auto tmp = (lastPos2.first)->first + seg->_len;
 			lastPos2 = NposLen.insert (std::make_pair ( tmp , (lastPos2.first)->second + (++seg)->_offset  ));
 //			std::cerr << "Just inserted:\t" << (lastPos2.first)->first <<'\t' << (lastPos2.first)->second << '\n';
@@ -221,7 +228,7 @@ public:
 			switch (*iter) {
 			case 'A':
 				*iter = 'T'; break;
-			case 'T':
+			case 'T': 
 				*iter = 'A'; break;
 			case 'G':
 				*iter = 'C'; break;
@@ -273,9 +280,31 @@ public:
 			is.ignore (100000, '\n');
 			std::getline (is, _quality);
 			is.peek ();
-		} else
+		} else if (is.peek() == '>') {
+			/// to support fasta
+			is.ignore();
+			while (is.get (c)) {
+				if ( c == '\t' || c ==' ') {
+					is.ignore (100000, '\n');
+					break;
+				}
+				else if ( c == '\n' )
+					break;
+				else
+					_name += c;
+			}
+			std::string temp;
+			while(is.peek() != '>' && is.good()) {
+				std::getline(is, temp);
+				_sequence += temp;
+			}
+			_quality.resize(_sequence.size(), 'I');
+//			is.peek();
+		} else {
 			throw badFastq ();
+		}
 	}
+
 	Fastq (const Fastq& other):
 		_name {other._name},
 		_sequence {other._sequence},
@@ -453,7 +482,5 @@ public:
 			return os;
 		}
 };
-
-
 
 #endif /* ABWT_FORMAT_HPP_ */

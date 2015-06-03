@@ -3,3 +3,5 @@ indexes
 annotation
 .Rhistory
 ./bin
+.cproject
+.project
