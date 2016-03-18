@@ -886,6 +886,12 @@ public:
 						position = position - lowerIter->first + NLowerIter->second;
 						
 						//TODO: redefine MAPQ
+						if( minimalPrefixLen > prefixMatchLen)
+						{	
+							is_any_result = true;
+							continue;
+						}
+						else;
 						*out << Sam { fq.getName (),
 							Sam::SAM_FLAG::REVERSE_COMPLEMENTED,
 							std::move (chr),
@@ -921,6 +927,12 @@ public:
 						
 						position = position - lowerIter->first + NLowerIter->second;
 						
+						if( minimalPrefixLen > prefixMatchLen)
+						{
+							is_any_result = true;
+							continue;
+						}
+						else;
 						//TODO: redefine MAPQ
 						*out << Sam {fq.getName (),
 							Sam::SAM_FLAG::MAPPED,
