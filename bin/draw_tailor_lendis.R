@@ -21,6 +21,7 @@
 source (paste (Sys.getenv ("PIPELINE_DIRECTORY"),"/bin/Tailor.R",sep=""))
 pkgTest ("ggplot2")
 pkgTest ("gridExtra")
+library ("grid")
 
 argv  = commandArgs (TRUE)
 table = read.table (argv[1], F)
