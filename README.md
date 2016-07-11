@@ -6,7 +6,7 @@ Tailor is released under GPLv2 with additional restriction so that is only appli
 
 A Shell based pipelines are provided using fastq as input and produce publication quality figures.    
 
-##INSTALL
+## INSTALL
 *Only 64 bits systems are able to compile and run Tailor.
     
 ### Run the binary directly without installation 
@@ -47,7 +47,7 @@ make
 make
 ```
 	
-##USAGE
+## USAGE
 ***
 ### tailor
 
@@ -98,7 +98,7 @@ run_miRNA_tailing_pipeline.sh \
 	-q 20
 ```
 
-##Download
+## Download
 
 ***
 #### Indexes
@@ -146,12 +146,18 @@ http://www.jhhlab.tw/Tailor/speed_test_samples/tailing.log3
 ```
 - All scripts for speed test can be found in the `utils` directory
 
-##Citing Tailor
-* Chou, M.-T., Han, B. W., Hsiao, C.-P., Zamore, P. D., Weng, Z., and Hung, J.-H. (2015). [Tailor: a computational framework for detecting non-templated tailing of small silencing RNAs.](http://nar.oxfordjournals.org/content/early/2015/05/24/nar.gkv537.abstract) *Nucleic Acids Res*. doi: 10.1093/nar/gkv537
+## Citing Tailor
+* Chou, M.-T., Han, B. W., Hsiao, C.-P., Zamore, P. D., Weng, Z., and Hung, J.-H. (2015). [Tailor: a computational framework for detecting non-templated tailing of small silencing RNAs.](http://www.ncbi.nlm.nih.gov/pubmed/26007652) *Nucleic Acids Res*. 43, e109.
 
-##Contact
+#### to cite annotations included in `Tailor`
+* If you have used the fly piRNA cluster annotation, please cite:
+    * Brennecke, J., Aravin, A. A., Stark, A., Dus, M., Kellis, M., Sachidanandam, R., and Hannon, G. J. (2007). [Discrete small RNA-generating loci as master regulators of transposon activity in Drosophila.](http://www.ncbi.nlm.nih.gov/pubmed/17346786) *Cell* 128, 1089-1103.
+* If you have used the mouse piRNA cluster annotation, please cite:
+    * Li, X. Z., Roy, C. K., Dong, X., Bolcun-Filas, E., Wang, J., Han, B. W., Xu, J., Moore, M. J., Schimenti, J. C., Weng, Z., and Zamore, P. D. (2013). [An ancient transcription factor initiates the burst of piRNA production during early meiosis in mouse testes.](http://www.ncbi.nlm.nih.gov/pubmed/23523368) *Mol Cell* 50, 67-81.
+
+## Contact
 ```bash
-	Jui-Hung Hung <juihunghung `at` gmail.com>
-	Bo W Han <bowhan `at` me.com>
-	Chiung-Po Hsiao <restart0216s `at` gmail.com>
+    Jui-Hung Hung <juihunghung `at` gmail.com>
+    Bo W Han <bowhan `at` me.com>
+    Chiung-Po Hsiao <restart0216s `at` gmail.com>
 ```
